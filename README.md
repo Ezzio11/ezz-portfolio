@@ -25,14 +25,12 @@ A custom-built personal website showcasing my projects, skills, and tools as a s
 
 - **XANE Chatbot**: Conversational AI that also handles uploaded files and voice responses.
 - **Auto Statistical Models**: Logistic regression, linear regression, and time series with diagnostic reporting and visuals.
-- **OCR Tool**: Parses text from uploaded images.
-- **Custom Image Generator**: Prompt-based art and AI concept generation using free APIs.
-- **Scholarship + Research Center Tools**: Login system, role-based dashboard, and student tools.
+- **Research Papers**: Statistical research conducted as part of college coursework or independently.
 
 ## Hosting
 
 - Main website hosted on **Vercel**
-- Streamlit apps deployed separately and embedded via iframe
+- Streamlit apps deployed separately on HuggingFace and embedded via iframe
 - Pollinations and OpenRouter APIs used for model interactions
 
 ## Purpose
