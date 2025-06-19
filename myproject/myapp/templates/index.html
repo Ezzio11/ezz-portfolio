@@ -1,0 +1,401 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <title>Ezz Eldin Ahmed</title>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="" name="keywords">
+        <meta content="" name="description">
+
+        <!-- Google Web Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+        <!-- Icon Font Stylesheet -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" integrity="sha384-..." crossorigin="anonymous" />
+
+        <!-- Libraries Stylesheet -->
+        <link href="{% static 'lib/animate/animate.min.css' %}" rel="stylesheet">
+        <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+
+        <!-- Customized Bootstrap Stylesheet -->
+        <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+        <!-- Template Stylesheet -->
+        <link href="{% static 'css/main.css' %}" rel="stylesheet">
+    </head>
+
+    <body>
+
+        <!-- Navbar Start -->
+        <div class="container-fluid bg-primary sticky-top">
+            <div class="container-fluid bg-primary">
+                <div class="container">
+                    <nav class="navbar navbar-dark navbar-expand-lg py-0">
+                        <a href="{% url 'home' %}" class="navbar-brand">
+                            <h1 class="text-white fw-bold d-block">EzzEldin<span class="text-secondary">Ahmed</span></h1>
+                        </a>
+                        <button type="button" class="navbar-toggler me-0" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse bg-transparent" id="navbarCollapse">
+                            <div class="navbar-nav ms-auto mx-xl-auto p-0">
+                                <a href="{% url 'home' %}" class="nav-item nav-link active">Home</a>
+                                <a href="{% url 'projects' %}" class="nav-item nav-link">Projects</a>
+                                <a href="{% url 'chatbot' %}" class="nav-item nav-link">XANE</a>
+                                <div class="nav-item dropdown">
+                                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown active">Statistical Modeling Toolkit</a>
+                                    <div class="dropdown-menu rounded">
+                                        <a href="{% url 'linear_regression' %}" class="dropdown-item">Linear Regression</a>
+                                        <a href="{% url 'logistic_regression' %}" class="dropdown-item">Logistic Regression</a>
+                                        <a href="{% url 'time_series_analysis' %}" class="dropdown-item">Time Series Analysis</a>
+                                    </div>
+                                </div>
+                                <a href="{% url 'contact' %}" class="nav-item nav-link">Contact</a>
+                            </div>
+                            <div class="d-flex hightech-link mt-1 justify-content-between">
+                                <a href="https://www.linkedin.com/in/ezzeldinahmed11/" class="btn-light nav-fill btn btn-square rounded-circle me-2">
+                                    <i class="fab fa-linkedin-in text-primary"></i>
+                                </a>
+                                <a href="https://github.com/Ezzio11" class="btn-light nav-fill btn btn-square rounded-circle me-2">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                            </div>
+                            <!-- Dark Mode Switcher Button -->
+                            <button id="dark-mode-toggle" class="btn btn-outline-light ms-2">
+                                <i id="dark-mode-icon" class="fas fa-moon"></i>
+                            </button>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <!-- Navbar End -->
+
+        <!-- About Start -->
+        <div class="container-fluid py-5 my-5">
+            <div class="container pt-5">
+                <div class="row g-5">
+                    <div class="col-lg-5 col-md-6 col-sm-12">
+                        <div class="h-100 position-relative">
+                            <img src="{% static 'img/about-1.jpeg' %}" class="img-fluid w-75 rounded" alt="" style="margin-bottom: 25%;">
+                        </div>
+                    </div>
+                    <div class="col-lg-7 col-md-6 col-sm-12">
+                        <h1 class="mb-4">Hi, I'm Ezz Eldin!</h1>
+                        <h5 class="mb-3">Data Scientist</h5>
+                        <p>I analyze data, build models, and explore the intersection of statistics, machine learning, and artificial intelligence. My journey started with a love-hate relationship with math, now I use it to uncover insights, predict outcomes, and build cool projects.</p>
+                        <p class="mb-4">From statistical analysis to computer vision, I enjoy working on projects that bring insights to life.</p>
+                        <ul class="actions">
+                            <li><a href="{% url 'resume_dl' %}" class="btn btn-secondary rounded-pill px-5 py-3 text-white">Download My Resume</a></li>
+                        </ul>                    
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- About End -->
+
+        <!-- Skills Start -->
+        <div class="container-fluid services py-5 mb-5">
+            <div class="container">
+                <div class="text-center mx-auto pb-5" style="max-width: 600px;">
+                    <h5 class="text-primary">My Skills</h5>
+                    <h1>What Can I Do?</h1>
+                </div>
+                <div class="row g-5 services-inner">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="services-item bg-light">
+                            <div class="p-4 text-center services-content">
+                                <div class="services-content-icon">
+                                    <i class="fa fa-chart-line fa-7x mb-4 text-primary"></i>
+                                    <h4 class="mb-3">Statistical Data Analysis</h4>
+                                    <p class="mb-4">Skilled in Python, R, and Excel for analyzing and visualizing real-world data. Built end-to-end tools for regression and forecasting.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="services-item bg-light">
+                            <div class="p-4 text-center services-content">
+                                <div class="services-content-icon">
+                                    <i class="fa fa-globe fa-7x mb-4 text-primary"></i>
+                                    <h4 class="mb-3">Web Development</h4>
+                                    <p class="mb-4">Built full-stack apps using Python (Flask, Django), Supabase for backend, and Streamlit for dashboards. Focused on functionality, performance, and user experience.</p>
+                                </div> 
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="services-item bg-light">
+                            <div class="p-4 text-center services-content">
+                                <div class="services-content-icon">
+                                    <i class="fas fa-robot fa-7x mb-4 text-primary"></i>
+                                    <h4 class="mb-3">Machine Learning</h4>
+                                    <p class="mb-4">Skilled in supervised and unsupervised learning, regression, time series forecasting, and model interpretation using libraries like Scikit-learn, XGBoost, and SHAP.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row g-5 justify-content-center">
+                        <div class="col-md-6 col-lg-4">
+                            <div class="services-item bg-light">
+                                <div class="p-4 text-center services-content">
+                                    <div class="services-content-icon">
+                                        <i class="fa fa-users fa-7x mb-4 text-primary"></i>
+                                        <h4 class="mb-3">Leadership & Coordination</h4>
+                                        <p class="mb-4">Led a scholarship initiative and co-founded a research center. Managed recruitment, interviews, and day-to-day operations with precision and empathy.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="services-item bg-light">
+                                <div class="p-4 text-center services-content">
+                                    <div class="services-content-icon">
+                                        <i class="fas fa-terminal fa-7x mb-4 text-primary"></i>
+                                        <h4 class="mb-3">Programming & Automation</h4>
+                                        <p class="mb-4">Python is my main tool—used for web apps, automation, data pipelines, and custom tools that replace websites I used to depend on.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Skills End -->
+    
+        <!-- Project Start -->
+        <div class="container-fluid project py-5 mb-5">
+            <div class="container">
+                <div class="text-center mx-auto pb-5" style="max-width: 600px;">
+                    <h5 class="text-primary">Our Projects</h5>
+                    <h1>Our Recently Completed Projects</h1>
+                </div>
+                <div class="row g-5">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="project-item">
+                            <div class="project-img">
+                                <img src="{% static 'img/project-1.png' %}" class="img-fluid w-100 rounded" alt="">
+                                <div class="project-content">
+                                    <a href="https://github.com/Ezzio11/Fixed-Effects-Panel-Data-Analysis-of-Spanish-Dairy-Farms" class="text-center">
+                                        <h4 class="text-secondary">Panel Data Anlaysis of Spanish Dairy Farms</h4>
+                                        <p class="m-0 text-white">View on GitHub</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="project-item">
+                            <div class="project-img">
+                                <img src="{% static 'img/project-2.png' %}" class="img-fluid w-100 rounded" alt="">
+                                <div class="project-content">
+                                    <a href="https://github.com/Ezzio11/Time-Series-Analysis-of-the-VIX" class="text-center">
+                                        <h4 class="text-secondary">Time Series Analysis of VIX</h4>
+                                        <p class="m-0 text-white">View on GitHub</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="project-item">
+                            <div class="project-img">
+                                <img src="{% static 'img/project-3.png' %}" class="img-fluid w-100 rounded" alt="">
+                                <div class="project-content">
+                                    <a href="https://github.com/Ezzio11/Statistical-Modeling-for-Blood-Pressure-on-R/tree/main" class="text-center">
+                                        <h4 class="text-secondary">Statistical Modeling for Blood Pressure</h4>
+                                        <p class="m-0 text-white">View on GitHub</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Project End -->
+
+        <!-- Testimonial Start -->
+        <div class="container-fluid testimonial py-5 mb-5">
+            <div class="container">
+                <div class="text-center mx-auto pb-5" style="max-width: 600px;">
+                    <h5 class="text-primary">What They Say</h5>
+                    <h1>Words from Friends & Collaborators</h1>
+                </div>
+                <div class="owl-carousel testimonial-carousel">
+                    <div class="testimonial-item border p-4">
+                        <div class="d-flex align-items-center">
+                            <div class="">
+                                <img src="{% static 'img/testimonial-1.jpeg' %}" alt="">
+                            </div>
+                            <div class="ms-4">
+                                <h4 class="text-secondary">Abdulrahman Mostafa Kamel</h4>
+                                <p class="m-0 pb-3">Statistician</p>
+                                <div class="d-flex pe-5">
+                                    <i class="fas fa-star me-1 text-primary"></i>
+                                    <i class="fas fa-star me-1 text-primary"></i>
+                                    <i class="fas fa-star me-1 text-primary"></i>
+                                    <i class="fas fa-star me-1 text-primary"></i>
+                                    <i class="fas fa-star me-1 text-primary"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="border-top mt-4 pt-3">
+                            <p class="mb-0" dir="rtl">
+                                عز الدين أحمد هو أقرب الناس بالنسبة لي ، شاركته في أغلب اللحظات في آخر ثلاث سنوات و لم أعرف أحدا لديه من الإصرار و الطيبة و الاجتهاد ما لدى عز لا نخفي على بعضنا أي شيء على الرغم من كرهه لفيلم 
+                                <span dir="ltr">Heat</span>
+                                و الذي يطرح تساؤلات حول ذوقه الفني :(
+                              </p>
+                        </div>
+                    </div>
+                    <div class="testimonial-item border p-4">
+                        <div class=" d-flex align-items-center">
+                            <div class="">
+                                <img src="{% static 'img/testimonial-2.jpg' %}" alt="">
+                            </div>
+                            <div class="ms-4">
+                                <h4 class="text-secondary">Amr Walid</h4>
+                                <p class="m-0 pb-3">Economist</p>
+                                <div class="d-flex pe-5">
+                                    <i class="fas fa-star me-1 text-primary"></i>
+                                    <i class="fas fa-star me-1 text-primary"></i>
+                                    <i class="fas fa-star me-1 text-primary"></i>
+                                    <i class="fas fa-star me-1 text-primary"></i>
+                                    <i class="fas fa-star me-1 text-primary"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="border-top mt-4 pt-3">
+                            <p class="mb-0">من اكتر الناس المجتهده الي عرفتهم انت يا عز و حقيقي لما بحتاج حاجه بلاقيك اول واحد واقف جنبي و بجد ساعدتنا كتير بخبراتك الاحصائية ف مناهج البحث و استفدت كتير لما دخلتني معاك ف الريسيرش سنتر خد قلبي 🫀</p>
+                        </div>
+                    </div>
+                    <div class="testimonial-item border p-4">
+                        <div class=" d-flex align-items-center">
+                            <div class="">
+                                <img src="{% static 'img/testimonial-3.jpg' %}" alt="">
+                            </div>
+                            <div class="ms-4">
+                                <h4 class="text-secondary">Ali Ashraf</h4>
+                                <p class="m-0 pb-3">Political Researcher</p>
+                                <div class="d-flex pe-5">
+                                    <i class="fas fa-star me-1 text-primary"></i>
+                                    <i class="fas fa-star me-1 text-primary"></i>
+                                    <i class="fas fa-star me-1 text-primary"></i>
+                                    <i class="fas fa-star me-1 text-primary"></i>
+                                    <i class="fas fa-star me-1 text-primary"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="border-top mt-4 pt-3">
+                            <p class="mb-0">عز الدين، صديقي منذ ٣ سنوات. يتسم بأنه صادق، واضح، مجتهد، يحب ما يعمل؛ حتى يعمل ما يحب. على مستوى الصداقة الجماعية فهو مساهم جيد فيها. وعلى مستوى الدراسة فحدث ولا حرج وبشهادة زملائه قبلنا نحن أصدقائه. وعلى مستوى الحياة الشخصية والتي نحن جزء منها، فهو متفانِ إلى حد كبير. نتمنى النجاح له/لنا حيث أننا عائلة.</p>
+                        </div>
+                    </div>
+                    <div class="testimonial-item border p-4">
+                        <div class=" d-flex align-items-center">
+                            <div class="">
+                                <img src="{% static 'img/testimonial-4.jpg' %}" alt="">
+                            </div>
+                            <div class="ms-4">
+                                <h4 class="text-secondary">Abdelwahab Hassan</h4>
+                                <p class="m-0 pb-3">Economist</p>
+                                <div class="d-flex pe-5">
+                                    <i class="fas fa-star me-1 text-primary"></i>
+                                    <i class="fas fa-star me-1 text-primary"></i>
+                                    <i class="fas fa-star me-1 text-primary"></i>
+                                    <i class="fas fa-star me-1 text-primary"></i>
+                                    <i class="fas fa-star me-1 text-primary"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="border-top mt-4 pt-3">
+                            <p class="mb-0">عز من الناس اللي وجودهم مش دايمًا بصوت عالي، بس تأثيرهم بيفضل باين حتى من غير ما يتكلموا. بيعمل اللي عليه وزيادة، من غير ما يستنى تصفيق، وبيعرف يخلّي اللي حواليه يحسوا بالراحة، من غير ما يطلب منهم حاجة. طريقه مش دايمًا مفروش، لكنه ماشي فيه بثبات غريب، ونيته دايمًا واضحة حتى لو كلامه قليل. واللي يعرفه بجد، يعرف إن فيه حاجات مبتتقالش.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Testimonial End -->
+
+        <!-- Footer Start -->
+        <div class="container-fluid footer bg-primary">
+            <div class="container pt-5 pb-4">
+                <div class="row g-5">
+                    <!-- Logo + Name -->
+                    <div class="col-lg-3 col-md-6">
+                        <a href="{% url 'home' %}">
+                            <div class="h-0 position-relative">
+                                <img src="{% static 'img/logo.svg' %}" class="img-fluid w-75 rounded" alt="" style="margin-bottom: 25%;">
+                            </div>
+                            <h1 class="text-white fw-bold d-block">EzzEldin<span class="text-secondary">Ahmed</span></h1>
+                        </a>
+                    </div>
+
+                    <!-- Contact Me + Icons -->
+                    <div class="col-lg-3 col-md-6 ms-auto">
+                        <a href="#" class="h3 text-secondary">Contact Me</a>
+                        <div class="text-white mt-4 d-flex flex-column contact-link">
+                            <a href="#" class="py-3 text-light border-bottom border-white">
+                                <i class="fas fa-phone-alt text-secondary me-2"></i>01226566818
+                            </a>
+                            <a href="#" class="py-3 text-light border-bottom border-white">
+                                <i class="fas fa-envelope text-secondary me-2"></i>ezzeldinahmad96@gmail.com
+                            </a>
+                        </div>
+
+                        <!-- Social Icons -->
+                        <div class="d-flex hightech-link mt-3 justify-content-start">
+                            <a href="https://www.linkedin.com/in/ezzeldinahmed11/" class="btn-light nav-fill btn btn-square rounded-circle me-2">
+                                <i class="fab fa-linkedin-in text-primary"></i>
+                            </a>
+                            <a href="https://github.com/Ezzio11" class="btn-light nav-fill btn btn-square rounded-circle me-2">
+                                <i class="fab fa-github"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="text-light mt-5 mb-4">
+
+                <div class="row">
+                    <div class="col-md-6 text-center text-md-start">
+                        <span class="text-light">
+                            <a href="#" class="text-secondary">
+                                <i class="fas fa-copyright text-secondary me-2"></i>
+                                Ezz Eldin Ahmed
+                            </a>, All right reserved.
+                        </span>
+                    </div>
+                    <div class="col-md-6 text-center text-md-end">
+                        <span class="text-light">
+                            Designed By
+                            <a href="https://htmlcodex.com" class="text-secondary">HTML Codex</a>
+                            Distributed By
+                            <a href="https://themewagon.com">ThemeWagon</a>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer End -->
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-secondary btn-square rounded-circle back-to-top"><i class="fa fa-arrow-up text-white"></i></a>
+
+        <!-- JavaScript Libraries -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="{% static 'lib/easing/easing.min.js' %}"></script>
+        <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
+        <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
+
+        <!-- Template Javascript -->
+        <script src="{% static 'js/main.js' %}"></script>
+    </body>
+</html>

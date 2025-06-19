@@ -1,0 +1,155 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="utf-8">
+      <title>Chat with XANE | Ezz Eldin Ahmed</title>
+      <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+      <!-- Google Web Fonts -->
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+
+      <!-- Icon Font Stylesheet -->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+      <!-- Libraries Stylesheet -->
+      <link href="{% static 'lib/animate/animate.min.css' %}" rel="stylesheet">
+      <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+
+      <!-- Customized Bootstrap Stylesheet -->
+      <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+      <!-- Template Stylesheet -->
+      <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+      <!-- Chatbot Stylesheet -->
+      <link href="{% static 'css/chatbot.css' %}" rel="stylesheet">
+   </head>
+   <body>
+
+      <!-- Collapsible Sidebar -->
+      <div id="chat-sidebar" class="d-flex flex-column bg-transparent sidebar-collapsible">
+
+         <!-- Dark Mode Switcher Button -->
+         <button id="dark-mode-toggle" class="btn btn-outline-light ms-2">
+         <i class="fas fa-moon"></i>
+         </button>
+         <a href="{% url 'home' %}" class="navbar-brand">
+            <button class="home-btn btn d-flex justify-content-center align-items-center w-100 py-3 mx-auto">
+               <h5 class="text-primary mb-0"><i class="fas fa-home me-2"></i>Home</h5>
+            </button>
+         </a>
+         <div class="chat-sidebar p-3">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+               <h5 class="text-primary mb-0"><i class="fas fa-comments me-2"></i>Chat Sessions</h5>
+               <button class="btn btn-sm btn-primary d-none d-lg-block sidebar-close">
+               <i class="fas fa-chevron-left"></i>
+               </button>
+            </div>
+
+            <!-- Chat Selection -->
+            <form method="post" class="mb-4">
+               {% csrf_token %}
+               <select name="chat_name" class="form-select bg-primary text-white border-0 mb-3" onchange="this.form.submit()">
+               {% for chat in all_chats %}
+               <option value="{{ chat }}" {% if chat == current_chat %}selected{% endif %}>
+               {{ chat }}{% if chat == 'Default' %} (Default){% endif %}
+               </option>
+               {% endfor %}
+               </select>
+               <input type="hidden" name="current_chat" value="{{ current_chat }}">
+            </form>
+            
+            <!-- New Chat Form -->
+            <form method="post" class="mb-4">
+               {% csrf_token %}
+               <input type="hidden" name="action" value="new_chat">
+               <div class="input-group">
+                  <input type="text" name="new_chat_name" class="form-control bg-primary text-white border-0" placeholder="New chat name">
+                  <button type="submit" class="btn btn-dark">
+                  <i class="fas fa-plus"></i>
+                  </button>
+               </div>
+            </form>
+
+            <!-- Delete Chat -->
+            <form method="post">
+               {% csrf_token %}
+               <input type="hidden" name="action" value="delete_chat">
+               <input type="hidden" name="chat_name" value="{{ current_chat }}">
+               <input type="hidden" name="current_chat" value="{{ current_chat }}">
+               <button type="submit" class="btn btn-danger w-100">
+               <i class="fas fa-trash me-2"></i>Delete Chat
+               </button>
+            </form>
+         </div>
+      </div>
+
+      <!-- Collapsed Sidebar Toggle Button -->
+      <button id="sidebar-collapsed-toggle" class="btn btn-primary position-fixed sidebar-collapsed-toggle">
+      <i class="fas fa-chevron-right"></i>
+      </button>
+
+      <!-- Main Chat Area -->
+      <div id="main-chat-area" class="flex-grow-1 chat-area-content">
+         <div class="chat-container bg-transparent rounded shadow-sm p-4">
+
+            <!-- Chat Header -->
+            <div class="chat-header text-center mb-5">
+               <h1 class="mb-3"><span class="text-primary">XANE</span> AI Assistant</h1>
+               <p class="text-muted">Built to assist, I aim to empower those who cannot help themselves</p>
+            </div>
+
+            <!-- Messages Container -->
+            <div class="chat-messages p-3 mb-4 bg-transparent rounded" id="messages-container">
+               {% for msg in messages %}
+               <div class="message {% if msg.role == 'user' %}user-message{% else %}bot-message{% endif %} mb-3">
+                  <div class="message-content p-3 rounded">
+                     {{ msg.content }}
+                  </div>
+                  <div class="message-meta text-muted small mt-1">
+                     {% if msg.role == 'user' %}You{% else %}XANE{% endif %}
+                     <span class="ms-2">{{ msg.timestamp|date:"H:i" }}</span>
+                  </div>
+               </div>
+               {% empty %}
+               <div class="empty-chat d-flex flex-column align-items-center justify-content-center h-100">
+                  <i class="fas fa-robot fa-4x mb-3 text-primary"></i>
+                  <p class="text-muted">Start a conversation with XANE</p>
+               </div>
+               {% endfor %}
+            </div>
+
+            <!-- Input Area -->
+            <form method="post" id="chat-form" class="bg-transparent rounded p-3 border border-light">
+               {% csrf_token %}
+               <input type="hidden" name="chat_name" value="{{ current_chat }}">
+               <div class="input-group">
+                  <input type="text" name="user_input" id="user-input" class="form-control border-0 py-3" placeholder="Ask me anything..." required>
+                  <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-paper-plane"></i>
+                  </button>
+               </div>
+            </form>
+         </div>
+      </div>
+      </div>
+
+      <!-- JavaScript Libraries -->
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+      <script src="{% static 'lib/easing/easing.min.js' %}"></script>
+      <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
+      <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
+
+      <!-- Main JS -->
+      <script src="{% static 'js/main.js' %}"></script>
+
+      <!-- Chatbot JavaScript -->
+      <script src="{% static 'js/chatbot.js' %}"></script>
+   </body>
+</html>
