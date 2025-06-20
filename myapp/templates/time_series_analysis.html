@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Ezz Eldin Ahmed | Time Series Analysis Tool{% endblock %}
+
+{% block extra_head %}
+    <!-- SEO Meta Tags -->
+    <meta name="title" content="Ezz Eldin Ahmed | Time Series Analysis Tool">
+    <meta name="description" content="Custom tools and data-driven projects by Ezz Eldin Ahmed — a statistics major passionate about automation, machine learning, and full-stack development.">
+    <meta name="keywords" content="Ezz Eldin Ahmed, Data Science, Streamlit, Django, Python Developer, Automation, Machine Learning, Statistics, Statistical Modeling">
+    <meta name="author" content="Ezz Eldin Ahmed">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ezzio.vercel.app/">
+    <meta property="og:title" content="Ezz Eldin Ahmed | Time Series Analysis Tool">
+    <meta property="og:description" content="Explore real-world projects, custom-built tools, and end-to-end data apps built by Ezz Eldin Ahmed.">
+    <meta property="og:image" content="https://ezzio.vercel.app/static/img/preview.png">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://ezzio.vercel.app/">
+    <meta name="twitter:title" content="Ezz Eldin Ahmed | Time Series Analysis Tool">
+    <meta name="twitter:description" content="Custom tools and data-driven projects by Ezz Eldin Ahmed — a statistics major passionate about automation, machine learning, and full-stack development.">
+    <meta name="twitter:image" content="https://ezzio.vercel.app/static/img/preview.png">
+{% endblock %}
+
+{% block content %}
+<!-- Page Header Start -->
+<div class="container-fluid py-5 my-5">
+    <div class="container text-center py-5">
+        <h1 class="display-4 text-primary mb-4">Time Series Analysis Tool</h1>
+        <p class="fs-5 text-secondary">Interactive application for analyzing and forecasting temporal data patterns</p>
+    </div>
+</div>
+<!-- Page Header End -->
+
+<!-- Project Description Start -->
+<div class="container-fluid py-5">
+    <div class="container">
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-6">
+                <div class="mb-4">
+                    <h5 class="text-primary mb-3">Data Science Project</h5>
+                    <h1 class="mb-4">About the Time Series Tool</h1>
+                    <p class="mb-4">This powerful application provides comprehensive time series analysis capabilities, from decomposition and stationarity checks to automatic ARIMA modeling and forecasting. Built with Python's statsmodels and pmdarima, it offers professional-grade time series analysis in an accessible interface.</p>
+                    <ul class="list-unstyled">
+                        <li class="mb-3"><i class="fas fa-check text-secondary me-2"></i>Interactive time series visualization with date range controls</li>
+                        <li class="mb-3"><i class="fas fa-check text-secondary me-2"></i>Seasonal decomposition (trend, seasonal, residual)</li>
+                        <li class="mb-3"><i class="fas fa-check text-secondary me-2"></i>Stationarity checks with Augmented Dickey-Fuller test</li>
+                        <li class="mb-3"><i class="fas fa-check text-secondary me-2"></i>Automatic ARIMA model selection</li>
+                        <li class="mb-3"><i class="fas fa-check text-secondary me-2"></i>Forecasting with multiple error metrics</li>
+                    </ul>
+                    <a href="https://github.com/Ezzio11/Statistical-Modeling-Tool" class="btn btn-secondary rounded-pill px-5 py-3 text-white mt-3" target="_blank">
+                        <i class="fab fa-github me-2"></i>View on GitHub
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <img src="{% static 'img/time-series-demo.png' %}" class="img-fluid rounded shadow" alt="Time Series Analysis Demo">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Project Description End -->
+
+<!-- Key Features Start -->
+<div class="container-fluid services py-5 mb-5">
+    <div class="container">
+        <div class="text-center mx-auto pb-5" style="max-width: 600px;">
+            <h5 class="text-primary">Features</h5>
+            <h1>Comprehensive Time Series Analysis</h1>
+        </div>
+        <div class="row g-5 services-inner">
+            <div class="col-md-6 col-lg-4">
+                <div class="services-item bg-light">
+                    <div class="p-4 text-center services-content">
+                        <div class="services-content-icon">
+                            <i class="fas fa-chart-line fa-7x mb-4 text-primary"></i>
+                            <h4 class="mb-3">Interactive Visualization</h4>
+                            <p class="mb-4">Dynamic time series plots with customizable date ranges and yearly averaging options for better trend analysis.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="services-item bg-light">
+                    <div class="p-4 text-center services-content">
+                        <div class="services-content-icon">
+                            <i class="fas fa-cogs fa-7x mb-4 text-primary"></i>
+                            <h4 class="mb-3">Advanced Diagnostics</h4>
+                            <p class="mb-4">Complete decomposition analysis, stationarity testing, and differencing options to prepare your data for modeling.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="services-item bg-light">
+                    <div class="p-4 text-center services-content">
+                        <div class="services-content-icon">
+                            <i class="fas fa-robot fa-7x mb-4 text-primary"></i>
+                            <h4 class="mb-3">Auto ARIMA</h4>
+                            <p class="mb-4">Automatic selection of optimal ARIMA parameters (p,d,q) using the pmdarima library's stepwise algorithm.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Key Features End -->
+
+<!-- Live Demo Section Start -->
+<div class="container-fluid py-5">
+    <div class="container">
+        <div class="text-center mx-auto pb-5" style="max-width: 800px;">
+            <h5 class="text-primary">Interactive Demo</h5>
+            <h1 class="mb-4">Try the Time Series Analysis Tool</h1>
+            <p class="mb-5">The application is embedded below. Upload your time series data (CSV, Excel, or text file) and explore the comprehensive analysis capabilities.</p>
+        </div> 
+            <div class="bg-white p-0 rounded shadow vh-100 w-100">
+                <iframe 
+                    src="https://ezzio11-time-series-analysis.hf.space" 
+                    width="100%" 
+                    height="100%"
+                    style="border:none; min-height: 90vh;"
+                    sandbox="allow-scripts allow-same-origin allow-forms">
+                </iframe>
+            </div>
+        <div class="mt-5">
+            <div class="alert alert-info">
+                <h4><i class="fas fa-info-circle me-2"></i>How to Use</h4>
+                <ol class="mt-3">
+                    <li class="mb-2">Upload your time series dataset</li>
+                    <li class="mb-2">Select the time column and target variable</li>
+                    <li class="mb-2">Explore the interactive time series plot</li>
+                    <li class="mb-2">Use the "Advanced Analytics" section for decomposition and stationarity checks</li>
+                    <li class="mb-2">View automatically generated forecasts with error metrics</li>
+                    <li class="mb-2">Toggle yearly averaging for higher-level trend analysis</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Live Demo Section End -->
+
+<!-- Technical Details Start - Updated to match skills section style -->
+<div class="container-fluid services py-5 mb-5">
+    <div class="container">
+        <div class="text-center mx-auto pb-5" style="max-width: 600px;">
+            <h5 class="text-primary">Technical Implementation</h5>
+            <h1>Under the Hood</h1>
+        </div>
+        <div class="row g-5 services-inner">
+            <div class="col-md-6 col-lg-4">
+                <div class="services-item bg-light">
+                    <div class="p-4 text-center services-content">
+                        <div class="services-content-icon">
+                            <i class="fas fa-wave-square fa-7x mb-4 text-primary"></i>
+                            <h4 class="mb-3">Time Series Analysis</h4>
+                            <p class="mb-4">Statsmodels for decomposition, stationarity testing (ADF), and ACF/PACF analysis to understand temporal patterns.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="services-item bg-light">
+                    <div class="p-4 text-center services-content">
+                        <div class="services-content-icon">
+                            <i class="fas fa-project-diagram fa-7x mb-4 text-primary"></i>
+                            <h4 class="mb-3">ARIMA Modeling</h4>
+                            <p class="mb-4">pmdarima's auto_arima for automatic parameter selection and optimal model fitting.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="services-item bg-light">
+                    <div class="p-4 text-center services-content">
+                        <div class="services-content-icon">
+                            <i class="fas fa-chart-bar fa-7x mb-4 text-primary"></i>
+                            <h4 class="mb-3">Visualization</h4>
+                            <p class="mb-4">Plotly for interactive visualizations and matplotlib for statistical plots (ACF/PACF).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Technical Details End -->
+{% endblock %}

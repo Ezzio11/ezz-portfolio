@@ -1,0 +1,274 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Ezz Eldin Ahmed | Projects{% endblock %}
+
+{% block extra_head %}
+    <!-- SEO Meta Tags -->
+    <meta name="title" content="Ezz Eldin Ahmed | Projects">
+    <meta name="description" content="Custom tools and data-driven projects by Ezz Eldin Ahmed — a statistics major passionate about automation, machine learning, and full-stack development.">
+    <meta name="keywords" content="Ezz Eldin Ahmed, Data Science, Streamlit, Django, Python Developer, Automation, Machine Learning, Statistics, Statistical Modeling">
+    <meta name="author" content="Ezz Eldin Ahmed">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ezzio.vercel.app/">
+    <meta property="og:title" content="Ezz Eldin Ahmed | Projects">
+    <meta property="og:description" content="Explore real-world projects, custom-built tools, and end-to-end data apps built by Ezz Eldin Ahmed.">
+    <meta property="og:image" content="https://ezzio.vercel.app/static/img/preview.png">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://ezzio.vercel.app/">
+    <meta name="twitter:title" content="Ezz Eldin Ahmed | Projects">
+    <meta name="twitter:description" content="Custom tools and data-driven projects by Ezz Eldin Ahmed — a statistics major passionate about automation, machine learning, and full-stack development.">
+    <meta name="twitter:image" content="https://ezzio.vercel.app/static/img/preview.png">
+{% endblock %}
+
+{% block content %}
+<!-- Page Header Start -->
+<div class="container-fluid py-5 my-5">
+    <div class="container text-center py-5">
+        <h1 class="display-4 text-primary mb-4">My Projects</h1>
+        <p class="fs-5 text-secondary">Data science and statistical modeling projects showcasing my analytical skills</p>
+    </div>
+</div>
+<!-- Page Header End -->
+
+<!-- Projects Start -->
+<div class="container-fluid services py-5 mb-5">
+    <div class="container">
+        <div class="text-center mx-auto pb-5" style="max-width: 800px;">
+            <h5 class="text-primary">Featured Work</h5>
+            <h1>Best of My Projects</h1>
+        </div>
+
+        <!-- XANE Chatbot -->
+        <div class="row g-5 align-items-center mb-5">
+            <div class="col-lg-6">
+                <div class="project-img">
+                    <img src="{% static 'img/project-6.jpg' %}" class="img-fluid rounded shadow" alt="XANE Chatbot">
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-4">
+                    <h2 class="mb-3">XANE Chatbot</h2>
+                    <p class="mb-4">An AI-powered assistant for interacting with my portfolio, answering queries, and processing files.</p>
+                    <ul class="list-unstyled">
+                        <li class="mb-3"><i class="fas fa-check text-secondary me-2"></i>Rule-based system with LLM integration via OpenRouter API</li>
+                        <li class="mb-3"><i class="fas fa-check text-secondary me-2"></i>Handles text, images, and PDFs using Supabase for storage</li>
+                        <li class="mb-3"><i class="fas fa-check text-secondary me-2"></i>Image generation using Flux and Turbo via Pollinations</li>
+                        <li class="mb-3"><i class="fas fa-check text-secondary me-2"></i>Built with Streamlit for a seamless user experience</li>
+                    </ul>
+                    <span class="badge bg-primary tech-badge">Python</span>
+                    <span class="badge bg-primary tech-badge">Streamlit</span>
+                    <span class="badge bg-primary tech-badge">Supabase</span>
+                    <span class="badge bg-primary tech-badge">OpenRouter</span>
+                    <div class="d-flex gap-3">
+                        <a href="https://huggingface.co/spaces/Ezzio11/XANE-Chatbot" class="btn btn-secondary rounded-pill px-5 py-3 text-white mt-3" target="_blank">
+                            <i class="fab fa-huggingface me-2"></i>View on HuggingFace
+                        </a>
+                        <a href="{% url 'chatbot' %}" class="btn btn-success rounded-pill px-5 py-3 text-white mt-3">
+                            <i class="fas fa-external-link-alt me-2"></i>Live Demo
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Semi-Automated Statistical Modeling -->
+        <div class="row g-5 align-items-center mb-5 flex-lg-row-reverse">
+            <div class="col-lg-6">
+                <div class="project-img">
+                    <img src="{% static 'img/project-7.jpg' %}" class="img-fluid rounded shadow" alt="Statistical Modeling Toolkit">
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-4">
+                    <h2 class="mb-3">Semi-Automated Statistical Modeling Toolkit</h2>
+                    <p class="mb-4">A comprehensive suite of statistical modeling tools focusing on rigorous analysis, proper diagnostics, and interpretable results rather than pure predictive performance.</p>
+                    <ul class="list-unstyled">
+                        <li class="mb-3"><i class="fas fa-check text-secondary me-2"></i>Three specialized modules for Linear Regression, Logistic Regression, and Time Series Analysis</li>
+                        <li class="mb-3"><i class="fas fa-check text-secondary me-2"></i>Emphasis on statistical assumptions, diagnostic checks, and model interpretation</li>
+                        <li class="mb-3"><i class="fas fa-check text-secondary me-2"></i>Automated model diagnostics including multicollinearity, normality, and heteroscedasticity checks</li>
+                        <li class="mb-3"><i class="fas fa-check text-secondary me-2"></i>Interactive visualizations for model evaluation and assumption verification</li>
+                        <li class="mb-3"><i class="fas fa-check text-secondary me-2"></i>Detailed explanations of statistical concepts and results interpretation</li>
+                    </ul>
+                    <span class="badge bg-primary tech-badge">Python</span>
+                    <span class="badge bg-primary tech-badge">Statsmodels</span>
+                    <span class="badge bg-primary tech-badge">Streamlit</span>
+                    <span class="badge bg-primary tech-badge">Plotly</span>
+                    <div class="dropdown mt-3">
+                        <button class="btn btn-secondary dropdown-toggle rounded-pill px-5 py-3 text-white" type="button" id="huggingfaceDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fab fa-huggingface me-2"></i>View on HuggingFace
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="huggingfaceDropdown">
+                            <li><a class="dropdown-item" href="https://huggingface.co/spaces/Ezzio11/linear-regression" target="_blank">Linear Regression</a></li>
+                            <li><a class="dropdown-item" href="https://huggingface.co/spaces/Ezzio11/logistic-regression" target="_blank">Logistic Regression</a></li>
+                            <li><a class="dropdown-item" href="https://huggingface.co/spaces/Ezzio11/time-series-analysis" target="_blank">Time Series Analysis</a></li>
+                        </ul>
+                        <div class="dropdown mt-3">
+                            <button class="btn btn-success dropdown-toggle rounded-pill px-5 py-3 text-white" type="button" id="modelingDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-external-link-alt me-2"></i>Live Demos
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="modelingDropdown">
+                                <li><a class="dropdown-item" href="{% url 'linear_regression' %}">Linear Regression</a></li>
+                                <li><a class="dropdown-item" href="{% url 'logistic_regression' %}">Logistic Regression</a></li>
+                                <li><a class="dropdown-item" href="{% url 'time_series_analysis' %}">Time Series Analysis</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Fixed Effects Panel Data Analysis -->
+        <div class="row g-5 align-items-center mb-5">
+            <div class="col-lg-6">
+                <div class="project-img">
+                    <img src="{% static 'img/project-1.png' %}" class="img-fluid rounded shadow" alt="Spanish Dairy Farms Analysis">
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-4">
+                    <h2 class="mb-3">Fixed Effects Panel Data Analysis of Spanish Dairy Farms</h2>
+                    <p class="mb-4">Econometric analysis of dairy farm productivity using panel data techniques.</p>
+                    <ul class="list-unstyled">
+                        <li class="mb-3"><i class="fas fa-check text-secondary me-2"></i>Analyzed panel data (247 farms, 1,482 observations) using Cobb-Douglas and Translog models in R</li>
+                        <li class="mb-3"><i class="fas fa-check text-secondary me-2"></i>Identified key drivers (Cows: 0.66%, Feed: 0.38%, p < 0.001) with increasing returns to scale (RTS = 1.11)</li>
+                        <li class="mb-3"><i class="fas fa-check text-secondary me-2"></i>Ensured robustness with clustered errors and log transformation, achieving ~80% adjusted R²</li>
+                    </ul>
+                    <a href="https://github.com/Ezzio11/Fixed-Effects-Panel-Data-Analysis-of-Spanish-Dairy-Farms" class="btn btn-secondary rounded-pill px-5 py-3 text-white mt-3" target="_blank">
+                        <i class="fab fa-github me-2"></i>View on GitHub
+                    </a>
+                    <div class="d-flex gap-3">
+                        <a href="{% static 'docs/Determinants_of_Milk_Production_Efficiency-A_Fixed_Effects_Panel_Data_Analysis_of_Spanish_Dairy_Farms.pdf' %}" class="btn btn-secondary rounded-pill px-5 py-3 text-white mt-3" target="_blank">
+                            <i class="fas fa-file-pdf me-2"></i>View Research Paper
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Time Series Analysis of VIX -->
+        <div class="row g-5 align-items-center mb-5 flex-lg-row-reverse">
+            <div class="col-lg-6">
+                <div class="project-img">
+                    <img src="{% static 'img/project-2.png' %}" class="img-fluid rounded shadow" alt="VIX Time Series Analysis">
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-4">
+                    <h2 class="mb-3">Time Series Analysis of the Volatility Index</h2>
+                    <p class="mb-4">Forecasting and modeling of market volatility using advanced time series techniques.</p>
+                    <ul class="list-unstyled">
+                        <li class="mb-3"><i class="fas fa-check text-secondary me-2"></i>Applied AR(I) and cubic models to daily VIX data (1990–2025) in R, with 6.67% MAPE</li>
+                        <li class="mb-3"><i class="fas fa-check text-secondary me-2"></i>Confirmed stationarity (p = 0.188) and validated with Box-Ljung and Box-Pierce tests</li>
+                        <li class="mb-3"><i class="fas fa-check text-secondary me-2"></i>Forecasted VIX levels (19.3–28.65) through 2034 with confidence intervals</li>
+                    </ul>
+                    <a href="https://github.com/Ezzio11/Time-Series-Analysis-of-the-VIX" class="btn btn-secondary rounded-pill px-5 py-3 text-white mt-3" target="_blank">
+                        <i class="fab fa-github me-2"></i>View on GitHub
+                    </a>
+                    <div class="d-flex gap-3">
+                        <a href="{% static 'docs/Time_Series_Analysis-VIX.pdf' %}" class="btn btn-secondary rounded-pill px-5 py-3 text-white mt-3" target="_blank">
+                            <i class="fas fa-file-pdf me-2"></i>View Research Paper
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Blood Pressure Modeling -->
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-6">
+                <div class="project-img">
+                    <img src="{% static 'img/project-3.png' %}" class="img-fluid rounded shadow" alt="Blood Pressure Modeling">
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-4">
+                    <h2 class="mb-3">Statistical Modeling of Blood Pressure</h2>
+                    <p class="mb-4">Regression analysis of hypertensive patient data to identify key predictors.</p>
+                    <ul class="list-unstyled">
+                        <li class="mb-3"><i class="fas fa-check text-secondary me-2"></i>Built multiple linear regression models in R on 20 hypertensive patients</li>
+                        <li class="mb-3"><i class="fas fa-check text-secondary me-2"></i>Identified key predictors (Age, BSA, Pulse) achieving adjusted R² = 90.1%</li>
+                        <li class="mb-3"><i class="fas fa-check text-secondary me-2"></i>Addressed multicollinearity (removed Weight) and validated models via ANOVA</li>
+                    </ul>
+                    <a href="https://github.com/Ezzio11/Statistical-Modeling-for-Blood-Pressure-on-R/tree/main" class="btn btn-secondary rounded-pill px-5 py-3 text-white mt-3" target="_blank">
+                        <i class="fab fa-github me-2"></i>View on GitHub
+                    </a>
+                    <div class="d-flex gap-3">
+                        <a href="{% static 'docs/Regression_Analysis_Project.pdf' %}" class="btn btn-secondary rounded-pill px-5 py-3 text-white mt-3" target="_blank">
+                            <i class="fas fa-file-pdf me-2"></i>View Research Paper
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        <!-- Sampling Techniques in Big Data Research -->
+        <div class="row g-5 align-items-center mb-5 flex-lg-row-reverse">
+            <div class="col-lg-6">
+                <div class="project-img">
+                    <img src="{% static 'img/project-4.png' %}" class="img-fluid rounded shadow" alt="Big Data Sampling Research">
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-4">
+                    <h2 class="mb-3">Sampling Techniques in Big Data and Stream Data Analytics</h2>
+                    <p class="mb-4">Academic research on efficient sampling methods for large-scale and real-time data analysis.</p>
+                    <ul class="list-unstyled">
+                        <li class="mb-3"><i class="fas fa-check text-secondary me-2"></i>Comparative analysis of sampling techniques (Simple Random, Stratified, Reservoir)</li>
+                        <li class="mb-3"><i class="fas fa-check text-secondary me-2"></i>Practical implementation examples using Python and Dask</li>
+                        <li class="mb-3"><i class="fas fa-check text-secondary me-2"></i>Case studies on social media analytics and IoT data streams</li>
+                    </ul>
+                    <div class="d-flex gap-3">
+                        <a href="{% static 'docs/Uses_of_Sampling_Techniques_in_Big_Data_and_Stream_Data_Analytics-Ezz_Eldin_Ahmed.pdf' %}" class="btn btn-secondary rounded-pill px-5 py-3 text-white mt-3" target="_blank">
+                            <i class="fas fa-file-pdf me-2"></i>View Research Paper
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Social Media Impact Research -->
+        <div class="row g-5 align-items-center mb-5">
+            <div class="col-lg-6">
+                <div class="project-img">
+                    <img src="{% static 'img/project-5.png' %}" class="img-fluid rounded shadow" alt="Social Media Impact Research">
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-4">
+                    <h2 class="mb-3">Social Media and Its Impact on Society</h2>
+                    <p class="mb-4">Comprehensive study analyzing multidimensional effects of social media platforms.</p>
+                    <ul class="list-unstyled">
+                        <li class="mb-3"><i class="fas fa-check text-secondary me-2"></i>Examined 12 key variables including mental health, education, and politics</li>
+                        <li class="mb-3"><i class="fas fa-check text-secondary me-2"></i>Literature review of 15+ academic studies from 2019-2024</li>
+                        <li class="mb-3"><i class="fas fa-check text-secondary me-2"></i>Designed comprehensive survey instrument covering all research dimensions</li>
+                        <li class="mb-3"><i class="fas fa-check text-secondary me-2"></i>Policy recommendations for balanced social media usage</li>
+                    </ul>
+                    <div class="d-flex gap-3">
+                        <a href="{% static 'docs/Social_Media_and_its_Impact_on_Society-Research_Methodology.pdf' %}" class="btn btn-secondary rounded-pill px-5 py-3 text-white mt-3" target="_blank">
+                            <i class="fas fa-file-pdf me-2"></i>View Research Paper
+                        </a>
+                        <a href="#survey-design" class="btn btn-outline-secondary rounded-pill px-5 py-3 mt-3" data-bs-toggle="collapse">
+                            <i class="fas fa-poll me-2"></i>View Survey Design
+                        </a>
+                    </div>
+                    <div class="collapse mt-3" id="survey-design">
+                        <div class="card card-body bg-light text-dark">
+                            <h5 class="text-primary">Survey Design Highlights</h5>
+                            <ul class="text-dark">
+                                <li>9 thematic sections (Demographics, Time Use, Mental Health, etc.)</li>
+                                <li>40+ carefully crafted questions</li>
+                                <li>Multiple question formats (MCQ, Likert scales, open-ended)</li>
+                                <li>Variables mapped to research hypotheses</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

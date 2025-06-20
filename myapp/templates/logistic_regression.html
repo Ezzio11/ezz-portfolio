@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Ezz Eldin Ahmed | Logistic Regression Analysis Tool{% endblock %}
+
+{% block extra_head %}
+    <!-- SEO Meta Tags -->
+    <meta name="title" content="Ezz Eldin Ahmed | Logistic Regression Analysis Tool">
+    <meta name="description" content="Custom tools and data-driven projects by Ezz Eldin Ahmed — a statistics major passionate about automation, machine learning, and full-stack development.">
+    <meta name="keywords" content="Ezz Eldin Ahmed, Data Science, Streamlit, Django, Python Developer, Automation, Machine Learning, Statistics, Statistical Modeling">
+    <meta name="author" content="Ezz Eldin Ahmed">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ezzio.vercel.app/">
+    <meta property="og:title" content="Ezz Eldin Ahmed | Logistic Regression Analysis Tool">
+    <meta property="og:description" content="Explore real-world projects, custom-built tools, and end-to-end data apps built by Ezz Eldin Ahmed.">
+    <meta property="og:image" content="https://ezzio.vercel.app/static/img/preview.png">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://ezzio.vercel.app/">
+    <meta name="twitter:title" content="Ezz Eldin Ahmed | Logistic Regression Analysis Tool">
+    <meta name="twitter:description" content="Custom tools and data-driven projects by Ezz Eldin Ahmed — a statistics major passionate about automation, machine learning, and full-stack development.">
+    <meta name="twitter:image" content="https://ezzio.vercel.app/static/img/preview.png">
+{% endblock %}
+
+{% block content %}
+<!-- Page Header Start -->
+<div class="container-fluid py-5 my-5">
+    <div class="container text-center py-5">
+        <h1 class="display-4 text-primary mb-4">Logistic Regression Analysis Tool</h1>
+        <p class="fs-5 text-secondary">Interactive statistical modeling application for binary classification</p>
+    </div>
+</div>
+<!-- Page Header End -->
+
+<!-- Project Description Start -->
+<div class="container-fluid py-5">
+    <div class="container">
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-6">
+                <div class="mb-4">
+                    <h5 class="text-primary mb-3">Data Science Project</h5>
+                    <h1 class="mb-4">About the Logistic Regression Tool</h1>
+                    <p class="mb-4">This interactive application allows users to perform logistic regression analysis on their own datasets. Built with Python's Streamlit framework, it provides a user-friendly interface for statistical modeling and binary classification.</p>
+                    <ul class="list-unstyled">
+                        <li class="mb-3"><i class="fas fa-check text-secondary me-2"></i>Upload and analyze your own datasets</li>
+                        <li class="mb-3"><i class="fas fa-check text-secondary me-2"></i>Visualize model performance metrics</li>
+                        <li class="mb-3"><i class="fas fa-check text-secondary me-2"></i>Generate classification reports and ROC curves</li>
+                        <li class="mb-3"><i class="fas fa-check text-secondary me-2"></i>Calculate odds ratios for feature importance</li>
+                        <li class="mb-3"><i class="fas fa-check text-secondary me-2"></i>Make predictions with custom input values</li>
+                    </ul>
+                    <a href="https://github.com/Ezzio11/Statistical-Modeling-Tool" class="btn btn-secondary rounded-pill px-5 py-3 text-white mt-3" target="_blank">
+                        <i class="fab fa-github me-2"></i>View on GitHub
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <img src="{% static 'img/logistic-regression-demo.png' %}" class="img-fluid rounded shadow" alt="Logistic Regression Demo">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Project Description End -->
+
+<!-- Live Demo Section Start -->
+<div class="container-fluid py-5">
+    <div class="container">
+        <div class="text-center mx-auto pb-5" style="max-width: 800px;">
+            <h5 class="text-primary">Interactive Demo</h5>
+            <h1 class="mb-4">Try the Logistic Regression Tool</h1>
+            <p class="mb-5">The application is embedded below. Upload your dataset (CSV, Excel, or text file) and explore the logistic regression analysis capabilities.</p>
+        </div>    
+            <div class="bg-white p-0 rounded shadow vh-100 w-100">
+                <iframe 
+                    src="https://ezzio11-logistic-regression.hf.space" 
+                    width="100%" 
+                    height="100%"
+                    style="border:none; min-height: 90vh;"
+                    sandbox="allow-scripts allow-same-origin allow-forms">
+                </iframe>
+            </div>
+        <div class="mt-5">
+            <div class="alert alert-info">
+                <h4><i class="fas fa-info-circle me-2"></i>How to Use</h4>
+                <ol class="mt-3">
+                    <li class="mb-2">Upload your dataset using the file uploader</li>
+                    <li class="mb-2">Select predictor variables (features)</li>
+                    <li class="mb-2">Choose your binary target variable (must have exactly 2 unique values)</li>
+                    <li class="mb-2">Adjust test/train split percentage if needed</li>
+                    <li class="mb-2">Explore the model results and visualizations</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Live Demo Section End -->
+
+<!-- Technical Details Start -->
+<div class="container-fluid services py-5 mb-5">
+    <div class="container">
+        <div class="text-center mx-auto pb-5" style="max-width: 600px;">
+            <h5 class="text-primary">Technical Implementation</h5>
+            <h1>Under the Hood</h1>
+        </div>
+        <div class="row g-5 services-inner">
+            <div class="col-md-6 col-lg-4">
+                <div class="services-item bg-light">
+                    <div class="p-4 text-center services-content">
+                        <div class="services-content-icon">
+                            <i class="fab fa-python fa-7x mb-4 text-primary"></i>
+                            <h4 class="mb-3">Python Backend</h4>
+                            <p class="mb-4">Built with Python's statistical and machine learning libraries including statsmodels, scikit-learn, pandas, and numpy for robust data analysis.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="services-item bg-light">
+                    <div class="p-4 text-center services-content">
+                        <div class="services-content-icon">
+                            <i class="fas fa-chart-line fa-7x mb-4 text-primary"></i>
+                            <h4 class="mb-3">Streamlit Framework</h4>
+                            <p class="mb-4">Uses Streamlit to create an interactive web interface that makes statistical modeling accessible without requiring coding knowledge.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="services-item bg-light">
+                    <div class="p-4 text-center services-content">
+                        <div class="services-content-icon">
+                            <i class="fas fa-project-diagram fa-7x mb-4 text-primary"></i>
+                            <h4 class="mb-3">Visualizations</h4>
+                            <p class="mb-4">Incorporates Plotly for interactive visualizations including ROC curves, probability distributions, and model diagnostics.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Technical Details End -->
+{% endblock %}
