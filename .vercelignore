@@ -1,0 +1,49 @@
+# Ignore Python cache and virtual environments
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+venv/
+env/
+.venv/
+.env/
+.env.*  # Ignore all environment-specific files
+
+# Ignore IDE/editor stuff
+.vscode/
+.idea/
+*.swp
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore staticfiles if generated locally (optional)
+staticfiles/
+
+# Ignore test and development artifacts
+*.log
+*.bak
+*.tmp
+*.test
+*.coverage
+coverage/
+
+# Ignore unnecessary node/npm stuff (if accidentally present)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Ignore Git files (not needed in Vercel build)
+.git/
+.gitignore
+
+# Ignore Streamlit app folders if coexisting in the repo
+**/streamlit_app/
+**/streamlit/
+
+# Optional: Ignore any markdown/docs not used in production
+README.md
+LICENSE
