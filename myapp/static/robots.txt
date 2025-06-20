@@ -1,0 +1,4 @@
+User-agent: *
+Disallow:
+
+Sitemap: https://ezzio.vercel.app/sitemap.xml
