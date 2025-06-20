@@ -13,9 +13,9 @@ import os
 # Supabase and OpenRouter configurations
 OR_API_KEY = os.getenv("OR_API_KEY")
 OR_API_URL = os.getenv("OR_API_URL")
-MODEL = ost.getenv(MODEL)
-PROJECT_URL = os.getenv(PROJECT_URL)
-DB_API_KEY = os.getenv(DB_API_KEY)
+MODEL = os.getenv("MODEL")
+PROJECT_URL = os.getenv("PROJECT_URL")
+DB_API_KEY = os.getenv("DB_API_KEY")
 
 supabase = create_client(PROJECT_URL, DB_API_KEY)
 
@@ -247,15 +247,15 @@ def chatbot_page():
 def image_generator_page():
     st.title("🎨 Pollinations – Free Multi‑Model Generator")
 
-    # Sidebar settings
+    # All controls inside the sidebar
     with st.sidebar:
-        prompt = st.text_area("🖌️ Prompt", "Mass Effect Citadel scene at dusk", height=100)
+        prompt = st.text_area("🖌️ Prompt", "A futuristic cyberpunk cityscape at night, neon lights reflecting on wet streets, towering skyscrapers with holographic advertisements, flying cars zooming between buildings, a mysterious figure in a high-tech cloak walking through the rain, ultra-detailed 4K cinematic lighting, Blade Runner meets Ghost in the Shell style", height=100)
         model = st.selectbox("⚙️ Model", ["flux", "flux-pro", "flux-cablyai", "turbo"])
         width = st.slider("Width", 512, 1536, 1024, 128)
         height = st.slider("Height", 512, 1536, 1024, 128)
         seed = st.number_input("Seed (optional)", value=42)
 
-        # Generate button
+        # Generate button stays inside the sidebar
         if st.button("✨ Generate Image"):
             if not prompt.strip():
                 st.warning("Enter a prompt first.")
@@ -270,21 +270,40 @@ def image_generator_page():
                         resp = requests.get(url, timeout=60)
                         resp.raise_for_status()
                         img = Image.open(BytesIO(resp.content))
-                        st.image(img, caption=f"{model} – {width}×{height}", use_container_width=True)
-                        st.download_button(
-                            "📥 Download Image",
-                            data=resp.content,
-                            file_name=f"pollinations_{model}.jpg",
-                            mime="image/jpeg"
-                        )
+                        # Display the image in the main area (not sidebar)
+                        st.session_state.generated_image = img
+                        st.session_state.image_model = model
+                        st.session_state.image_width = width
+                        st.session_state.image_height = height
+
                     except Exception as e:
                         st.error(f"❌ Error generating image: {e}")
+
+    # Display generated image in the main area
+    if "generated_image" in st.session_state:
+        st.image(
+            st.session_state.generated_image,
+            caption=f"{st.session_state.image_model} – {st.session_state.image_width}×{st.session_state.image_height}",
+            use_container_width=True
+        )
+        st.download_button(
+            "📥 Download Image",
+            data=convert_image_to_bytes(st.session_state.generated_image),
+            file_name=f"pollinations_{st.session_state.image_model}.jpg",
+            mime="image/jpeg"
+        )
+
+# Helper function to convert PIL Image to bytes
+def convert_image_to_bytes(img):
+    img_byte_arr = BytesIO()
+    img.save(img_byte_arr, format='JPEG')
+    return img_byte_arr.getvalue()
 
 # Main app
 def main():
     st.set_page_config("XANE - AI Assistant", layout="centered")
     
-    # Initialize session ID if not exists
+    # Initialize session ID if not exists (only here, removed from chatbot_page)
     if "xane_id" not in st.session_state:
         st.session_state.xane_id = str(uuid.uuid4())
     
