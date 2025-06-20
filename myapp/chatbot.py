@@ -255,30 +255,30 @@ def image_generator_page():
         height = st.slider("Height", 512, 1536, 1024, 128)
         seed = st.number_input("Seed (optional)", value=42)
 
-    # Generate button
-    if st.button("✨ Generate Image"):
-        if not prompt.strip():
-            st.warning("Enter a prompt first.")
-        else:
-            prompt_enc = quote(prompt.strip())
-            url = (
-                f"https://image.pollinations.ai/prompt/{prompt_enc}"
-                f"?model={model}&width={width}&height={height}&seed={seed}"
-            )
-            with st.spinner("Generating image..."):
-                try:
-                    resp = requests.get(url, timeout=60)
-                    resp.raise_for_status()
-                    img = Image.open(BytesIO(resp.content))
-                    st.image(img, caption=f"{model} – {width}×{height}", use_container_width=True)
-                    st.download_button(
-                        "📥 Download Image",
-                        data=resp.content,
-                        file_name=f"pollinations_{model}.jpg",
-                        mime="image/jpeg"
-                    )
-                except Exception as e:
-                    st.error(f"❌ Error generating image: {e}")
+        # Generate button
+        if st.button("✨ Generate Image"):
+            if not prompt.strip():
+                st.warning("Enter a prompt first.")
+            else:
+                prompt_enc = quote(prompt.strip())
+                url = (
+                    f"https://image.pollinations.ai/prompt/{prompt_enc}"
+                    f"?model={model}&width={width}&height={height}&seed={seed}"
+                )
+                with st.spinner("Generating image..."):
+                    try:
+                        resp = requests.get(url, timeout=60)
+                        resp.raise_for_status()
+                        img = Image.open(BytesIO(resp.content))
+                        st.image(img, caption=f"{model} – {width}×{height}", use_container_width=True)
+                        st.download_button(
+                            "📥 Download Image",
+                            data=resp.content,
+                            file_name=f"pollinations_{model}.jpg",
+                            mime="image/jpeg"
+                        )
+                    except Exception as e:
+                        st.error(f"❌ Error generating image: {e}")
 
 # Main app
 def main():
