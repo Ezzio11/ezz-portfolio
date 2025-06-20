@@ -48,8 +48,8 @@ def home(request):
     return render(request, 'index.html')
 
 def resume_dl(request):
-    file_path = r"F:\college\myproject\myapp\static\docs"
-    return FileResponse(open(file_path, 'rb'), as_attachment=True, filename="Ezz Eldin Ahmed's Resume.pdf")
+    file_path = r"myapp/static/docs/Ezz_Eldin_Ahmed's_Resume.pdf"
+    return FileResponse(open(file_path, 'rb'), as_attachment=True, filename="Ezz_Eldin_Ahmed's_Resume.pdf")
 
 def chatbot(request):
     return render(request, 'chatbot.html')
