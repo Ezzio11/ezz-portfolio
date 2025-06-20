@@ -1,18 +1,27 @@
 {
-  "builds": [
-    {
-      "src": "ezzportfolio/wsgi.py",
-      "use": "@vercel/python"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/static/(.*)",
-      "dest": "/staticfiles/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "ezzportfolio/wsgi.py"
-    }
-  ]
+    "version": 2,
+    "builds": [
+      {
+        "src": "ezzportfolio/wsgi.py",
+        "use": "@vercel/python",
+        "config": {
+          "maxLambdaSize": "15mb",
+          "runtime": "python3.9"
+        }
+      },
+      {
+        "src": "build_files.sh",
+        "use": "@vercel/static-build",
+        "config": {
+          "distDir": "static"
+        }
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "ezzportfolio/wsgi.py"
+      }
+    ],
+    "outputDirectory": "static"
 }
