@@ -7,32 +7,34 @@ import numpy as np
 from urllib.parse import quote
 from PIL import Image
 from io import BytesIO
+import uuid
+import os
 
 # Supabase and OpenRouter configurations
-OR_API_KEY = "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"
-OR_API_URL = "https://openrouter.ai/api/v1/chat/completions"
-MODEL = "deepseek/deepseek-chat-v3-0324:free"
-PROJECT_URL = "https://gefqshdrgozkxdiuligl.supabase.co"
-DB_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlZnFzaGRyZ296a3hkaXVsaWdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM0NjgyNDMsImV4cCI6MjA1OTA0NDI0M30.QJbcNl479A5_tdq8lqNubMQS26fkwcPyk-zvTU0Ffy0"
+OR_API_KEY = os.getenv("OR_API_KEY")
+OR_API_URL = os.getenv("OR_API_URL")
+MODEL = ost.getenv(MODEL)
+PROJECT_URL = os.getenv(PROJECT_URL)
+DB_API_KEY = os.getenv(DB_API_KEY)
 
 supabase = create_client(PROJECT_URL, DB_API_KEY)
 
 portfolio_faq = {
-    "who are you": "I'm X.A.N.E. — Ezz Eldin Ahmed's assistant. He’s a statistics major passionate about data science, automation, and machine learning. He built me using Python, Streamlit, and Django.",
-    "what do you do": "I support users by answering questions about Ezz Eldin’s work, skills, and projects. Think of me as a smart, interactive portfolio guide.",
+    "who are you": "I'm X.A.N.E. — Ezz Eldin Ahmed's assistant. He's a statistics major passionate about data science, automation, and machine learning. He built me using Python, Streamlit, and Django.",
+    "what do you do": "I support users by answering questions about Ezz Eldin's work, skills, and projects. Think of me as a smart, interactive portfolio guide.",
     "skills": "Ezz is skilled in Python, R, SQL, statistical modeling, automation, and full-stack development with Streamlit and Django. He also works with Supabase, Excel, and Figma.",
-    "projects": "His projects include a regression tool, time series forecaster, OCR scanner, AI chatbot (that’s me), and a custom platform replacing many third-party tools.",
+    "projects": "His projects include a regression tool, time series forecaster, OCR scanner, AI chatbot (that's me), and a custom platform replacing many third-party tools.",
     "tools": "He primarily uses Python, Streamlit, Django, and Supabase. He also works with Excel, R, and Figma — and is currently exploring Power BI.",
     "education": "Ezz studies Statistics and Economics at the Faculty of Economics and Political Science — blending theory, data, and real-world application.",
-    "experience": "He’s coordinated a data science scholarship with EMAM, co-founded a research center, and led student-driven tools for learning and analytics.",
+    "experience": "He's coordinated a data science scholarship with EMAM, co-founded a research center, and led student-driven tools for learning and analytics.",
     "favorite project": "His favorite project is this portfolio — a central hub for his tools, chatbot, and regression models, all seamlessly embedded into one platform.",
-    "what does xane stand for": "X.A.N.E. stands for: eXtended Artificial Neural Entity. I’m more than code — I’m a part of his creative process.",
-    "how can i reach him": "You can reach Ezz via LinkedIn or the contact form on this website. He’s always open to opportunities and collaboration.",
+    "what does xane stand for": "X.A.N.E. stands for: eXtended Artificial Neural Entity. I'm more than code — I'm a part of his creative process.",
+    "how can i reach him": "You can reach Ezz via LinkedIn or the contact form on this website. He's always open to opportunities and collaboration.",
     "can i see the source code": "Some projects are public on his GitHub, while others are private or under development. You can ask about a specific project.",
-    "is this chatbot ai-powered": "Yes, partially. I’m built on a rule-based system with optional LLM integration for advanced answers and search tasks.",
-    "what’s special about this site": "Unlike typical portfolios, this site is dynamic — combining tools, models, and a living assistant into one seamless interface.",
+    "is this chatbot ai-powered": "Yes, partially. I'm built on a rule-based system with optional LLM integration for advanced answers and search tasks.",
+    "what's special about this site": "Unlike typical portfolios, this site is dynamic — combining tools, models, and a living assistant into one seamless interface.",
     "why streamlit": "Because it allows rapid, elegant development of interactive apps — perfect for building tools quickly without compromising UX.",
-    "what’s next": "More ML engineering projects, improved explainability using SHAP/SHAPASH, and diving deeper into NLP and generative AI."
+    "what's next": "More ML engineering projects, improved explainability using SHAP/SHAPASH, and diving deeper into NLP and generative AI."
 }
 
 # Common functions
@@ -66,25 +68,26 @@ def save_memory(chat_name, role, content):
     data = {
         "chat_name": chat_name,
         "role": role,
-        "content": content
+        "content": content,
+        "session_id": st.session_state.xane_id  # Add session ID to database records
     }
     supabase.table("chats").insert(data).execute()
 
 def load_memory(chat_name):
     """Loads chat memory for a specific chat."""
-    response = supabase.table("chats").select("*").eq("chat_name", chat_name).execute()
+    response = supabase.table("chats").select("*").eq("chat_name", chat_name).eq("session_id", st.session_state.xane_id).execute()
     return response.data
 
 def load_all_memory():
-    """Loads all chat sessions from the database."""
-    response = supabase.table("chats").select("chat_name").execute()
+    """Loads all chat sessions from the database for this session."""
+    response = supabase.table("chats").select("chat_name").eq("session_id", st.session_state.xane_id).execute()
     chat_names = {row['chat_name'] for row in response.data}
     chats = {name: load_memory(name) for name in chat_names}
     return chats if chats else {"Default": []}
 
 def delete_chat(chat_name):
     """Deletes chat history from the database."""
-    supabase.table("chats").delete().eq("chat_name", chat_name).execute()
+    supabase.table("chats").delete().eq("chat_name", chat_name).eq("session_id", st.session_state.xane_id).execute()
 
 def gradual_display(text, placeholder):
     """Displays text gradually."""
@@ -110,6 +113,10 @@ def chatbot_page():
         st.session_state.chat_sessions[st.session_state.current_chat] = []
         st.session_state.messages = []
         st.rerun()
+
+    # Initialize session ID if not exists
+    if "xane_id" not in st.session_state:
+        st.session_state.xane_id = str(uuid.uuid4())
 
     if "chat_sessions" not in st.session_state:
         st.session_state.chat_sessions = load_all_memory()
@@ -143,17 +150,17 @@ def chatbot_page():
         "Hello, I am XANE, your digital ninja assistant.",
         "Hey, apprentice. Ready to master the art of knowledge?",
         "XANE here. How can I assist you on your quest?",
-        "Welcome, ninja. Let’s crack the code together.",
+        "Welcome, ninja. Let's crack the code together.",
         "Hi there, ready to unleash your inner ninja?",
         "Step into the dojo. Ask anything, learn everything.",
-        "XANE at your service. What’s your mission today?",
+        "XANE at your service. What's your mission today?",
         "Greetings, young ninja. The path to insight awaits.",
         "Hey! Time to sharpen your skills and knowledge.",
         "Hello, ninja-in-training! How can I guide you?",
-        "Welcome back, warrior. Let’s conquer your questions.",
-        "Greetings from the digital dojo. What’s next on your path?",
-        "Hey, warrior! Let’s hack through your toughest problems.",
-        "Welcome, ninja master in the making. What’s your next move?"
+        "Welcome back, warrior. Let's conquer your questions.",
+        "Greetings from the digital dojo. What's next on your path?",
+        "Hey, warrior! Let's hack through your toughest problems.",
+        "Welcome, ninja master in the making. What's your next move?"
     ]
 
     # Pick one randomly
@@ -276,6 +283,10 @@ def image_generator_page():
 # Main app
 def main():
     st.set_page_config("XANE - AI Assistant", layout="centered")
+    
+    # Initialize session ID if not exists
+    if "xane_id" not in st.session_state:
+        st.session_state.xane_id = str(uuid.uuid4())
     
     # Sidebar navigation
     st.sidebar.title("Navigation")
