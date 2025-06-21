@@ -8,6 +8,7 @@
         setupBackToTop();
         setupTestimonialCarousel();
         setupContactForm();
+        setupReadMore(); // New function added here
     });
 
     // Animus Background Initialization
@@ -51,9 +52,9 @@
         
         for (let i = 0; i < particleCount; i++) {
             const particle = document.createElement('div');
-            particle.className = 'animus-particle';
+            particle.className = 'animus-particle clickable-particle';
             
-            // Random properties with larger size range
+            // Random properties
             const size = Math.random() * 6 + 2;
             const posX = Math.random() * 100;
             const posY = Math.random() * 100 + 100;
@@ -69,11 +70,43 @@
             particle.style.animationDuration = `${duration}s`;
             particle.style.animationDelay = `-${delay}s`;
             particle.style.backgroundColor = color;
+            particle.style.cursor = 'pointer';
             
             // Add glow effect to larger particles
             if (size > 4) {
                 particle.style.boxShadow = `0 0 ${size}px ${size/2}px rgba(0, 200, 255, 0.3)`;
             }
+            
+            // Add click event
+            particle.addEventListener('click', function() {
+                // Pulse animation on click
+                this.style.transform = 'scale(1.5)';
+                this.style.transition = 'transform 0.3s ease';
+                
+                // Change color temporarily
+                const originalColor = this.style.backgroundColor;
+                this.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
+                
+                // Create ripple effect
+                const ripple = document.createElement('div');
+                ripple.className = 'particle-ripple';
+                ripple.style.width = `${size * 3}px`;
+                ripple.style.height = `${size * 3}px`;
+                ripple.style.left = `calc(50% - ${size * 1.5}px)`;
+                ripple.style.top = `calc(50% - ${size * 1.5}px)`;
+                this.appendChild(ripple);
+                
+                // Remove ripple after animation
+                setTimeout(() => {
+                    ripple.remove();
+                }, 1000);
+                
+                // Reset after animation
+                setTimeout(() => {
+                    this.style.transform = '';
+                    this.style.backgroundColor = originalColor;
+                }, 300);
+            });
             
             container.appendChild(particle);
         }
@@ -144,7 +177,7 @@
         });
     }
 
-    // Contact form AJAX submission - FIXED VERSION
+    // Contact form AJAX submission
     function setupContactForm() {
         $('form').on('submit', function(e) {
             e.preventDefault();
@@ -162,7 +195,7 @@
                 url: form.attr('action'),
                 data: form.serialize(),
                 headers: {
-                    "X-Requested-With": "XMLHttpRequest",  // Crucial header
+                    "X-Requested-With": "XMLHttpRequest",
                     "X-CSRFToken": $('[name=csrfmiddlewaretoken]').val()
                 },
                 dataType: 'json',
@@ -201,6 +234,22 @@
                 scrollTop: alert.offset().top - 100
             }, 500);
         }
+    }
+
+    // Read More functionality for testimonials
+    function setupReadMore() {
+        $('.read-more-btn').on('click', function() {
+            const $textContainer = $(this).prev('.testimonial-text');
+            const $button = $(this);
+            
+            $textContainer.toggleClass('expanded');
+            
+            if ($textContainer.hasClass('expanded')) {
+                $button.text('Read Less');
+            } else {
+                $button.text('Read More');
+            }
+        });
     }
 
 })(jQuery);
