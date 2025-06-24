@@ -205,19 +205,32 @@
     }
 
     // Read More functionality for testimonials
-    function setupReadMore() {
-        $('.read-more-btn').on('click', function() {
-            const $textContainer = $(this).prev('.testimonial-text');
-            const $button = $(this);
-            
-            $textContainer.toggleClass('expanded');
-            
-            if ($textContainer.hasClass('expanded')) {
-                $button.text('Read Less');
-            } else {
-                $button.text('Read More');
-            }
-        });
-    }
+function setupReadMore() {
+    $('.read-more-btn').on('click', function(e) {
+        e.preventDefault();
+        const $textContainer = $(this).prev('.testimonial-text');
+        const $button = $(this);
+        
+        // Toggle the expanded class
+        $textContainer.toggleClass('expanded');
+        
+        // Check current state and update button text
+        if ($textContainer.hasClass('expanded')) {
+            $button.text('Read Less');
+            // Remove line clamping when expanded
+            $textContainer.css({
+                '-webkit-line-clamp': 'unset',
+                'display': 'block'
+            });
+        } else {
+            $button.text('Read More');
+            // Reapply line clamping when collapsed
+            $textContainer.css({
+                '-webkit-line-clamp': '3',
+                'display': '-webkit-box'
+            });
+        }
+    });
+}
 
 })(jQuery);
