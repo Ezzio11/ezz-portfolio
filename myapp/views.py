@@ -1,18 +1,21 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import FileResponse, JsonResponse, HttpResponse
+from django.http import FileResponse, JsonResponse, HttpResponse, Http404
 from django.core.mail import send_mail
 from django.conf import settings
 from django.views.decorators.http import require_http_methods
-from .models import Article
 import markdown
 from django.utils.safestring import mark_safe
+import os
+from supabase import create_client
 
-# Create your views here.
+# Supabase setup
+SUPABASE_URL = os.environ.get("SUPABASE_URL")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 @require_http_methods(["GET", "POST"])
 def contact_view(request):
     if request.method == 'POST':
-        # Check if it's an AJAX request
         is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
         
         name = request.POST.get('name')
@@ -34,7 +37,7 @@ def contact_view(request):
                     'status': 'success', 
                     'message': 'Your message has been sent successfully!'
                 })
-            return redirect('contact')  # For non-AJAX submissions
+            return redirect('contact')
             
         except Exception as e:
             if is_ajax:
@@ -42,38 +45,37 @@ def contact_view(request):
                     'status': 'error', 
                     'message': 'Failed to send message. Please try again later.'
                 }, status=400)
-            # For non-AJAX submissions, you might want to show an error message
             return render(request, 'contact.html', {'error': str(e)})
     
     return render(request, 'contact.html')
 
 def article_detail(request, slug):
-    article = get_object_or_404(Article, slug=slug, source='mstag')
+    # Fetch a single article from Supabase
+    response = supabase.table("articles").select("*").eq("slug", slug).eq("source", "mstag").single().execute()
 
-    if article.is_markdown:
+    article = response.data
+    if not article:
+        raise Http404("Article not found")
+
+    if article.get("is_markdown", False):
         rendered_content = mark_safe(markdown.markdown(
-            article.content,
+            article["content"],
             extensions=["extra", "toc", "codehilite"],
             output_format="html5"
         ))
     else:
-        rendered_content = article.content
+        rendered_content = article["content"]
 
     return render(request, 'article_detail.html', {
         'article': article,
         'rendered_content': rendered_content,
     })
 
-def home(request):
-    return render(request, 'home.html')
-
-def about(request):
-    return render(request, 'about.html')
-
 def mstag(request):
     try:
-        articles = Article.objects.filter(source="mstag")
-        return HttpResponse(f"Query successful. Found {articles.count()} articles.")
+        response = supabase.table("articles").select("*").eq("source", "mstag").order("date_published", desc=True).execute()
+        articles = response.data
+        return render(request, "mstag.html", {"articles": articles})
     except Exception as e:
         return HttpResponse(f"Query failed: {e}")
 
@@ -81,12 +83,21 @@ def resume_dl(request):
     file_path = r"myapp/static/docs/Ezz_Eldin_Ahmed's_Resume.pdf"
     return FileResponse(open(file_path, 'rb'), as_attachment=True, filename="Ezz_Eldin_Ahmed's_Resume.pdf")
 
+
+# Static Pages
+def home(request):
+    return render(request, 'home.html')
+
+def about(request):
+    return render(request, 'about.html')
+
 def chatbot(request):
     return render(request, 'chatbot.html')
 
 def projects(request):
     return render(request, 'projects.html')
 
+# ML Pages
 def linear_regression(request):
     return render(request, 'linear_regression.html')
 
