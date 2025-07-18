@@ -89,7 +89,7 @@ def article_detail(request, slug):
     if request.method == "POST":
         name = request.POST.get("name", "").strip()
         content = request.POST.get("content", "").strip()
-
+    
         if name and content:
             try:
                 supabase.table("comments").insert([{
@@ -98,7 +98,7 @@ def article_detail(request, slug):
                     "content": content,
                     "created_at": timezone.now().isoformat()
                 }]).execute()
-                return HttpResponse("Comment submitted successfully.")
+                return redirect(request.path_info)
             except Exception as e:
                 logger.error(f"Comment insert failed: {e}")
                 raise
