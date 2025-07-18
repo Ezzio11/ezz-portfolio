@@ -58,13 +58,22 @@
 
                 <!-- Hidden Share Panel -->
                 <div id="share-{{ article.slug }}" class="d-none px-4 py-2 text-center">
-                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri|slice:':-1' }}{% url 'article_detail' slug=article.slug %}" target="_blank" class="btn btn-sm btn-primary me-2">
+                    <!-- Facebook Share -->
+                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri|cut:'/' }}{% url 'article_detail' slug=article.slug %}" 
+                       target="_blank" 
+                       class="btn btn-sm btn-primary me-2">
                         <i class="fab fa-facebook-f"></i>
                     </a>
-                    <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri|slice:':-1' }}{% url 'article_detail' slug=article.slug %}" target="_blank" class="btn btn-sm btn-info me-2">
+                
+                    <!-- Twitter Share -->
+                    <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri|cut:'/' }}{% url 'article_detail' slug=article.slug %}" 
+                       target="_blank" 
+                       class="btn btn-sm btn-info me-2">
                         <i class="fab fa-twitter"></i>
                     </a>
-                    <button class="btn btn-sm btn-dark" onclick="copyLink('{{ request.build_absolute_uri|slice:':-1' }}{% url 'article_detail' slug=article.slug %}')">
+                
+                    <!-- Copy to Clipboard -->
+                    <button class="btn btn-sm btn-dark" onclick="copyLink('{{ request.scheme }}://{{ request.get_host }}{% url 'article_detail' slug=article.slug %}')">
                         <i class="fas fa-link"></i> Copy
                     </button>
                 </div>
