@@ -12,6 +12,7 @@ markdown
 
 # PostgreSQL (remove if using SQLite)
 psycopg2-binary==2.9.9
+supabase
 
 # Env support
 python-dotenv==1.0.1
