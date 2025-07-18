@@ -87,30 +87,21 @@ def article_detail(request, slug):
 
     # --- Handle comment submission ---
     if request.method == "POST":
-    name = request.POST.get("name", "").strip()
-    content = request.POST.get("content", "").strip()
+        name = request.POST.get("name", "").strip()
+        content = request.POST.get("content", "").strip()
 
-    if name and content:
-        comment_data = {
-            "article_id": str(article["id"]),  # <-- force UUID to string
-            "name": name,
-            "content": content,
-            "created_at": timezone.now().isoformat()
-        }
-
-        try:
-            insert_response = supabase.table("comments").insert([comment_data]).execute()
-            if insert_response.error:
-                logger.error(f"Supabase insert error: {insert_response.error}")
-                raise Exception(f"Supabase insert error: {insert_response.error}")
-            else:
+        if name and content:
+            try:
+                supabase.table("comments").insert([{
+                    "article_id": str(article["id"]),
+                    "name": name,
+                    "content": content,
+                    "created_at": timezone.now().isoformat()
+                }]).execute()
                 return redirect(request.path_info)
-        except Exception as e:
-            logger.error(f"Exception inserting comment: {e}")
-            raise
-    else:
-        logger.warning("Invalid comment submission: missing name or content")
-        raise Exception("Missing name or content")
+            except Exception as e:
+                logger.error(f"Comment insert failed: {e}")
+                raise
 
     # --- Fetch comments ---
     try:
