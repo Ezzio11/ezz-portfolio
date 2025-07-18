@@ -130,6 +130,11 @@ body.dark-mode .article-body h4 {
     border-radius: 8px;
 }
 
+body.dark-mode .bg-light {
+    background-color: #2c3e50 !important;
+    color: #f0f0f0;
+}
+
 /*============================
   PDF VIEWER + DOWNLOAD
 ============================*/
@@ -303,73 +308,42 @@ body.dark-mode .pdf-download:hover {
         {{ rendered_content|safe }}
     </div>
     {% endif %}
-
-    <!-- Comments Section -->
-    <div class="comments-section mt-5">
-        <h3>Comments</h3>
-        
-        <!-- Comment Form -->
-        <div class="comment-form mb-4">
-            <form id="comment-form" method="POST" action="{% url 'add_comment' article.id %}">
-                {% csrf_token %}
-                <div class="form-group">
-                    <textarea class="form-control" name="content" rows="3" placeholder="Add your comment..." required></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary mt-2">Post Comment</button>
-            </form>
-        </div>
+  
+    <hr>
+    <div class="container mt-5">
+      <h3 class="mb-4">Comments ({{ comments|length }})</h3>
     
-        <!-- Comments List -->
-        <div class="comments-list">
-            {% for comment in comments %}
-                {% if not comment.parent_id and not comment.is_deleted %}
-                <div class="comment card mb-3" data-comment-id="{{ comment.id }}">
-                    <div class="card-body">
-                        <div class="comment-header d-flex justify-content-between mb-2">
-                            <strong>{{ comment.user_id }}</strong>
-                            <small class="text-muted">{{ comment.created_at }}</small>
-                        </div>
-                        <p class="comment-content mb-2">{{ comment.content }}</p>
-                        
-                        <!-- Reply Form (initially hidden) -->
-                        <div class="reply-form mt-2" style="display: none;">
-                            <form class="reply-form-inner" method="POST" action="{% url 'add_comment' article.id %}">
-                                {% csrf_token %}
-                                <input type="hidden" name="parent_id" value="{{ comment.id }}">
-                                <div class="form-group">
-                                    <textarea class="form-control" name="content" rows="2" placeholder="Write your reply..." required></textarea>
-                                </div>
-                                <button type="submit" class="btn btn-sm btn-outline-primary">Post Reply</button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary cancel-reply">Cancel</button>
-                            </form>
-                        </div>
-                        
-                        <!-- Reply Button -->
-                        <button class="btn btn-sm btn-link reply-btn">Reply</button>
-                        
-                        <!-- Replies -->
-                        <div class="replies mt-3 ml-4">
-                            {% for reply in comments %}
-                                {% if reply.parent_id == comment.id and not reply.is_deleted %}
-                                <div class="reply card mb-2">
-                                    <div class="card-body py-2">
-                                        <div class="comment-header d-flex justify-content-between mb-1">
-                                            <strong>{{ reply.user_id }}</strong>
-                                            <small class="text-muted">{{ reply.created_at }}</small>
-                                        </div>
-                                        <p class="comment-content mb-0">{{ reply.content }}</p>
-                                    </div>
-                                </div>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-                {% endif %}
-            {% empty %}
-                <p>No comments yet. Be the first to comment!</p>
-            {% endfor %}
+      <!-- Comment List -->
+      {% if comments %}
+        <div class="mb-4">
+          {% for comment in comments %}
+            <div class="mb-3 p-3 border rounded shadow-sm bg-light">
+              <strong>{{ comment.name }}</strong>
+              <small class="text-muted d-block">{{ comment.created_at|date:"F j, Y, g:i a" }}</small>
+              <p class="mt-2 mb-0">{{ comment.content }}</p>
+            </div>
+          {% endfor %}
         </div>
+      {% else %}
+        <p class="text-muted">No comments yet. Be the first to share your thoughts!</p>
+      {% endif %}
+    
+      <!-- Comment Form -->
+      <div class="mt-5">
+        <h4>Leave a Comment</h4>
+        <form method="post">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="name" class="form-label">Your Name</label>
+            <input type="text" class="form-control" id="name" name="name" required maxlength="100">
+          </div>
+          <div class="mb-3">
+            <label for="content" class="form-label">Your Comment</label>
+            <textarea class="form-control" id="content" name="content" rows="4" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Submit Comment</button>
+        </form>
+      </div>
     </div>
 </div>
 {% endblock %}
