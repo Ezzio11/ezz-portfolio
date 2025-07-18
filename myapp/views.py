@@ -98,7 +98,7 @@ def article_detail(request, slug):
                     "content": content,
                     "created_at": timezone.now().isoformat()
                 }]).execute()
-                return redirect(request.path_info)
+                return HttpResponse("Comment submitted successfully.")
             except Exception as e:
                 logger.error(f"Comment insert failed: {e}")
                 raise
