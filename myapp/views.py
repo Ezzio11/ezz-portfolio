@@ -89,7 +89,7 @@ def article_detail(request, slug):
     if request.method == "POST":
         name = request.POST.get("name", "").strip()
         content = request.POST.get("content", "").strip()
-    
+
         if name and content:
             try:
                 supabase.table("comments").insert([{
