@@ -37,46 +37,44 @@
 
 <!-- Blog Start -->
 <div class="container-fluid blog py-5 my-5">
-        <div class="row g-5 justify-content-center">
-            {% for article in articles %}
-            <div class="col-lg-6 col-xl-4 wow fadeIn" data-wow-delay=".{{ forloop.counter }}s">
-                <div class="blog-item position-relative bg-light rounded">
-                    <img src="{% static 'img/blog-1.jpg' %}" class="img-fluid w-100 rounded-top" alt="Blog post image">
-                    
-                    <span class="position-absolute px-4 py-3 bg-primary text-white rounded" style="top: -28px; right: 20px;">
-                        {{ article.date_published|date:"d M" }}
-                    </span>
+    <div class="row g-5 justify-content-center">
+        {% for article in articles %}
+        <div class="col-lg-6 col-xl-4 wow fadeIn" data-wow-delay=".{{ forloop.counter }}s">
+            <div class="blog-item position-relative bg-light rounded overflow-hidden shadow-sm">
 
-                    <div class="blog-btn d-flex justify-content-between position-relative px-3" style="margin-top: -75px;">
-                        <a href="{% url 'article_detail' slug=article.slug %}" class="blog-icon btn btn-secondary px-4 rounded-pill my-auto text-white">
-                            Read More
-                        </a>
-                        <div class="blog-btn-icon btn btn-secondary px-3 py-3 rounded-pill position-relative">
-                            <div class="share-toggle">
-                                <p class="text-white px-2 m-0">Share <i class="fa fa-arrow-right ms-2"></i></p>
-                            </div>
-                            <div class="share-buttons position-absolute end-0 bottom-100 mb-2 p-2 bg-white rounded shadow-sm" style="display: none;">
-                                <a href="#" class="btn btn-sm me-1"><i class="fab fa-facebook-f text-primary"></i></a>
-                                <a href="#" class="btn btn-sm me-1"><i class="fab fa-twitter text-info"></i></a>
-                                <a href="#" class="btn btn-sm me-1"><i class="fab fa-instagram text-danger"></i></a>
-                            </div>
-                        </div>
-                    </div>
+                <!-- Article Image (from Supabase or static URL) -->
+                <img src="{{ article.image }}" class="img-fluid w-100 rounded-top" alt="{{ article.title }}">
 
-                    <div class="blog-content text-center position-relative px-3" style="margin-top: -25px;">
-                        <img src="{% static 'img/admin.jpg' %}" class="img-fluid rounded-circle border border-4 border-white mb-3" style="width: 60px; height: 60px;" alt="Author image">
-                        <h5 class="mb-1">By {{ article.author }}</h5>
-                        <span class="text-secondary">{{ article.date_published|date:"d F Y" }}</span>
-                        <p class="py-2 mb-2">
-                            {{ article.description }}
-                        </p>
-                    </div>
+                <!-- Topic Badge -->
+                <span class="position-absolute px-3 py-2 bg-primary text-white rounded" style="top: 10px; left: 10px; font-size: 0.8rem;">
+                    {{ article.source|title }}
+                </span>
+
+                <!-- Date Badge -->
+                <span class="position-absolute px-3 py-2 bg-dark text-white rounded" style="top: 10px; right: 10px; font-size: 0.8rem;">
+                    {{ article.date_published|date:"d M" }}
+                </span>
+
+                <!-- Article Content -->
+                <div class="p-4 text-center">
+                    <img src="{{ article.author_image }}" class="img-fluid rounded-circle border border-4 border-white mb-3" style="width: 60px; height: 60px;" alt="{{ article.author }}">
+                    <h4 class="fw-bold mb-2">{{ article.title }}</h4>
+                    <h6 class="text-muted mb-2">By {{ article.author }}</h6>
+                    <p class="text-secondary mb-3">{{ article.description }}</p>
+                    <a href="{% url 'article_detail' slug=article.slug %}" class="btn btn-outline-primary rounded-pill">Read More</a>
                 </div>
+
+                <!-- Social Share Buttons -->
+                <div class="blog-coment d-flex justify-content-between px-4 py-2 border bg-primary rounded-bottom">
+                    <a href="{% url 'article_detail' slug=article.slug %}" class="text-white"><small><i class="fas fa-share me-2 text-secondary"></i>Share</small></a>
+                    <a href="#comments" class="text-white"><small><i class="fa fa-comments me-2 text-secondary"></i>5 Comments</small></a>
+                </div>
+
             </div>
-            {% empty %}
-            <p class="text-center text-muted">No articles have been posted in MSTAG yet.</p>
-            {% endfor %}
         </div>
+        {% empty %}
+        <p class="text-center text-muted">No articles have been posted in MSTAG yet.</p>
+        {% endfor %}
     </div>
 </div>
 <!-- Blog End -->
