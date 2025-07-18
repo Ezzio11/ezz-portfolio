@@ -44,8 +44,32 @@ def contact_view(request):
     
     return render(request, 'contact.html')
 
+def article_detail(request, slug):
+    article = get_object_or_404(Article, slug=slug, source='mstag')
+
+    if article.is_markdown:
+        rendered_content = mark_safe(markdown.markdown(
+            article.content,
+            extensions=["extra", "toc", "codehilite"],
+            output_format="html5"
+        ))
+    else:
+        rendered_content = article.content
+
+    return render(request, 'article_detail.html', {
+        'article': article,
+        'rendered_content': rendered_content,
+    })
+
 def home(request):
-    return render(request, 'index.html')
+    return render(request, 'home.html')
+
+def about(request):
+    return render(request, 'about.html')
+
+def mstag(request):
+    articles = Article.objects.filter(source='mstag')
+    return render(request, 'mstag.html', {'articles': articles})
 
 def resume_dl(request):
     file_path = r"myapp/static/docs/Ezz_Eldin_Ahmed's_Resume.pdf"
