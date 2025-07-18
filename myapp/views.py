@@ -56,74 +56,76 @@ def contact_view(request):
 logger = logging.getLogger(__name__)
 
 def article_detail(request, slug):
-    # 1. Handle POST FIRST to prevent rendering issues
-    if request.method == "POST":
-        try:
-            name = request.POST.get("name", "").strip()
-            content = request.POST.get("content", "").strip()
-            
-            if not name or not content:
-                return render(request, 'article_detail.html', {
-                    'error': "Both name and content are required",
-                    'submitted_data': request.POST
-                })
-            
-            # 2. Get article FIRST to validate existence
-            article = supabase.table("articles") \
-                .select("*") \
-                .eq("slug", slug) \
-                .eq("source", "mstag") \
-                .single() \
-                .execute().data
-            
-            # 3. EXPLICIT transaction with error handling
-            try:
-                # Force synchronous execution
-                comment_response = supabase.rpc('insert_comment', {
-                    'article_id': str(article["id"]),
-                    'name': name,
-                    'content': content
-                }).execute()
-                
-                # 4. EXPLICIT redirect with cache busting
-                return redirect(f"{request.path}?success=1&t={time.time()}")
-                
-            except Exception as e:
-                logger.exception("Comment submission failed")  # Logs full traceback
-                return render(request, 'article_detail.html', {
-                    'error': f"Database error: {str(e)}",
-                    'submitted_data': request.POST
-                })
-                
-        except Exception as e:
-            logger.exception("Article fetch failed during comment submission")
-            raise Http404("Article not found")
-
-    # 5. Regular GET handling (separate try-block)
+    # --- Fetch article ---
     try:
-        article = supabase.table("articles") \
+        response = supabase.table("articles") \
             .select("*") \
             .eq("slug", slug) \
             .eq("source", "mstag") \
             .single() \
-            .execute().data
-        
-        comments = supabase.table("comments") \
-            .select("*") \
-            .eq("article_id", str(article["id"])) \
-            .order("created_at") \
-            .execute().data
-        
-        return render(request, 'article_detail.html', {
-            'article': article,
-            'comments': comments,
-            'success': request.GET.get('success') == '1',
-            'rendered_content': render_markdown(article) if article.get("is_markdown") else article["content"]
-        })
-        
+            .execute()
     except Exception as e:
-        logger.exception("Article loading failed")
+        logger.error(f"Supabase error fetching article: {e}")
         raise Http404("Article not found")
+
+    article = response.data
+    if not article:
+        raise Http404("Article not found")
+
+    # --- Render Markdown if needed ---
+    if article.get("is_markdown", False):
+        try:
+            rendered_content = mark_safe(markdown.markdown(
+                article["content"],
+                extensions=["extra", "toc", "codehilite"],
+                output_format="html5"
+            ))
+        except Exception as e:
+            logger.error(f"Error rendering markdown: {e}")
+            rendered_content = "<p>Error rendering content.</p>"
+    else:
+        rendered_content = article["content"]
+
+    # --- Handle comment submission ---
+    comment_error = None
+    if request.method == "POST":
+        name = request.POST.get("name", "").strip()
+        content = request.POST.get("content", "").strip()
+
+        if name and content:
+            try:
+                # Use the add_comment function from supabase_comments.py
+                add_comment(
+                    article_id=str(article["id"]),
+                    user_id=name,  # Using name as user_id for simplicity
+                    content=content,
+                    parent_id=None  # No parent comment (top-level)
+                )
+                # Redirect with success flag to prevent resubmission
+                return redirect(f"{request.path}?comment_success=true")
+            except Exception as e:
+                logger.error(f"Comment insert failed: {e}")
+                comment_error = "Failed to save comment. Please try again."
+        else:
+            comment_error = "Both name and content are required."
+
+    # --- Fetch comments using helper function ---
+    try:
+        comments = get_comments(str(article["id"]))  # Ensure string ID
+    except Exception as e:
+        logger.error(f"Error fetching comments: {e}")
+        comments = []
+
+    # --- Prepare context ---
+    context = {
+        'article': article,
+        'rendered_content': rendered_content,
+        'comments': comments,
+        'comment_error': comment_error,
+        'comment_success': request.GET.get('comment_success') == 'true',
+    }
+
+    return render(request, 'article_detail.html', context)
         
 def mstag(request):
     try:
