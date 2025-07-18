@@ -71,11 +71,7 @@ def about(request):
     return render(request, 'about.html')
 
 def mstag(request):
-    try:
-        articles = Article.objects.filter(source='mstag')
-    except Exception as e:
-        return JsonResponse({"error": str(e)})
-
+    articles = Article.objects.filter(source='mstag')
     return render(request, 'mstag.html', {'articles': articles})
 
 def resume_dl(request):
