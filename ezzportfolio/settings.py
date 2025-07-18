@@ -125,6 +125,10 @@ STATICFILES_DIRS = [
     BASE_DIR / 'myapp' / 'static',
 ]
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+
 # Ensure the static files are correctly served in development:
 STATIC_ROOT = BASE_DIR / 'staticfiles'  # This is where collectstatic will place files in production
 
