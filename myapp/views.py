@@ -71,10 +71,7 @@ def about(request):
     return render(request, 'about.html')
 
 def mstag(request):
-    print("Fetching mstag articles...")  # Should appear in logs
-    articles = Article.objects.filter(source='mstag')
-    print(f"Found {articles.count()} articles")
-    return render(request, 'mstag.html', {'articles': articles})
+    return HttpResponse("MSTAG is alive.")
 
 def resume_dl(request):
     file_path = r"myapp/static/docs/Ezz_Eldin_Ahmed's_Resume.pdf"
