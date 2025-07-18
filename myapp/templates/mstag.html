@@ -81,9 +81,7 @@
 
                 <!-- Hidden Share Panel -->
                 <div id="share-{{ article.slug }}" class="d-none px-4 py-2 text-center">
-                
-                    {% comment %} Generate full absolute URL to share {% endcomment %}
-                    {% with full_url=request.scheme|add:'://'|add:request.get_host|add:article.get_absolute_url %}
+                    {% with full_url=request.scheme|add:'://'|add:request.get_host|add: (url 'article_detail' slug=article.slug) %}
                     
                     <!-- Facebook -->
                     <a href="https://www.facebook.com/sharer/sharer.php?u={{ full_url }}" 
@@ -91,21 +89,21 @@
                        class="btn btn-sm btn-primary me-2">
                         <i class="fab fa-facebook-f"></i>
                     </a>
-                
+                    
                     <!-- X (formerly Twitter) -->
                     <a href="https://twitter.com/intent/tweet?url={{ full_url }}" 
                        target="_blank" 
                        class="btn btn-sm btn-dark me-2">
                         <i class="fab fa-x-twitter"></i>
                     </a>
-                
+                    
                     <!-- WhatsApp -->
                     <a href="https://wa.me/?text={{ full_url }}" 
                        target="_blank" 
                        class="btn btn-sm btn-success me-2">
                         <i class="fab fa-whatsapp"></i>
                     </a>
-                
+                    
                     <!-- Telegram -->
                     <a href="https://t.me/share/url?url={{ full_url }}" 
                        target="_blank" 
@@ -120,7 +118,6 @@
                 
                     {% endwith %}
                 </div>
-
 <!-- Blog End -->
 {% endblock %}
 
