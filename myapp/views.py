@@ -7,6 +7,7 @@ import markdown
 from django.utils.safestring import mark_safe
 import os
 from supabase import create_client
+from .comments import get_comments
 
 # Supabase setup
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
@@ -52,11 +53,11 @@ def contact_view(request):
 def article_detail(request, slug):
     # Fetch a single article from Supabase
     response = supabase.table("articles").select("*").eq("slug", slug).eq("source", "mstag").single().execute()
-
     article = response.data
     if not article:
         raise Http404("Article not found")
 
+    # Get the article content
     if article.get("is_markdown", False):
         rendered_content = mark_safe(markdown.markdown(
             article["content"],
@@ -66,9 +67,13 @@ def article_detail(request, slug):
     else:
         rendered_content = article["content"]
 
+    # Fetch comments
+    comments = get_comments(article["id"])
+
     return render(request, 'article_detail.html', {
         'article': article,
         'rendered_content': rendered_content,
+        'comments': comments,
     })
 
 def mstag(request):
