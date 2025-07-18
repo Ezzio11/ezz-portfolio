@@ -130,9 +130,36 @@ body.dark-mode .article-body h4 {
     border-radius: 8px;
 }
 
-body.dark-mode .bg-light {
-    background-color: #2c3e50 !important;
-    color: #f0f0f0;
+.comment-form {
+    background: var(--comment-form-bg, #f8f9fa);
+    padding: 2rem;
+    border-radius: 8px;
+    margin-top: 2rem;
+}
+
+body.dark-mode .comment-form {
+    background: var(--comment-form-dark-bg, #2c3e50);
+}
+
+.comment-form label {
+    color: var(--comment-label, #495057);
+    font-weight: 500;
+}
+
+body.dark-mode .comment-form label {
+    color: var(--comment-label-dark, #d7b085);
+}
+
+.comment-form .form-control {
+    background: var(--comment-input-bg, #fff);
+    border-color: var(--comment-input-border, #ced4da);
+    color: var(--comment-input-text, #495057);
+}
+
+body.dark-mode .comment-form .form-control {
+    background: var(--comment-input-dark-bg, #34495e);
+    border-color: var(--comment-input-dark-border, #4a6278);
+    color: var(--comment-input-dark-text, #f0f0f0);
 }
 
 /*============================
@@ -328,22 +355,31 @@ body.dark-mode .pdf-download:hover {
       {% else %}
         <p class="text-muted">No comments yet. Be the first to share your thoughts!</p>
       {% endif %}
+
+      {% if comment_error %}
+      <div class="alert alert-danger">{{ comment_error }}</div>
+      {% endif %}
+      
+      {% if comment_success %}
+      <div class="alert alert-success">Comment posted successfully!</div>
+      {% endif %}
     
       <!-- Comment Form -->
-      <div class="mt-5">
-        <h4>Leave a Comment</h4>
-        <form method="post">
-          {% csrf_token %}
-          <div class="mb-3">
-            <label for="name" class="form-label">Your Name</label>
-            <input type="text" class="form-control" id="name" name="name" required maxlength="100">
-          </div>
-          <div class="mb-3">
-            <label for="content" class="form-label">Your Comment</label>
-            <textarea class="form-control" id="content" name="content" rows="4" required></textarea>
-          </div>
-          <button type="submit" class="btn btn-primary">Submit Comment</button>
-        </form>
+      <div class="mt-5 comment-form">
+          <h4>Leave a Comment</h4>
+          <form method="post">
+              {% csrf_token %}
+              <div class="mb-3">
+                  <label for="name" class="form-label">Your Name</label>
+                  <input type="text" class="form-control" id="name" name="name" required maxlength="100" 
+                         value="{{ request.POST.name|default:'' }}">
+              </div>
+              <div class="mb-3">
+                  <label for="content" class="form-label">Your Comment</label>
+                  <textarea class="form-control" id="content" name="content" rows="4" required>{{ request.POST.content|default:'' }}</textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Submit Comment</button>
+          </form>
       </div>
     </div>
 </div>
@@ -380,6 +416,13 @@ document.addEventListener("DOMContentLoaded", function () {
             tocToggle.innerText = tocList.classList.contains("hidden") ? "📁" : "📂";
         });
     }
+
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const submitBtn = this.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Posting...';
+    });
+  
 });
 </script>
 
