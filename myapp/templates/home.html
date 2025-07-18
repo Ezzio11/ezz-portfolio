@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ezz Eldin Ahmed | MSTAG</title>
+  <!-- Google Web Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  
+  <!-- Icon Font Stylesheet -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #1a3d51;
+      color: #ffffff;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      position: relative;
+    }
+
+    .background {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(ellipse at center, rgba(215,176,133,0.1), transparent), 
+                 url('https://www.transparenttextures.com/patterns/dark-mosaic.png');
+      z-index: -1;
+      animation: grain 2s infinite linear;
+    }
+
+    @keyframes grain {
+      0% { background-position: 0 0; }
+      100% { background-position: 100% 100%; }
+    }
+
+    h1, h2 {
+      font-family: 'DM Serif Text', serif;
+    }
+
+    h1 {
+      font-size: 3.5rem;
+      color: #d7b085;
+      margin-bottom: 0.5rem;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      font-style: italic;
+      color: rgba(255,255,255,0.8);
+      margin-bottom: 1.5rem;
+    }
+
+    .quote {
+      font-size: 1.1rem;
+      margin: 2rem auto;
+      max-width: 600px;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .buttons {
+      margin-top: 2rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .buttons a {
+      padding: 0.8rem 1.8rem;
+      background-color: #d7b085;
+      color: #1a3d51;
+      text-decoration: none;
+      border-radius: 30px;
+      transition: all 0.3s;
+      font-weight: 600;
+      border: 2px solid transparent;
+    }
+
+    .buttons a:hover {
+      background-color: transparent;
+      color: #d7b085;
+      border-color: #d7b085;
+      transform: translateY(-3px);
+    }
+
+    .curator {
+      position: absolute;
+      top: 1.5rem;
+      left: 2rem;
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .signature {
+      position: absolute;
+      bottom: 1.5rem;
+      font-family: 'DM Serif Text', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: rgba(215,176,133,0.7);
+    }
+
+    /* Animation for entrance */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .content-wrapper {
+      animation: fadeIn 1s ease-out forwards;
+      padding: 2rem;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      h1 { font-size: 2.5rem; }
+      h2 { font-size: 1.2rem; }
+      .quote { font-size: 1rem; max-width: 90%; }
+      .buttons { flex-direction: column; gap: 0.8rem; }
+      .buttons a { width: 100%; max-width: 250px; }
+      .curator { top: 1rem; left: 1rem; }
+    }
+  </style>
+</head>
+<div class="curator">Ezz Eldin Ahmed • Curator & Code Artisan</div>
+<body>
+  <div class="background"></div>
+  <div class="content-wrapper">
+    <h1>Ezz Eldin Ahmed</h1>
+    <h2>More than just a portfolio</h2>
+    <div class="quote">
+      Where projects become stories.<br />
+      Where voices find a home.<br />
+      Where I stop being just "Ezz," and start building something bigger.
+    </div>
+    <div class="buttons">
+        <a href="{% url 'about' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}">Meet the Curator</a>
+        <a href="{% url 'projects' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'projects' %}active{% endif %}">My Projects</a>
+        <a href="{% url 'mstag' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'mstag' %}active{% endif %}">MSTAG (em-es-tag)</a>
+    </div>
+  </div>
+    <div class="signature">With heart, Ezzio</div>
+
+
+  <script>
+    // Future enhancements or intro animation logic can go here
+    console.log("Landing loaded. Ready to resonate.");
+    
+    // Dark mode detection (matches your portfolio functionality)
+    if (localStorage.getItem('darkMode') === 'enabled') {
+      document.body.classList.add('dark-mode');
+    }
+  </script>
+</body>
+</html>
