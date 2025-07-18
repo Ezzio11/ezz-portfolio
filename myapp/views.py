@@ -9,6 +9,7 @@ import os
 from supabase import create_client
 from .comments import get_comments
 from django.utils import timezone
+import logging
 
 # Supabase setup
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
@@ -51,41 +52,71 @@ def contact_view(request):
     
     return render(request, 'contact.html')
 
+logger = logging.getLogger(__name__)
+
 def article_detail(request, slug):
-    # Fetch the article
-    response = supabase.table("articles").select("*").eq("slug", slug).eq("source", "mstag").single().execute()
+    # --- Fetch article ---
+    try:
+        response = supabase.table("articles") \
+            .select("*") \
+            .eq("slug", slug) \
+            .eq("source", "mstag") \
+            .single() \
+            .execute()
+    except Exception as e:
+        logger.error(f"Supabase error fetching article: {e}")
+        raise Http404("Article not found")
+
     article = response.data
     if not article:
         raise Http404("Article not found")
 
-    # Render Markdown if needed
+    # --- Render Markdown if needed ---
     if article.get("is_markdown", False):
-        rendered_content = mark_safe(markdown.markdown(
-            article["content"],
-            extensions=["extra", "toc", "codehilite"],
-            output_format="html5"
-        ))
+        try:
+            rendered_content = mark_safe(markdown.markdown(
+                article["content"],
+                extensions=["extra", "toc", "codehilite"],
+                output_format="html5"
+            ))
+        except Exception as e:
+            logger.error(f"Error rendering markdown: {e}")
+            rendered_content = "<p>Error rendering content.</p>"
     else:
         rendered_content = article["content"]
 
-    # Handle comment submission
+    # --- Handle comment submission ---
     if request.method == "POST":
         name = request.POST.get("name", "").strip()
         content = request.POST.get("content", "").strip()
 
         if name and content:
-            supabase.table("comments").insert([{
+            comment_data = {
                 "article_id": article["id"],
                 "name": name,
                 "content": content,
                 "created_at": timezone.now().isoformat()
-            }]).execute()
+            }
 
-            return redirect(request.path_info)
+            try:
+                insert_response = supabase.table("comments").insert([comment_data]).execute()
+                if insert_response.error:
+                    logger.error(f"Supabase insert error: {insert_response.error}")
+                else:
+                    return redirect(request.path_info)
+            except Exception as e:
+                logger.error(f"Exception inserting comment: {e}")
+        else:
+            logger.warning("Invalid comment submission: missing name or content")
 
-    # Fetch comments
-    comments = get_comments(article["id"])
+    # --- Fetch comments ---
+    try:
+        comments = get_comments(article["id"])
+    except Exception as e:
+        logger.error(f"Error fetching comments: {e}")
+        comments = []
 
+    # --- Render ---
     return render(request, 'article_detail.html', {
         'article': article,
         'rendered_content': rendered_content,
