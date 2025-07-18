@@ -1,8 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import FileResponse, JsonResponse
 from django.core.mail import send_mail
 from django.conf import settings
 from django.views.decorators.http import require_http_methods
+from .models import Article
+import markdown
+from django.utils.safestring import mark_safe
 
 # Create your views here.
 
