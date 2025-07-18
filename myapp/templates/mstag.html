@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Ezz Eldin Ahmed | MSTAG{% endblock %}
+
+{% block extra_head %}
+    <!-- SEO Meta Tags -->
+    <meta name="title" content="Ezz Eldin Ahmed | MSTAG">
+    <meta name="description" content="Custom tools and data-driven projects by Ezz Eldin Ahmed — a statistics major passionate about automation, machine learning, and full-stack development.">
+    <meta name="keywords" content="Ezz Eldin Ahmed, Data Science, Streamlit, Django, Python Developer, Automation, Machine Learning, Statistics, Statistical Modeling">
+    <meta name="author" content="Ezz Eldin Ahmed">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ezzio.vercel.app/">
+    <meta property="og:title" content="Ezz Eldin Ahmed | MSTAG">
+    <meta property="og:description" content="Explore real-world projects, custom-built tools, and end-to-end data apps built by Ezz Eldin Ahmed.">
+    <meta property="og:image" content="https://ezzio.vercel.app/static/img/preview.png">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://ezzio.vercel.app/">
+    <meta name="twitter:title" content="Ezz Eldin Ahmed | MSTAG">
+    <meta name="twitter:description" content="Custom tools and data-driven projects by Ezz Eldin Ahmed — a statistics major passionate about automation, machine learning, and full-stack development.">
+    <meta name="twitter:image" content="https://ezzio.vercel.app/static/img/preview.png">
+{% endblock %}
+
+{% block content %}
+<!-- Page Header Start --> 
+<div class="container-fluid py-5 my-5">
+    <div class="container text-center py-5">
+        <h1 class="display-4 text-primary mb-4">M.S.T.A.G.</h1>
+        <p class="fs-5 text-secondary">Articles and project from brilliant minds that refuse to stay still.</p>
+    </div>
+</div>
+<!-- Page Header End -->
+
+<!-- Blog Start -->
+<div class="container-fluid blog py-5 my-5">
+        <div class="row g-5 justify-content-center">
+            {% for article in articles %}
+            <div class="col-lg-6 col-xl-4 wow fadeIn" data-wow-delay=".{{ forloop.counter }}s">
+                <div class="blog-item position-relative bg-light rounded">
+                    <img src="{% static 'img/blog-1.jpg' %}" class="img-fluid w-100 rounded-top" alt="Blog post image">
+                    
+                    <span class="position-absolute px-4 py-3 bg-primary text-white rounded" style="top: -28px; right: 20px;">
+                        {{ article.date_published|date:"d M" }}
+                    </span>
+
+                    <div class="blog-btn d-flex justify-content-between position-relative px-3" style="margin-top: -75px;">
+                        <a href="{% url 'article_detail' slug=article.slug %}" class="blog-icon btn btn-secondary px-4 rounded-pill my-auto text-white">
+                            Read More
+                        </a>
+                        <div class="blog-btn-icon btn btn-secondary px-3 py-3 rounded-pill position-relative">
+                            <div class="share-toggle">
+                                <p class="text-white px-2 m-0">Share <i class="fa fa-arrow-right ms-2"></i></p>
+                            </div>
+                            <div class="share-buttons position-absolute end-0 bottom-100 mb-2 p-2 bg-white rounded shadow-sm" style="display: none;">
+                                <a href="#" class="btn btn-sm me-1"><i class="fab fa-facebook-f text-primary"></i></a>
+                                <a href="#" class="btn btn-sm me-1"><i class="fab fa-twitter text-info"></i></a>
+                                <a href="#" class="btn btn-sm me-1"><i class="fab fa-instagram text-danger"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="blog-content text-center position-relative px-3" style="margin-top: -25px;">
+                        <img src="{% static 'img/admin.jpg' %}" class="img-fluid rounded-circle border border-4 border-white mb-3" style="width: 60px; height: 60px;" alt="Author image">
+                        <h5 class="mb-1">By {{ article.author }}</h5>
+                        <span class="text-secondary">{{ article.date_published|date:"d F Y" }}</span>
+                        <p class="py-2 mb-2">
+                            {{ article.description }}
+                        </p>
+                    </div>
+
+                    <div class="blog-coment d-flex justify-content-between px-4 py-2 border bg-primary rounded-bottom">
+                        <a href="{% url 'article_detail' slug=article.slug %}" class="text-white"><small><i class="fas fa-share me-2 text-secondary"></i>Share</small></a>
+                        <a href="#comments" class="text-white"><small><i class="fa fa-comments me-2 text-secondary"></i>5 Comments</small></a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-center text-muted">No articles have been posted in MSTAG yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<!-- Blog End -->
+
+{% endblock %}
