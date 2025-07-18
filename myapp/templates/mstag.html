@@ -81,30 +81,31 @@
 
                 <!-- Hidden Share Panel -->
                 <div id="share-{{ article.slug }}" class="d-none px-4 py-2 text-center">
-                    {% with full_url=request.scheme|add:'://'|add:request.get_host|add: (url 'article_detail' slug=article.slug) %}
+                    {% url 'article_detail' slug=article.slug as article_path %}
+                    {% with full_url=request.scheme|add:'://'|add:request.get_host|add:article_path %}
                     
-                    <!-- Facebook -->
+                    <!-- Facebook Share -->
                     <a href="https://www.facebook.com/sharer/sharer.php?u={{ full_url }}" 
                        target="_blank" 
                        class="btn btn-sm btn-primary me-2">
                         <i class="fab fa-facebook-f"></i>
                     </a>
-                    
-                    <!-- X (formerly Twitter) -->
+                
+                    <!-- Twitter Share -->
                     <a href="https://twitter.com/intent/tweet?url={{ full_url }}" 
                        target="_blank" 
-                       class="btn btn-sm btn-dark me-2">
-                        <i class="fab fa-x-twitter"></i>
+                       class="btn btn-sm btn-info me-2">
+                        <i class="fab fa-twitter"></i>
                     </a>
-                    
-                    <!-- WhatsApp -->
+                
+                    <!-- WhatsApp Share -->
                     <a href="https://wa.me/?text={{ full_url }}" 
                        target="_blank" 
                        class="btn btn-sm btn-success me-2">
                         <i class="fab fa-whatsapp"></i>
                     </a>
-                    
-                    <!-- Telegram -->
+                
+                    <!-- Telegram Share -->
                     <a href="https://t.me/share/url?url={{ full_url }}" 
                        target="_blank" 
                        class="btn btn-sm btn-info me-2">
@@ -115,7 +116,7 @@
                     <button class="btn btn-sm btn-dark" onclick="copyLink('{{ full_url }}')">
                         <i class="fas fa-link"></i> Copy
                     </button>
-                
+                    
                     {% endwith %}
                 </div>
 <!-- Blog End -->
