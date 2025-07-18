@@ -86,22 +86,22 @@ def article_detail(request, slug):
     else:
         rendered_content = article["content"]
 
-    # --- Handle comment submission ---
+    # --- Comment logic ---
     comment_error = None
+    comment_success = False
+
     if request.method == "POST":
         name = request.POST.get("name", "").strip()
         content = request.POST.get("content", "").strip()
 
         if name and content:
             try:
-                # Use the add_comment function from supabase_comments.py
                 add_comment(
                     article_id=str(article["id"]),
-                    user_id=name,  # Using name as user_id for simplicity
+                    user_id=name,
                     content=content,
-                    parent_id=None  # No parent comment (top-level)
+                    parent_id=None
                 )
-                # Redirect with success flag to prevent resubmission
                 return redirect(f"{request.path}?comment_success=true")
             except Exception as e:
                 logger.error(f"Comment insert failed: {e}")
@@ -109,24 +109,28 @@ def article_detail(request, slug):
         else:
             comment_error = "Both name and content are required."
 
-    # --- Fetch comments using helper function ---
+    # --- On GET after redirect, read comment_success from URL ---
+    if request.GET.get("comment_success") == "true":
+        comment_success = True
+
+    # --- Fetch comments ---
     try:
-        comments = get_comments(str(article["id"]))  # Ensure string ID
+        comments = get_comments(str(article["id"]))
     except Exception as e:
         logger.error(f"Error fetching comments: {e}")
         comments = []
 
-    # --- Prepare context ---
+    # --- Context ---
     context = {
         'article': article,
         'rendered_content': rendered_content,
         'comments': comments,
         'comment_error': comment_error,
-        'comment_success': request.GET.get('comment_success') == 'true',
+        'comment_success': comment_success,
     }
 
     return render(request, 'article_detail.html', context)
-        
+    
 def mstag(request):
     try:
         response = supabase.table("articles").select("*").eq("source", "mstag").order("date_published", desc=True).execute()
