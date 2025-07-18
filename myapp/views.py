@@ -64,29 +64,14 @@ def article_detail(request, slug):
             .eq("source", "mstag") \
             .single() \
             .execute()
+        article = response.data
+        if not article:
+            raise Http404("Article not found")
     except Exception as e:
         logger.error(f"Supabase error fetching article: {e}")
         raise Http404("Article not found")
 
-    article = response.data
-    if not article:
-        raise Http404("Article not found")
-
-    # --- Render Markdown if needed ---
-    if article.get("is_markdown", False):
-        try:
-            rendered_content = mark_safe(markdown.markdown(
-                article["content"],
-                extensions=["extra", "toc", "codehilite"],
-                output_format="html5"
-            ))
-        except Exception as e:
-            logger.error(f"Error rendering markdown: {e}")
-            rendered_content = "<p>Error rendering content.</p>"
-    else:
-        rendered_content = article["content"]
-
-    # --- Handle comment submission ---
+    # --- Handle comment submission FIRST ---
     comment_error = None
     if request.method == "POST":
         name = request.POST.get("name", "").strip()
@@ -94,38 +79,51 @@ def article_detail(request, slug):
 
         if name and content:
             try:
-                # Use the add_comment function from supabase_comments.py
-                add_comment(
-                    article_id=str(article["id"]),
-                    user_id=name,  # Using name as user_id for simplicity
-                    content=content,
-                    parent_id=None  # No parent comment (top-level)
-                )
-                # Redirect with success flag to prevent resubmission
-                return redirect(f"{request.path}?comment_success=true")
+                supabase.table("comments").insert([{
+                    "article_id": str(article["id"]),
+                    "name": name,  # Using name field
+                    "content": content,
+                    "created_at": timezone.now().isoformat()
+                }]).execute()
+                return redirect(f"{request.path}?comment_success=1")  # Changed to numeric flag
             except Exception as e:
                 logger.error(f"Comment insert failed: {e}")
-                comment_error = "Failed to save comment. Please try again."
+                comment_error = str(e)  # Show actual error
         else:
             comment_error = "Both name and content are required."
 
-    # --- Fetch comments using helper function ---
-    try:
-        comments = get_comments(str(article["id"]))  # Ensure string ID
-    except Exception as e:
-        logger.error(f"Error fetching comments: {e}")
-        comments = []
+    # --- Then fetch content and comments ---
+    rendered_content = render_article_content(article)
+    comments = get_comments_safe(article["id"])
 
-    # --- Prepare context ---
-    context = {
+    return render(request, 'article_detail.html', {
         'article': article,
         'rendered_content': rendered_content,
         'comments': comments,
         'comment_error': comment_error,
-        'comment_success': request.GET.get('comment_success') == 'true',
-    }
+        'comment_success': request.GET.get('comment_success') == '1',  # Check for numeric
+    })
 
-    return render(request, 'article_detail.html', context)
+# Helper functions
+def render_article_content(article):
+    if article.get("is_markdown", False):
+        try:
+            return mark_safe(markdown.markdown(
+                article["content"],
+                extensions=["extra", "toc", "codehilite"],
+                output_format="html5"
+            ))
+        except Exception as e:
+            logger.error(f"Markdown render error: {e}")
+            return "<p>Error rendering content</p>"
+    return article["content"]
+
+def get_comments_safe(article_id):
+    try:
+        return get_comments(str(article_id))
+    except Exception as e:
+        logger.error(f"Comments fetch error: {e}")
+        return []
 
 def mstag(request):
     try:
