@@ -273,12 +273,12 @@ body.dark-mode .pdf-download:hover {
     </div>
     <hr>
 
-    <!-- FEATURED IMAGE -->
-    {% if article.image %}
-    <div class="article-image text-center mb-4">
-        <img src="{{ article.image.url }}" alt="Featured Image" class="img-fluid rounded" style="max-height: 500px;">
-    </div>
-    {% endif %}
+  <!-- FEATURED IMAGE -->
+  {% if article.image %}
+  <div class="article-image text-center mb-4">
+      <img src="{{ article.image }}" alt="Featured Image" class="img-fluid rounded" style="max-height: 500px;">
+  </div>
+  {% endif %}
 
     <div class="floating-toc" id="floating-toc">
         <div class="toc-header">
