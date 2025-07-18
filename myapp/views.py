@@ -9,9 +9,9 @@ import os
 from supabase import create_client
 
 # Supabase setup
-SUPABASE_URL = os.environ.get("SUPABASE_URL")
-SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
-supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+DB_URL = os.environ.get("DB_URL")
+DB_KEY = os.environ.get("DB_KEY")
+supabase = create_client(DB_URL, DB_KEY)
 
 @require_http_methods(["GET", "POST"])
 def contact_view(request):
