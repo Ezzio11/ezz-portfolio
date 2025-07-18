@@ -340,6 +340,23 @@ body.dark-mode .pdf-download:hover {
     <hr>
     <div class="container mt-5">
       <h3 class="mb-4">Comments ({{ comments|length }})</h3>
+
+      <!-- SUCCESS/ERROR MESSAGES -->
+      <div class="comment-alerts">
+        {% if comment_success %}
+        <div class="alert alert-success alert-dismissible fade show mb-4">
+          ✔ Comment posted successfully!
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endif %}
+        
+        {% if comment_error %}
+        <div class="alert alert-danger alert-dismissible fade show mb-4">
+          ⚠ {{ comment_error }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endif %}
+      </div>
     
       <!-- Comment List -->
       {% if comments %}
@@ -354,14 +371,6 @@ body.dark-mode .pdf-download:hover {
         </div>
       {% else %}
         <p class="text-muted">No comments yet. Be the first to share your thoughts!</p>
-      {% endif %}
-
-      {% if comment_error %}
-      <div class="alert alert-danger">{{ comment_error }}</div>
-      {% endif %}
-      
-      {% if comment_success %}
-      <div class="alert alert-success">Comment posted successfully!</div>
       {% endif %}
     
       <!-- Comment Form -->
