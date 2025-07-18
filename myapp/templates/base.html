@@ -35,6 +35,7 @@
     {% endif %}
 
     {% block extra_head %}{% endblock %}
+    {% block extra_js %}{% endblock %}
 </head>
 
 <body>
@@ -51,18 +52,9 @@
                     </button>
                     <div class="collapse navbar-collapse bg-transparent" id="navbarCollapse">
                         <div class="navbar-nav ms-auto mx-xl-auto p-0">
-                            <a href="{% url 'home' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">Home</a>
+                            <a href="{% url 'about' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}">About Ezz (me!)</a>
                             <a href="{% url 'projects' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'projects' %}active{% endif %}">Projects</a>
-                            <a href="{% url 'chatbot' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'chatbot' %}active{% endif %}">XANE</a>
-                            <div class="nav-item dropdown">
-                                <a href="#" class="nav-link dropdown-toggle {% if request.resolver_match.url_name == 'linear_regression' or request.resolver_match.url_name == 'logistic_regression' or request.resolver_match.url_name == 'time_series_analysis' %}active{% endif %}" data-bs-toggle="dropdown">Statistical Modeling Toolkit</a>
-                                <div class="dropdown-menu rounded">
-                                    <a href="{% url 'linear_regression' %}" class="dropdown-item {% if request.resolver_match.url_name == 'linear_regression' %}active{% endif %}">Linear Regression</a>
-                                    <a href="{% url 'logistic_regression' %}" class="dropdown-item {% if request.resolver_match.url_name == 'logistic_regression' %}active{% endif %}">Logistic Regression</a>
-                                    <a href="{% url 'time_series_analysis' %}" class="dropdown-item {% if request.resolver_match.url_name == 'time_series_analysis' %}active{% endif %}">Time Series Analysis</a>
-                                </div>
-                            </div>
-                            <a href="{% url 'contact' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}">Contact</a>
+                            <a href="{% url 'mstag' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'mstag' %}active{% endif %}">MSTAG</a>
                         </div>
                         <div class="d-flex hightech-link mt-1 justify-content-between">
                             <a href="https://www.linkedin.com/in/ezzeldinahmed11/" class="btn-light nav-fill btn btn-square rounded-circle me-2">
@@ -71,11 +63,11 @@
                             <a href="https://github.com/Ezzio11" class="btn-light nav-fill btn btn-square rounded-circle me-2">
                                 <i class="fab fa-github"></i>
                             </a>
+                            <!-- Dark Mode Switcher Button -->
+                            <button id="dark-mode-toggle" class="btn btn-outline-light ms-2">
+                                <i id="dark-mode-icon" class="fas fa-moon"></i>
+                            </button>
                         </div>
-                        <!-- Dark Mode Switcher Button -->
-                        <button id="dark-mode-toggle" class="btn btn-outline-light ms-2">
-                            <i id="dark-mode-icon" class="fas fa-moon"></i>
-                        </button>
                     </div>
                 </nav>
             </div>
