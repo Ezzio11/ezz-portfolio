@@ -71,7 +71,11 @@ def about(request):
     return render(request, 'about.html')
 
 def mstag(request):
-    return HttpResponse("MSTAG is alive.")
+    try:
+        articles = Article.objects.filter(source="mstag")
+        return HttpResponse(f"Query successful. Found {articles.count()} articles.")
+    except Exception as e:
+        return HttpResponse(f"Query failed: {e}")
 
 def resume_dl(request):
     file_path = r"myapp/static/docs/Ezz_Eldin_Ahmed's_Resume.pdf"
