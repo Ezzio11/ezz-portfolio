@@ -342,21 +342,19 @@ body.dark-mode .pdf-download:hover {
       <h3 class="mb-4">Comments ({{ comments|length }})</h3>
 
       <!-- SUCCESS/ERROR MESSAGES -->
-      <div class="comment-alerts">
-        {% if comment_success %}
-        <div class="alert alert-success alert-dismissible fade show mb-4">
-          ✔ Comment posted successfully!
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        {% endif %}
-        
-        {% if comment_error %}
-        <div class="alert alert-danger alert-dismissible fade show mb-4">
-          ⚠ {{ comment_error }}
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        {% endif %}
+      {% if error %}
+      <div class="alert alert-danger alert-dismissible fixed-top mx-5 mt-2">
+          {{ error }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
       </div>
+      {% endif %}
+      
+      {% if success %}
+      <div class="alert alert-success alert-dismissible fixed-top mx-5 mt-2">
+          ✓ Comment posted successfully!
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+      {% endif %}
     
       <!-- Comment List -->
       {% if comments %}
