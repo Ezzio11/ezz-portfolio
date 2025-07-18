@@ -8,6 +8,7 @@ from django.utils.safestring import mark_safe
 import os
 from supabase import create_client
 from .comments import get_comments
+from django.utils import timezone
 
 # Supabase setup
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
@@ -51,13 +52,13 @@ def contact_view(request):
     return render(request, 'contact.html')
 
 def article_detail(request, slug):
-    # Fetch a single article from Supabase
+    # Fetch the article
     response = supabase.table("articles").select("*").eq("slug", slug).eq("source", "mstag").single().execute()
     article = response.data
     if not article:
         raise Http404("Article not found")
 
-    # Get the article content
+    # Render Markdown if needed
     if article.get("is_markdown", False):
         rendered_content = mark_safe(markdown.markdown(
             article["content"],
@@ -66,6 +67,21 @@ def article_detail(request, slug):
         ))
     else:
         rendered_content = article["content"]
+
+    # Handle comment submission
+    if request.method == "POST":
+        name = request.POST.get("name", "").strip()
+        content = request.POST.get("content", "").strip()
+
+        if name and content:
+            supabase.table("comments").insert([{
+                "article_id": article["id"],
+                "name": name,
+                "content": content,
+                "created_at": timezone.now().isoformat()
+            }]).execute()
+
+            return redirect(request.path_info)
 
     # Fetch comments
     comments = get_comments(article["id"])
