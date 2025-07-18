@@ -86,6 +86,7 @@ def article_detail(request, slug):
         rendered_content = article["content"]
 
     # --- Handle comment submission ---
+    comment_error = None
     if request.method == "POST":
         name = request.POST.get("name", "").strip()
         content = request.POST.get("content", "").strip()
@@ -98,11 +99,13 @@ def article_detail(request, slug):
                     "content": content,
                     "created_at": timezone.now().isoformat()
                 }]).execute()
-                # Redirect after successful POST to prevent resubmission and errors
-                return redirect(request.path_info)
+                # Redirect after successful POST to prevent resubmission
+                return redirect(f"{request.path_info}?success=true")
             except Exception as e:
                 logger.error(f"Comment insert failed: {e}")
-                raise
+                comment_error = "Failed to save comment. Please try again."
+        else:
+            comment_error = "Both name and content are required."
 
     # --- Fetch comments ---
     try:
@@ -116,7 +119,10 @@ def article_detail(request, slug):
         'article': article,
         'rendered_content': rendered_content,
         'comments': comments,
+        'comment_error': comment_error,
+        'comment_success': request.GET.get('success') == 'true',
     })
+
 
 def mstag(request):
     try:
