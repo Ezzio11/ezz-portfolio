@@ -303,6 +303,74 @@ body.dark-mode .pdf-download:hover {
         {{ rendered_content|safe }}
     </div>
     {% endif %}
+
+    <!-- Comments Section -->
+    <div class="comments-section mt-5">
+        <h3>Comments</h3>
+        
+        <!-- Comment Form -->
+        <div class="comment-form mb-4">
+            <form id="comment-form" method="POST" action="{% url 'add_comment' article.id %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <textarea class="form-control" name="content" rows="3" placeholder="Add your comment..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary mt-2">Post Comment</button>
+            </form>
+        </div>
+    
+        <!-- Comments List -->
+        <div class="comments-list">
+            {% for comment in comments %}
+                {% if not comment.parent_id and not comment.is_deleted %}
+                <div class="comment card mb-3" data-comment-id="{{ comment.id }}">
+                    <div class="card-body">
+                        <div class="comment-header d-flex justify-content-between mb-2">
+                            <strong>{{ comment.user_id }}</strong>
+                            <small class="text-muted">{{ comment.created_at }}</small>
+                        </div>
+                        <p class="comment-content mb-2">{{ comment.content }}</p>
+                        
+                        <!-- Reply Form (initially hidden) -->
+                        <div class="reply-form mt-2" style="display: none;">
+                            <form class="reply-form-inner" method="POST" action="{% url 'add_comment' article.id %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                                <div class="form-group">
+                                    <textarea class="form-control" name="content" rows="2" placeholder="Write your reply..." required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-sm btn-outline-primary">Post Reply</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary cancel-reply">Cancel</button>
+                            </form>
+                        </div>
+                        
+                        <!-- Reply Button -->
+                        <button class="btn btn-sm btn-link reply-btn">Reply</button>
+                        
+                        <!-- Replies -->
+                        <div class="replies mt-3 ml-4">
+                            {% for reply in comments %}
+                                {% if reply.parent_id == comment.id and not reply.is_deleted %}
+                                <div class="reply card mb-2">
+                                    <div class="card-body py-2">
+                                        <div class="comment-header d-flex justify-content-between mb-1">
+                                            <strong>{{ reply.user_id }}</strong>
+                                            <small class="text-muted">{{ reply.created_at }}</small>
+                                        </div>
+                                        <p class="comment-content mb-0">{{ reply.content }}</p>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            {% empty %}
+                <p>No comments yet. Be the first to comment!</p>
+            {% endfor %}
+        </div>
+    </div>
 </div>
 {% endblock %}
 
