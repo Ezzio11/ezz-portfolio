@@ -71,11 +71,6 @@
                             {{ article.description }}
                         </p>
                     </div>
-
-                    <div class="blog-coment d-flex justify-content-between px-4 py-2 border bg-primary rounded-bottom">
-                        <a href="{% url 'article_detail' slug=article.slug %}" class="text-white"><small><i class="fas fa-share me-2 text-secondary"></i>Share</small></a>
-                        <a href="#comments" class="text-white"><small><i class="fa fa-comments me-2 text-secondary"></i>5 Comments</small></a>
-                    </div>
                 </div>
             </div>
             {% empty %}
