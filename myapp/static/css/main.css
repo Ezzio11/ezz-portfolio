@@ -11,6 +11,12 @@
     --comment-input-bg: #fff;
     --comment-input-border: #ced4da;
     --comment-input-text: #495057;
+    
+    --comment-bg: #f8f9fa;
+    --comment-border: #e9ecef;
+    --comment-text: #495057;
+    --comment-meta: #6c757d;
+    --comment-content-text: #212529;
 }
 
 .dark-mode {
@@ -26,6 +32,12 @@
     --comment-input-bg: #34495e;
     --comment-input-border: #4a6278;
     --comment-input-text: #f0f0f0;
+    
+    --comment-bg: #2c3e50;
+    --comment-border: #34495e;
+    --comment-text: #f8f9fa;
+    --comment-meta: #adb5bd;
+    --comment-content-text: #f8f9fa;
 }
 
 body {
