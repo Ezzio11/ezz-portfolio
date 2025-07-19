@@ -11,6 +11,7 @@ from .comments import get_comments
 from django.utils import timezone
 import logging
 from .comments import get_comments, add_comment
+from uuid import UUID
 
 # Supabase setup
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
@@ -72,6 +73,9 @@ def article_detail(request, slug):
     if not article:
         raise Http404("Article not found")
 
+    # Ensure article_id is string
+    article_id = str(article["id"])
+
     # --- Render Markdown if needed ---
     if article.get("is_markdown", False):
         try:
@@ -81,7 +85,7 @@ def article_detail(request, slug):
                 output_format="html5"
             ))
         except Exception as e:
-            logger.error(f"Error rendering markdown: {e}")
+            logger.error(f"Error rendering markdown for article {article_id}: {e}")
             rendered_content = "<p>Error rendering content.</p>"
     else:
         rendered_content = article["content"]
@@ -97,27 +101,26 @@ def article_detail(request, slug):
         if name and content:
             try:
                 add_comment(
-                    article_id = article["id"],
+                    article_id=article_id,  # UUID as string
                     user_id=name,
                     content=content,
                     parent_id=None
                 )
                 return redirect(f"{request.path}?comment_success=true")
             except Exception as e:
-                logger.error(f"Comment insert failed: {e}")
+                logger.error(f"Comment insert failed for article {article_id}: {e}")
                 comment_error = "Failed to save comment. Please try again."
         else:
             comment_error = "Both name and content are required."
 
-    # --- On GET after redirect, read comment_success from URL ---
     if request.GET.get("comment_success") == "true":
         comment_success = True
 
     # --- Fetch comments ---
     try:
-        comments = get_comments(article["id"])
+        comments = get_comments(article_id)
     except Exception as e:
-        logger.error(f"Error fetching comments: {e}")
+        logger.error(f"Error fetching comments for article {article_id}: {e}")
         comments = []
 
     # --- Context ---
