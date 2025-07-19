@@ -19,7 +19,7 @@ def get_comments(article_id):
 
 
 # Add a new comment (or reply if parent_id is given)
-def add_comment(article_id, user_id, content, parent_id=None, name):
+def add_comment(article_id, user_id, content, name, parent_id=None):
     data = {
         "article_id": str(article_id),
         "user_id": user_id,
@@ -38,7 +38,6 @@ def add_comment(article_id, user_id, content, parent_id=None, name):
         raise Exception(f"Supabase insert failed: {response.error}")
     
     return response.data
-
 
 
 # Edit a comment
