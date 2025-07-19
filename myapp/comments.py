@@ -19,21 +19,26 @@ def get_comments(article_id):
 
 
 # Add a new comment (or reply if parent_id is given)
-def add_comment(article_id, user_id, content, parent_id=None):
+def add_comment(article_id, user_id, content, parent_id=None, name):
     data = {
         "article_id": str(article_id),
         "user_id": user_id,
         "content": content,
         "created_at": datetime.utcnow().isoformat(),
+        "parent_id": parent_id,
         "is_deleted": False,
+        "name": name
     }
-    if parent_id:
-        data["parent_id"] = str(parent_id)  # make sure it's a string UUID
-    
     print("🛠️ Attempting to insert comment:", data)
     response = supabase.table("comments").insert(data).execute()
     print("🔁 Supabase insert response:", response)
+
+    # Raise only if error
+    if response.status_code >= 400 or response.error:
+        raise Exception(f"Supabase insert failed: {response.error}")
+    
     return response.data
+
 
 
 # Edit a comment
