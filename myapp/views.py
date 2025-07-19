@@ -92,12 +92,12 @@ def article_detail(request, slug):
 
     # --- Comment logic ---
     comment_error = None
-    comment_success = False
-
+    comment_success = request.GET.get("comment_success") == "true"
+    
     if request.method == "POST":
         name = request.POST.get("name", "").strip()
         content = request.POST.get("content", "").strip()
-
+    
         if name and content:
             try:
                 add_comment(
@@ -112,6 +112,7 @@ def article_detail(request, slug):
                 comment_error = "Failed to save comment. Please try again."
         else:
             comment_error = "Both name and content are required."
+
 
     if request.GET.get("comment_success") == "true":
         comment_success = True
