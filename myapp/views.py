@@ -97,7 +97,7 @@ def article_detail(request, slug):
         if name and content:
             try:
                 add_comment(
-                    article_id=str(article["id"]),
+                    article_id = article["id"],
                     user_id=name,
                     content=content,
                     parent_id=None
@@ -115,7 +115,7 @@ def article_detail(request, slug):
 
     # --- Fetch comments ---
     try:
-        comments = get_comments(str(article["id"]))
+        comments = get_comments(article["id"])
     except Exception as e:
         logger.error(f"Error fetching comments: {e}")
         comments = []
