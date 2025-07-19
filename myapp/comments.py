@@ -1,4 +1,3 @@
-# supabase_comments.py
 from supabase import create_client
 from datetime import datetime
 import os
@@ -11,18 +10,23 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # Fetch all comments for an article
 def get_comments(article_id):
-    response = supabase.table("comments").select("*").eq("article_id", article_id).order("created_at").execute()
+    article_id = str(article_id)  # Ensure it's a string UUID
+    response = supabase.table("comments") \
+        .select("*") \
+        .eq("article_id", article_id) \
+        .order("created_at") \
+        .execute()
     return response.data
 
 
 # Add a new comment (or reply if parent_id is given)
 def add_comment(article_id, user_id, content, parent_id=None):
     data = {
-        "article_id": article_id,
-        "user_id": user_id,
+        "article_id": str(article_id),
+        "user_id": str(user_id),
         "content": content,
         "created_at": datetime.utcnow().isoformat(),
-        "parent_id": parent_id,
+        "parent_id": str(parent_id) if parent_id else None,
         "is_deleted": False,
     }
     response = supabase.table("comments").insert(data).execute()
@@ -31,17 +35,23 @@ def add_comment(article_id, user_id, content, parent_id=None):
 
 # Edit a comment
 def edit_comment(comment_id, new_content):
-    response = supabase.table("comments").update({
-        "content": new_content,
-        "edited_at": datetime.utcnow().isoformat()
-    }).eq("id", comment_id).execute()
+    response = supabase.table("comments") \
+        .update({
+            "content": new_content,
+            "edited_at": datetime.utcnow().isoformat()
+        }) \
+        .eq("id", str(comment_id)) \
+        .execute()
     return response.data
 
 
 # Soft delete a comment
 def delete_comment(comment_id):
-    response = supabase.table("comments").update({
-        "is_deleted": True,
-        "content": "[deleted]"
-    }).eq("id", comment_id).execute()
+    response = supabase.table("comments") \
+        .update({
+            "is_deleted": True,
+            "content": "[deleted]"
+        }) \
+        .eq("id", str(comment_id)) \
+        .execute()
     return response.data
