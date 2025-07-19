@@ -101,11 +101,13 @@ def article_detail(request, slug):
         if name and content:
             try:
                 add_comment(
-                    article_id=article_id,  # UUID as string
+                    article_id=article_id,
                     user_id=name,
                     content=content,
+                    name=name,
                     parent_id=None
                 )
+
                 return redirect(f"{request.path}?comment_success=true")
             except Exception as e:
                 logger.error(f"Comment insert failed for article {article_id}: {e}")
