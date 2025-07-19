@@ -31,7 +31,7 @@
     <div class="container text-center py-5">
         <h1 class="display-4 mb-4">M.S.T.A.G.</h1>
         <a 
-            class="text-primary d-block mt-2" 
+            class="text-light text-decoration-none d-block mt-2" 
             data-bs-toggle="collapse" 
             href="#mstag-info" 
             role="button" 
@@ -95,7 +95,7 @@
                 
                     <h4 class="fw-bold mb-2">{{ article.title }}</h4>
                     <h6 class="text-muted mb-2">By {{ article.author }}</h6>
-                    <p class="mb-3">{{ article.description }}</p>
+                    <p class="mb-3 text-primary">{{ article.description }}</p>
                     <a href="{% url 'article_detail' slug=article.slug %}" class="btn btn-outline-primary rounded-pill">Read More</a>
                 </div>
 
