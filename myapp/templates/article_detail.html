@@ -16,12 +16,12 @@
         
         {% if article.linkedin_url %}
             <br>
-            🔗 <a href="{{ article.linkedin_url }}" target="_blank">View Author on LinkedIn</a>
+            <a href="{{ article.linkedin_url }}" target="_blank">View Author on LinkedIn</a>
         {% endif %}
 
         {% if article.external_url %}
             <br>
-            📄 <a href="{{ article.external_url }}" target="_blank">Read Full Article on External Site</a>
+            <a href="{{ article.external_url }}" target="_blank">Read Full Article on External Site</a>
         {% endif %}
     </div>
     <hr>
@@ -59,24 +59,25 @@
 </div>
 
 <hr>
-<div class="container mt-5">
-    <h3 class="mb-4">Comments ({{ comments|length }})</h3>
-
+<div id="comments"></div>
+<div class="container mt-5" id="comments-section">
     <!-- SUCCESS/ERROR MESSAGES -->
     {% if comment_error %}
-    <div class="alert alert-danger alert-dismissible fixed-top mx-5 mt-2">
+    <div class="alert alert-danger alert-dismissible fade show">
         {{ comment_error }}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
     {% endif %}
 
     {% if comment_success %}
-    <div class="alert alert-success alert-dismissible fixed-top mx-5 mt-2">
+    <div class="alert alert-success alert-dismissible fade show">
         ✓ Comment posted successfully!
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
-    {% endif %} 
-    
+    {% endif %}
+
+    <h3 class="mb-4">Comments ({{ comments|length }})</h3>
+
     <!-- Comment List -->
     {% if comments %}
         <div class="comment-list mb-4">
@@ -97,21 +98,23 @@
     {% endif %}
     
     <!-- Comment Form -->
-    <div class="mt-5 comment-form">
-        <h4>Leave a Comment</h4>
-        <form method="post">
-            {% csrf_token %}
-            <div class="mb-3">
-                <label for="name" class="form-label">Your Name</label>
-                <input type="text" class="form-control" id="name" name="name" required maxlength="100" 
+    <div class="comment-form-container">
+        <div class="comment-form">
+            <h4>Leave a Comment</h4>
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="name" class="form-label">Your Name</label>
+                    <input type="text" class="form-control" id="name" name="name" required maxlength="100" 
                         value="{{ request.POST.name|default:'' }}">
-            </div>
-            <div class="mb-3">
-                <label for="content" class="form-label">Your Comment</label>
-                <textarea class="form-control" id="content" name="content" rows="4" required>{{ request.POST.content|default:'' }}</textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit Comment</button>
-        </form>
+                </div>
+                <div class="mb-3">
+                    <label for="content" class="form-label">Your Comment</label>
+                    <textarea class="form-control" id="content" name="content" rows="4" required>{{ request.POST.content|default:'' }}</textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit Comment</button>
+            </form>
+        </div>
     </div>
 </div>
 {% endblock %}
