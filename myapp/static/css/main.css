@@ -639,3 +639,13 @@ body.dark-mode .services-item:hover .services-content-icon a {
 .read-more-btn:hover {
     text-decoration: underline;
 }
+
+.mstag-toggle {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease, text-decoration 0.2s ease;
+}
+
+.mstag-toggle:hover {
+    text-decoration: underline;
+}
