@@ -2,6 +2,8 @@
     /* Light mode colors */
     --bs-primary: #1a3d51;
     --bs-secondary: #d7b085;
+    --nav-active-color: #d7b085;
+    --heading-color: #1a3d51; /* Added for consistent headings */
     --article-bg: rgba(255, 255, 255, 0.95);
     --article-text: #333;
     --article-meta: #6c757d;
@@ -23,6 +25,8 @@
     /* Dark mode colors */
     --bs-primary: #d7b085;
     --bs-secondary: #1a3d51;
+    --nav-active-color: #d7b085;
+    --heading-color: #d7b085;
     --article-bg: rgba(26, 61, 81, 0.95);
     --article-text: #f0f0f0;
     --article-meta: #d7b085;
@@ -145,17 +149,34 @@ h1, h2, h3, .hero-title, .section-title {
 }
 
 .navbar .navbar-nav .nav-link {
-    padding: 10px;
+    padding: 10px 15px;
     color: var(--navbar-text-color, var(--bs-white));
     font-size: 18px;
+    font-weight: 500;
     outline: none;
+    transition: all 0.3s ease;
+    position: relative;
 }
 
+/* Active and hover states */
 .navbar .navbar-nav .nav-link:hover,
 .navbar .navbar-nav .nav-link.active {
-    color: var(--navbar-link-hover-color, var(--bs-secondary)) !important;
+    color: var(--nav-active-color) !important;
 }
 
+/* Active link underline effect */
+.navbar .navbar-nav .nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 15px;
+    right: 15px;
+    height: 2px;
+    background-color: var(--nav-active-color);
+    transform: scaleX(1);
+}
+
+/* Dropdown toggle arrow */
 .navbar .dropdown-toggle::after {
     border: none;
     content: "\f107";
@@ -163,8 +184,10 @@ h1, h2, h3, .hero-title, .section-title {
     font-weight: 900;
     vertical-align: middle;
     margin-left: 8px;
+    transition: all 0.3s ease;
 }
 
+/* Dropdown menu animation */
 @media (min-width: 992px) {
     .navbar .nav-item .dropdown-menu {
         display: block;
@@ -172,16 +195,33 @@ h1, h2, h3, .hero-title, .section-title {
         top: 100%;
         transform: rotateX(-75deg);
         transform-origin: 0% 0%;
-        transition: .5s;
+        transition: all 0.3s ease;
         opacity: 0;
+        border: none;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    body.dark-mode .navbar .nav-item .dropdown-menu {
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     }
 }
 
 .navbar .nav-item:hover .dropdown-menu {
     transform: rotateX(0deg);
     visibility: visible;
-    transition: .5s;
     opacity: 1;
+}
+
+/* Dropdown items */
+.navbar .dropdown-item {
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+}
+
+.navbar .dropdown-item:hover,
+.navbar .dropdown-item:focus {
+    background-color: var(--nav-active-color);
+    color: #fff !important;
 }
 /*** Navbar End ***/
 
@@ -241,14 +281,14 @@ h1, h2, h3, .hero-title, .section-title {
     color: var(--bs-white) !important;
 }
 
-/* Dark mode styles */
+/* Dark mode styles - inverted colors */
 body.dark-mode .services .services-item {
-    background-color: var(--bs-primary) !important;
+    background-color: var(--bs-secondary) !important; /* Dark blue background */
     color: var(--bs-white) !important;
     box-shadow: 0 0 60px rgba(0, 0, 0, .5);
 }
 
-/* Dark mode hover effect (primary → white) */
+/* Dark mode hover effect (blue → white) */
 body.dark-mode .services-content::after {
     background: var(--bs-white);
 }
@@ -268,7 +308,7 @@ body.dark-mode .services-item:hover .services-content-icon h4,
 body.dark-mode .services-item:hover .services-content-icon h5,
 body.dark-mode .services-item:hover .services-content-icon span,
 body.dark-mode .services-item:hover .services-content-icon a {
-    color: var(--bs-primary) !important;
+    color: var(--bs-secondary) !important; /* Dark blue text on hover */
 }
 
 /* Ensure text remains visible during transition */
@@ -277,6 +317,7 @@ body.dark-mode .services-item:hover .services-content-icon a {
     z-index: 2;
 }
 /*** Skills End ***/
+
 /*** Project Start ***/
 .project-img {
     position: relative;
@@ -339,28 +380,27 @@ body.dark-mode .services-item:hover .services-content-icon a {
 .project-item:hover .project-img::after {
     opacity: 0;
 }
+
+/* Dark mode override to keep light mode colors in project section */
+.dark-mode {
+    --project-before-bg: #d7b085; /* light mode --bs-secondary */
+    --project-after-bg: #1a3d51;  /* light mode --bs-primary */
+    --project-link-bg: #1a3d51;   /* light mode --bs-primary */
+}
 /*** Project End ***/
 
 /*** Testimonial Start ***/
 .testimonial-item {
-    background: var(--testimonial-bg, #e3f0eb);
-    color: var(--bs-primary) !important;  /* Text color always primary */
+    background: #e3f0eb; /* Fixed light background */
+    color: #1a3d51 !important;  /* Fixed dark blue text */
+    border: 1px solid #d7b085; /* Fixed gold border */
 }
 
 .testimonial-item * {
-    color: var(--bs-primary) !important;  /* All child elements too */
+    color: #1a3d51 !important;  /* Fixed dark blue for all child elements */
 }
 
-body.dark-mode .testimonial-item,
-body.dark-mode .testimonial-item * {
-    color: var(--bs-secondary);
-}
-
-/* Also for .text-primary inside dark mode */
-body.dark-mode .text-primary {
-    color: var(--bs-secondary) !important;
-}
-
+/* Remove dark mode overrides */
 .testimonial-carousel .owl-dots {
     margin-top: 15px;
     display: flex;
@@ -374,14 +414,14 @@ body.dark-mode .text-primary {
     margin: 0 5px;
     width: 15px;
     height: 15px;
-    background: var(--testimonial-dot-bg, #c1dad0);
+    background: #c1dad0; /* Fixed light color */
     border-radius: 15px;
     transition: .5s;
 }
 
 .testimonial-carousel .owl-dot.active {
     width: 30px;
-    background: var(--bs-primary);
+    background: #1a3d51; /* Fixed dark blue */
 }
 
 .testimonial-carousel .owl-item.center {
@@ -394,8 +434,9 @@ body.dark-mode .text-primary {
 }
 
 .testimonial-carousel .owl-item.center .testimonial-item {
-    background: var(--testimonial-center-bg, #FFFFFF) !important;
+    background: #FFFFFF !important; /* Fixed white background */
     box-shadow: 0 0 30px #DDDDDD;
+    border: 2px solid #d7b085; /* Enhanced gold border for center item */
 }
 /*** Testimonial End ***/
 
