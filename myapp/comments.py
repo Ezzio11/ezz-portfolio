@@ -10,10 +10,9 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # Fetch all comments for an article
 def get_comments(article_id):
-    article_id = str(article_id)  # Ensure it's a string UUID
     response = supabase.table("comments") \
         .select("*") \
-        .eq("article_id", article_id) \
+        .eq("article_id", str(article_id)) \
         .order("created_at") \
         .execute()
     return response.data
@@ -22,14 +21,15 @@ def get_comments(article_id):
 # Add a new comment (or reply if parent_id is given)
 def add_comment(article_id, user_id, content, parent_id=None):
     data = {
-        "article_id": str(article_id),
-        "user_id": str(user_id),
+        "article_id": str(article_id), 
+        "user_id": user_id,
         "content": content,
         "created_at": datetime.utcnow().isoformat(),
-        "parent_id": str(parent_id) if parent_id else None,
+        "parent_id": parent_id,
         "is_deleted": False,
     }
     response = supabase.table("comments").insert(data).execute()
+    print("INSERTING:", data)
     return response.data
 
 
