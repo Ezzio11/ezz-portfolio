@@ -147,38 +147,59 @@ body.dark-mode .article-body img {
 }
 
 /*============================
-  COMMENT FORM
+  COMMENT SECTION
 ============================*/
+/* Comment list items */
+.comment-list .comment {
+    background: var(--comment-bg, #f8f9fa);
+    border: 1px solid var(--comment-border, #e9ecef);
+    color: var(--comment-text, #495057);
+    margin-bottom: 1rem;
+    padding: 1.5rem;
+    border-radius: 8px;
+}
+
+body.dark-mode .comment-list .comment {
+    background: var(--comment-dark-bg, #2c3e50);
+    border-color: var(--comment-dark-border, #34495e);
+    color: var(--comment-dark-text, #f8f9fa);
+}
+
+/* Comment metadata */
+.comment-meta {
+    color: var(--comment-meta, #6c757d);
+}
+
+body.dark-mode .comment-meta {
+    color: var(--comment-meta-dark, #adb5bd);
+}
+
+/* Comment text */
+.comment-content {
+    color: var(--comment-text, #212529);
+}
+
+body.dark-mode .comment-content {
+    color: var(--comment-text-dark, #f8f9fa);
+}
+
+/* Comment form adjustments (already in your file but ensure these match) */
 .comment-form {
     background: var(--comment-form-bg, #f8f9fa);
-    padding: 2rem;
-    border-radius: 8px;
-    margin-top: 2rem;
+    color: var(--comment-form-text, #212529);
 }
 
 body.dark-mode .comment-form {
-    background: var(--comment-form-dark-bg, #1e2b37);
+    background: var(--comment-form-dark-bg, #2c3e50);
+    color: var(--comment-form-text-dark, #f8f9fa);
 }
 
 .comment-form label {
     color: var(--comment-label, #495057);
-    font-weight: 500;
 }
 
 body.dark-mode .comment-form label {
     color: var(--comment-label-dark, #adb5bd);
-}
-
-.comment-form .form-control {
-    background: var(--comment-input-bg, #ffffff);
-    border-color: var(--comment-input-border, #ced4da);
-    color: var(--comment-input-text, #495057);
-}
-
-body.dark-mode .comment-form .form-control {
-    background: var(--comment-input-dark-bg, #2c3e50);
-    border-color: var(--comment-input-dark-border, #4a6278);
-    color: var(--comment-input-dark-text, #f8f9fa);
 }
 
 /*============================
