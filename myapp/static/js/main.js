@@ -90,19 +90,19 @@
         if (localStorage.getItem('darkMode') === 'enabled') {
             body.classList.add('dark-mode');
             animusBg.classList.add('dark-mode');
-            homeIcon.classList.replace('fa-moon', 'fa-sun');
+            homeIcon?.classList.replace('fa-moon', 'fa-sun');
         }
-
+    
         // Toggle dark mode
-        document.getElementById('dark-mode-toggle').addEventListener('click', function () {
+        document.getElementById('dark-mode-toggle')?.addEventListener('click', function () {
             body.classList.toggle('dark-mode');
             animusBg.classList.toggle('dark-mode');
             
             if (body.classList.contains('dark-mode')) {
-                homeIcon.classList.replace('fa-moon', 'fa-sun');
+                homeIcon?.classList.replace('fa-moon', 'fa-sun');
                 localStorage.setItem('darkMode', 'enabled');
             } else {
-                homeIcon.classList.replace('fa-sun', 'fa-moon');
+                homeIcon?.classList.replace('fa-sun', 'fa-moon');
                 localStorage.setItem('darkMode', 'disabled');
             }
         });
