@@ -1,3 +1,33 @@
+:root {
+    /* Light mode colors */
+    --bs-primary: #1a3d51;
+    --bs-secondary: #d7b085;
+    --article-bg: rgba(255, 255, 255, 0.95);
+    --article-text: #333;
+    --article-meta: #6c757d;
+    --article-hr: rgba(215, 176, 133, 0.3);
+    --comment-form-bg: #f8f9fa;
+    --comment-label: #495057;
+    --comment-input-bg: #fff;
+    --comment-input-border: #ced4da;
+    --comment-input-text: #495057;
+}
+
+.dark-mode {
+    /* Dark mode colors */
+    --bs-primary: #d7b085;
+    --bs-secondary: #1a3d51;
+    --article-bg: rgba(26, 61, 81, 0.95);
+    --article-text: #f0f0f0;
+    --article-meta: #d7b085;
+    --article-hr: rgba(215, 176, 133, 0.3);
+    --comment-form-bg: #2c3e50;
+    --comment-label: #d7b085;
+    --comment-input-bg: #34495e;
+    --comment-input-border: #4a6278;
+    --comment-input-text: #f0f0f0;
+}
+
 body {
     font-family: 'Montserrat', sans-serif;
     font-weight: 400;
