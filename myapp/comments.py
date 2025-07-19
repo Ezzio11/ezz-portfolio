@@ -3,8 +3,8 @@ from datetime import datetime
 import os
 
 # Supabase setup
-SUPABASE_URL = os.environ.get("SUPABASE_URL")
-SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
+SUPABASE_URL = "https://gefqshdrgozkxdiuligl.supabase.co"
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlZnFzaGRyZ296a3hkaXVsaWdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM0NjgyNDMsImV4cCI6MjA1OTA0NDI0M30.QJbcNl479A5_tdq8lqNubMQS26fkwcPyk-zvTU0Ffy0"
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 
@@ -29,15 +29,18 @@ def add_comment(article_id, user_id, content, name, parent_id=None):
         "is_deleted": False,
         "name": name
     }
-    print("🛠️ Attempting to insert comment:", data)
-    response = supabase.table("comments").insert(data).execute()
-    print("🔁 Supabase insert response:", response)
-
-    # Raise only if error
-    if response.status_code >= 400 or response.error:
-        raise Exception(f"Supabase insert failed: {response.error}")
     
-    return response.data
+    try:
+        response = supabase.table("comments").insert(data).execute()
+        
+        if not response.data:
+            raise Exception("No data returned from Supabase insert")
+            
+        return response.data[0]
+        
+    except Exception as e:
+        logger.error(f"Supabase insert error: {str(e)}")
+        raise Exception("Database operation failed") from e
 
 
 # Edit a comment

@@ -14,8 +14,8 @@ from .comments import get_comments, add_comment
 from uuid import UUID
 
 # Supabase setup
-SUPABASE_URL = os.environ.get("SUPABASE_URL")
-SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
+SUPABASE_URL = "https://gefqshdrgozkxdiuligl.supabase.co"
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlZnFzaGRyZ296a3hkaXVsaWdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM0NjgyNDMsImV4cCI6MjA1OTA0NDI0M30.QJbcNl479A5_tdq8lqNubMQS26fkwcPyk-zvTU0Ffy0"
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 @require_http_methods(["GET", "POST"])
@@ -73,7 +73,6 @@ def article_detail(request, slug):
     if not article:
         raise Http404("Article not found")
 
-    # Ensure article_id is string
     article_id = str(article["id"])
 
     # --- Render Markdown if needed ---
@@ -85,46 +84,63 @@ def article_detail(request, slug):
                 output_format="html5"
             ))
         except Exception as e:
-            logger.error(f"Error rendering markdown for article {article_id}: {e}")
+            logger.error(f"Error rendering markdown: {e}")
             rendered_content = "<p>Error rendering content.</p>"
     else:
         rendered_content = article["content"]
 
-    # --- Comment logic ---
+    # --- Initialize comments ---
+    comments = []
     comment_error = None
     comment_success = request.GET.get("comment_success") == "true"
-    
+
+    # --- Fetch comments ---
+    try:
+        comments = get_comments(article_id)
+    except Exception as e:
+        logger.error(f"Error fetching comments: {e}")
+
+    # --- Handle POST request ---
     if request.method == "POST":
         name = request.POST.get("name", "").strip()
         content = request.POST.get("content", "").strip()
-    
+        
         if name and content:
             try:
-                add_comment(
+                new_comment = add_comment(
                     article_id=article_id,
                     user_id=name,
                     content=content,
                     name=name,
                     parent_id=None
                 )
-
-                return redirect(f"{request.path}?comment_success=true")
+                
+                # For AJAX requests
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return JsonResponse({
+                        'status': 'success',
+                        'message': 'Comment posted successfully!',
+                        'comment': new_comment
+                    })
+                
+                # For regular form submissions
+                return redirect(f"{request.path}?comment_success=true#comments")
+                
             except Exception as e:
-                logger.error(f"Comment insert failed for article {article_id}: {e}")
-                comment_error = "Failed to save comment. Please try again."
+                logger.error(f"Comment error: {e}")
+                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                    return JsonResponse({
+                        'status': 'error',
+                        'message': 'Error saving comment'
+                    }, status=400)
+                return redirect(f"{request.path}?comment_error=true#comments")
         else:
-            comment_error = "Both name and content are required."
-
-
-    if request.GET.get("comment_success") == "true":
-        comment_success = True
-
-    # --- Fetch comments ---
-    try:
-        comments = get_comments(article_id)
-    except Exception as e:
-        logger.error(f"Error fetching comments for article {article_id}: {e}")
-        comments = []
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'status': 'error',
+                    'message': 'Both name and content are required'
+                }, status=400)
+            return redirect(f"{request.path}?comment_error=validation#comments")
 
     # --- Context ---
     context = {
@@ -136,7 +152,7 @@ def article_detail(request, slug):
     }
 
     return render(request, 'article_detail.html', context)
-    
+
 def mstag(request):
     try:
         response = supabase.table("articles").select("*").eq("source", "mstag").order("date_published", desc=True).execute()
