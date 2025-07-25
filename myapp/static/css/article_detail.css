@@ -621,3 +621,52 @@ body.dark-mode[dir="rtl"] .floating-toc li {
         display: none;
     }
 }
+
+/*============================
+  ARTICLE LIST GRID LAYOUT
+============================*/
+.article-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Each article card */
+.article-item {
+    background: var(--article-bg, #ffffff);
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    transition: transform 0.2s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.article-item:hover {
+    transform: translateY(-5px);
+}
+
+/* Content inside the card */
+.article-item h2 {
+    font-size: 1.3rem;
+    margin: 1rem;
+    color: var(--bs-primary, #2c3e50);
+    font-family: 'DM Serif Text', serif;
+}
+
+.article-item p {
+    margin: 0 1rem 1rem;
+    font-size: 0.95rem;
+    color: #555;
+    flex-grow: 1;
+}
+
+/* Add some image support */
+.article-item img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
