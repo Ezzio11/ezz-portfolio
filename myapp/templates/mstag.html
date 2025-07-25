@@ -30,128 +30,105 @@
 <div class="container-fluid py-5 my-5">
     <div class="container text-center py-5">
         <h1 class="display-4 mb-4">M.S.T.A.G.</h1>
-        <a 
-            class="mstag-toggle d-block mt-2" 
-            data-bs-toggle="collapse" 
-            href="#mstag-info" 
-            role="button" 
-            aria-expanded="false" 
-            aria-controls="mstag-info"
-        >
-            <small><i class="fas fa-info-circle me-1"></i> What’s MSTAG?</small>
-        </a>
-        <div class="collapse mt-3" id="mstag-info">
-            <div class="alert alert-light border rounded shadow-sm text-start">
-                <p class="mb-0">
-                    <strong>MSTAG</strong> is an invitation. <br><br>
-                    Not to a brand. Not to a movement.  
-                    But to a space that honors one thing: <strong>interesting work</strong>.
-                    <br><br>
-                    Essays, games, tools, experiments, football, politics, tech, or something stranger.  
-                    If it sparks curiosity, if it refuses to sit still, if it <em>matters</em> to the one who made it —  
-                    it belongs here.
-                    <br><br>
-                    This is where half-finished ideas find oxygen.  
-                    Where passion beats polish.  
-                    Where you build something wild, and we say, <em>“Yes, show us.”</em>
-                    <br><br>
-                    <strong>MSTAG</strong> is for those who think too much, feel too deeply, and make without permission.  
-                    And it’s only just getting started.
-                </p>
-            </div>
-        </div>
-        <p class="fs-5">Articles and projects from brilliant minds that refuse to stay still</p>
+        <p class="fs-5">Articles and projects from brilliant minds that refuse to stay still.</p>
     </div>
 </div>
 <!-- Page Header End -->
 
 <!-- Blog Start -->
-<div class="container-fluid blog py-5 my-5">
-    <div class="row g-5 justify-content-center">
+<div class="container py-4">
+    <div class="row g-4 justify-content-center">
         {% for article in articles %}
-        <div class="col-lg-6 col-xl-4 wow fadeIn" data-wow-delay=".{{ forloop.counter }}s">
-            <div class="blog-item position-relative bg-light rounded overflow-hidden shadow-sm">
-
+        <div class="col-sm-6 col-lg-4 col-xl-3 d-flex">
+            <div class="blog-item bg-light rounded shadow-sm w-100 d-flex flex-column transition hover-shadow overflow-hidden">
+                
                 <!-- Article Image -->
-                <img src="{{ article.image }}" class="img-fluid w-100 rounded-top" alt="{{ article.title }}">
+                <div class="position-relative">
+                    <img src="{{ article.image }}" loading="{% if forloop.counter <= 2 %}eager{% else %}lazy{% endif %}" 
+                         class="img-fluid w-100 rounded-top" 
+                         style="height: 180px; object-fit: cover;" 
+                         alt="{{ article.title }}">
 
-                <!-- Topic Badge -->
-                <span class="position-absolute px-3 py-2 bg-primary text-white rounded" style="top: 10px; left: 10px; font-size: 0.8rem;">
-                    {{ article.topic|title }}
-                </span>
-
-                <!-- Date Badge -->
-                <span class="position-absolute px-3 py-2 bg-dark text-white rounded" style="top: 10px; right: 10px; font-size: 0.8rem;">
-                    {{ article.date_published|date:"d M" }}
-                </span>
+                    <!-- Topic -->
+                    <span class="position-absolute top-0 start-0 m-2 px-2 py-1 bg-primary text-white rounded small">
+                        {{ article.topic|title }}
+                    </span>
+                    <!-- Date -->
+                    <span class="position-absolute top-0 end-0 m-2 px-2 py-1 bg-dark text-white rounded small">
+                        {{ article.date_published|date:"d M" }}
+                    </span>
+                </div>
 
                 <!-- Content -->
-                <div class="p-4 text-center">
-                
-                    <!-- Author Image (Clean Circle, No Squeeze) -->
-                    <div style="width: 120px; height: 120px; overflow: hidden; border-radius: 50%; margin: 0 auto;" class="mb-3 border border-4 border-white">
-                        <img src="{{ article.author_image }}" alt="{{ article.author }}" style="width: 100%; height: 100%; object-fit: cover;">
+                <div class="p-3 text-center flex-grow-1 d-flex flex-column">
+                    <!-- Author -->
+                    <div class="mx-auto mb-3 border border-4 border-white rounded-circle overflow-hidden" 
+                         style="width: 80px; height: 80px;">
+                        <img src="{{ article.author_image|default:'/static/img/default-author.jpg' }}" 
+                             alt="{{ article.author|default:'Unknown' }}" 
+                             style="width: 100%; height: 100%; object-fit: cover;">
                     </div>
-                
-                    <h4 class="fw-bold mb-2">{{ article.title }}</h4>
-                    <h6 class="text-muted mb-2">By {{ article.author }}</h6>
-                    <p class="mb-3 text-primary">{{ article.description }}</p>
-                    <a href="{% url 'article_detail' slug=article.slug %}" class="btn btn-outline-primary rounded-pill">Read More</a>
+
+                    <!-- Title & Desc -->
+                    <h5 class="fw-bold mb-1">{{ article.title }}</h5>
+                    <p class="text-muted mb-2 small">By {{ article.author }}</p>
+                    <p class="text-secondary small flex-grow-1">{{ article.description }}</p>
+
+                    <!-- CTA -->
+                    <a href="{% url 'article_detail' slug=article.slug %}" 
+                       class="btn btn-sm btn-outline-primary rounded-pill mt-3">Read More</a>
                 </div>
 
-                <!-- Share + Comment -->
-                <div class="blog-coment d-flex justify-content-between px-4 py-2 border bg-primary rounded-bottom">
+                <!-- Footer -->
+                <div class="d-flex justify-content-between px-3 py-2 border-top bg-primary text-white small">
                     <a href="#" class="text-white" onclick="toggleShare('{{ article.slug }}'); return false;">
-                        <small><i class="fas fa-share me-2 text-secondary"></i>Share</small>
+                        <i class="fas fa-share me-1 text-secondary"></i> Share
                     </a>
                     <a href="{% url 'article_detail' slug=article.slug %}#comments" class="text-white">
-                        <small><i class="fa fa-comments me-2 text-secondary"></i>Comments</small>
+                        <i class="fa fa-comments me-1 text-secondary"></i> Comments
                     </a>
                 </div>
 
-                <!-- Hidden Share Panel -->
-                <div id="share-{{ article.slug }}" class="d-none px-4 py-2 text-center">
+                <!-- Share Panel -->
+                <div id="share-{{ article.slug }}" class="d-none px-3 py-2 text-center border-top">
                     {% url 'article_detail' slug=article.slug as article_path %}
                     {% with full_url=request.scheme|add:'://'|add:request.get_host|add:article_path %}
-                    
-                    <!-- Facebook Share -->
-                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ full_url }}" 
-                       target="_blank" 
-                       class="btn btn-sm btn-primary me-2">
+                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ full_url }}" target="_blank" class="btn btn-sm btn-primary me-1">
                         <i class="fab fa-facebook-f"></i>
                     </a>
-                
-                    <!-- Twitter Share -->
-                    <a href="https://twitter.com/intent/tweet?url={{ full_url }}" 
-                       target="_blank" 
-                       class="btn btn-sm btn-info me-2">
+                    <a href="https://twitter.com/intent/tweet?url={{ full_url }}" target="_blank" class="btn btn-sm btn-info me-1">
                         <i class="fab fa-twitter"></i>
                     </a>
-                
-                    <!-- WhatsApp Share -->
-                    <a href="https://wa.me/?text={{ full_url }}" 
-                       target="_blank" 
-                       class="btn btn-sm btn-success me-2">
+                    <a href="https://wa.me/?text={{ full_url }}" target="_blank" class="btn btn-sm btn-success me-1">
                         <i class="fab fa-whatsapp"></i>
                     </a>
-                
-                    <!-- Telegram Share -->
-                    <a href="https://t.me/share/url?url={{ full_url }}" 
-                       target="_blank" 
-                       class="btn btn-sm btn-info me-2">
+                    <a href="https://t.me/share/url?url={{ full_url }}" target="_blank" class="btn btn-sm btn-info me-1">
                         <i class="fab fa-telegram-plane"></i>
                     </a>
-                
-                    <!-- Copy to Clipboard -->
                     <button class="btn btn-sm btn-dark" onclick="copyLink('{{ full_url }}')">
                         <i class="fas fa-link"></i> Copy
                     </button>
-                    
                     {% endwith %}
                 </div>
-            {% endfor %}
-        </div> 
-    </div> 
+
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Optional: Pagination -->
+    {% if page_obj.has_other_pages %}
+    <div class="pagination justify-content-center mt-5">
+        {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-outline-secondary btn-sm me-2">← Prev</a>
+        {% endif %}
+        <span class="btn btn-secondary btn-sm disabled">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="btn btn-outline-secondary btn-sm ms-2">Next →</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
 <!-- Blog End -->
 {% endblock %}
 
