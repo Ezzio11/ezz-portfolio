@@ -69,6 +69,34 @@
 <!-- Blog Start -->
 <div class="container py-4">
     <div class="row g-4 justify-content-center">
+
+        <!-- Static card (custom article) -->
+        <div class="col-sm-6 col-lg-4 col-xl-3 d-flex">
+          <div class="blog-item bg-light rounded shadow-sm w-100 d-flex flex-column transition hover-shadow overflow-hidden">
+            <div class="position-relative">
+              <img src="/static/img/polymath-cover.jpg" class="img-fluid w-100 rounded-top" style="height: 180px; object-fit: cover;" alt="The Decline of the Polymath">
+              <span class="position-absolute top-0 start-0 m-2 px-2 py-1 bg-primary text-white rounded small">
+                Intellectual History
+              </span>
+              <span class="position-absolute top-0 end-0 m-2 px-2 py-1 bg-dark text-white rounded small">
+              </span>
+            </div>
+
+            <div class="p-3 text-center flex-grow-1 d-flex flex-column">
+              <div class="mx-auto mb-3 border border-4 border-white rounded-circle overflow-hidden" style="width: 80px; height: 80px;">
+                <img src="/static/img/admin.jpg" alt="Ezz Eldin Ahmed" style="width: 100%; height: 100%; object-fit: cover;">
+              </div>
+              <h5 class="fw-bold mb-1">The Decline of the Polymath</h5>
+              <p class="text-muted mb-2 small">By Ezz Eldin Ahmed</p>
+              <p class="text-secondary small flex-grow-1">
+                A deep, data-driven, and visual journey into the lost art of universal knowledge, exploring how society moved from Renaissance thinkers to modern-day specialization, and why it matters today.
+              </p>
+              <a href="/decline-of-the-polymath/" class="btn btn-sm btn-outline-primary rounded-pill mt-3">Read More</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic cards from database -->
         {% for article in articles %}
         <div class="col-sm-6 col-lg-4 col-xl-3 d-flex">
             <div class="blog-item bg-light rounded shadow-sm w-100 d-flex flex-column transition hover-shadow overflow-hidden">
@@ -160,34 +188,8 @@
     </div>
     {% endif %}
 </div>
-
-<div class="col-sm-6 col-lg-4 col-xl-3 d-flex">
-  <div class="blog-item bg-light rounded shadow-sm w-100 d-flex flex-column transition hover-shadow overflow-hidden">
-    <div class="position-relative">
-      <img src="/static/img/polymath-cover.jpg" class="img-fluid w-100 rounded-top" style="height: 180px; object-fit: cover;" alt="The Decline of the Polymath">
-      <span class="position-absolute top-0 start-0 m-2 px-2 py-1 bg-primary text-white rounded small">
-        Intellectual History
-      </span>
-      <span class="position-absolute top-0 end-0 m-2 px-2 py-1 bg-dark text-white rounded small">
-        28 Jul
-      </span>
-    </div>
-
-    <div class="p-3 text-center flex-grow-1 d-flex flex-column">
-      <div class="mx-auto mb-3 border border-4 border-white rounded-circle overflow-hidden" style="width: 80px; height: 80px;">
-        <img src="/static/img/admin.jpg" alt="Ezz Eldin Ahmed" style="width: 100%; height: 100%; object-fit: cover;">
-      </div>
-      <h5 class="fw-bold mb-1">The Decline of the Polymath</h5>
-      <p class="text-muted mb-2 small">By Ezz Eldin Ahmed</p>
-      <p class="text-secondary small flex-grow-1">
-        A deep, data-driven, and visual journey into the lost art of universal knowledge, exploring how society moved from Renaissance thinkers to modern-day specialization, and why it matters today.
-      </p>
-      <a href="/decline-of-the-polymath/" class="btn btn-sm btn-outline-primary rounded-pill mt-3">Read More</a>
-    </div>
-  </div>
-</div>
 <!-- Blog End -->
-{% endblock %}
+{% endbloack %}
 
 {% block extra_js %}
 <script>
