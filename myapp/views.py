@@ -179,6 +179,9 @@ def chatbot(request):
 def projects(request):
     return render(request, 'projects.html')
 
+def polymath_decline(request):
+    return render(request, 'polymath-decline.html')
+
 # ML Pages
 def linear_regression(request):
     return render(request, 'linear_regression.html')
