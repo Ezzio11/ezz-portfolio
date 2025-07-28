@@ -32,6 +32,6 @@ urlpatterns = [
     path('linear_regression/', views.linear_regression, name='linear_regression'),
     path('logistic_regression/', views.logistic_regression, name='logistic_regression'),
     path('time_series_analysis/', views.time_series_analysis, name='time_series_analysis'),
-    path('mstag/polymath-decline/', views.polymath-decline, name='polymath-decline'),
+    path('mstag/polymath_decline/', views.polymath_decline, name='polymath_decline'),
     path('mstag/<slug:slug>/', views.article_detail, name='article_detail'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
