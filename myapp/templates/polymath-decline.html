@@ -1407,7 +1407,7 @@
                 localStorage.setItem('lang', lang);
 
                 // Fetch translation file
-                const response = await fetch(`i18n/${lang}.json`);
+                const response = await fetch(`/static/i18n/${lang}.json`);
                 const translations = await response.json();
 
                 // Apply translations
