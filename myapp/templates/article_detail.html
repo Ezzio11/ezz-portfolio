@@ -52,9 +52,14 @@
 
     <!-- INLINE MARKDOWN/HTML CONTENT WITH IMAGES -->
     {% else %}
-    <div lang="ar" dir="rtl" class="article-body">
-        {{ rendered_content|safe }}
-    </div>
+    {% if article.slug == "the-decline-of-the-polymath" %}
+        {# Include your custom standalone HTML file #}
+        {% include "polymath-decline.html" %}
+    {% else %}
+        <div lang="ar" dir="rtl" class="article-body">
+            {{ rendered_content|safe }}
+        </div>
+    {% endif %}
     {% endif %}
 </div>
 
