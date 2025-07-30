@@ -180,18 +180,21 @@ def projects(request):
     return render(request, 'projects.html')
 
 def decline_of_polymath(request):
-    supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
-    data = (
+    supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+    # Fetch polymaths ordered by sort_order
+    response = (
         supabase
         .table("polymaths")
         .select("*")
-        .eq("lang", "en")
         .order("sort_order")
         .execute()
     )
 
+    polymaths = response.data
+
     return render(request, "polymath-decline.html", {
-        "polymaths": data.data
+        "polymaths": polymaths
     })
 
 # ML Pages
