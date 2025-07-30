@@ -412,7 +412,16 @@
                 <div class="flex space-x-8 pb-8 overflow-x-auto scrollbar-hide polymath-scroller scroll-smooth">
                     {% for p in polymaths %}
                     <button class="timeline-img-btn polymath-card flex-shrink-0 w-80 bg-white/90 p-6 rounded-lg shadow-lg border border-deepbrown/10"
-                        data-src="{{ p.image_url }}">
+                        data-src="{{ p.image_url }}"
+                        data-name-en="{{ p.name_en }}"
+                        data-name-ar="{{ p.name_ar }}"
+                        data-fields-en="{{ p.fields_en }}"
+                        data-fields-ar="{{ p.fields_ar }}"
+                        data-quote-en="{{ p.quote_en }}"
+                        data-quote-ar="{{ p.quote_ar }}"
+                        data-description-en="{{ p.description_en }}"
+                        data-description-ar="{{ p.description_ar }}">
+                        
                         <div class="h-48 mb-4 bg-parchment flex items-center justify-center overflow-hidden rounded">
                             <img src="{{ p.image_url }}" alt="{{ p.name_en }}" class="h-full object-cover" loading="lazy">
                         </div>
