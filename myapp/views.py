@@ -179,9 +179,9 @@ def chatbot(request):
 def projects(request):
     return render(request, 'projects.html')
 
-def fetch_polymaths():
-    """Fetch all polymaths from Supabase (all columns)."""
-    return (
+def fetch_polymaths(lang="en"):
+    """Fetch polymaths and return only fields for the given language."""
+    rows = (
         supabase
         .table("polymaths")
         .select("*")
@@ -190,21 +190,31 @@ def fetch_polymaths():
         .data
     )
 
+    # Normalize columns
+    data = []
+    for row in rows:
+        data.append({
+            "id": row["id"],
+            "name": row[f"name_{lang}"],
+            "fields": row[f"fields_{lang}"],
+            "quote": row[f"quote_{lang}"],
+            "description": row[f"description_{lang}"],
+            "image_url": row["image_url"],
+            "sort_order": row["sort_order"],
+        })
+    return data
 
 def decline_of_polymath(request):
-    # Fetch all polymaths (we'll pick en or ar on the frontend)
-    polymaths = fetch_polymaths()
+    # Default English for SSR
+    polymaths = fetch_polymaths(lang="en")
     return render(request, "polymath-decline.html", {
         "polymaths": polymaths
     })
 
-
 def polymaths_api(request):
-    """
-    API endpoint that returns all polymaths, frontend chooses which language
-    fields to use.
-    """
-    return JsonResponse(fetch_polymaths(), safe=False)
+    lang = request.GET.get("lang", "en")
+    return JsonResponse(fetch_polymaths(lang), safe=False)
+
 
 
 # ML Pages
