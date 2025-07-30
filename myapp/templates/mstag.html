@@ -70,54 +70,29 @@
 <div class="container py-4">
     <div class="row g-4 justify-content-center">
 
-        <!-- Static card (custom article) -->
-        <div class="col-sm-6 col-lg-4 col-xl-3 d-flex">
-          <div class="blog-item bg-light rounded shadow-sm w-100 d-flex flex-column transition hover-shadow overflow-hidden">
-            <div class="position-relative">
-              <img src="/static/img/polymath-cover.jpg" class="img-fluid w-100 rounded-top" style="height: 180px; object-fit: cover;" alt="The Decline of the Polymath">
-              <span class="position-absolute top-0 start-0 m-2 px-2 py-1 bg-primary text-white rounded small">
-                Intellectual History
-              </span>
-              <span class="position-absolute top-0 end-0 m-2 px-2 py-1 bg-dark text-white rounded small">
-              </span>
-            </div>
-
-            <div class="p-3 text-center flex-grow-1 d-flex flex-column">
-              <div class="mx-auto mb-3 border border-4 border-white rounded-circle overflow-hidden" style="width: 80px; height: 80px;">
-                <img src="/static/img/admin.jpg" alt="Ezz Eldin Ahmed" style="width: 100%; height: 100%; object-fit: cover;">
-              </div>
-              <h5 class="fw-bold mb-1">The Decline of the Polymath</h5>
-              <p class="text-muted mb-2 small">By Ezz Eldin Ahmed</p>
-              <p class="text-secondary small flex-grow-1">
-                A deep, data-driven, and visual journey into the lost art of universal knowledge, exploring how society moved from Renaissance thinkers to modern-day specialization, and why it matters today.
-              </p>
-                <a href="{% url 'decline_of_polymath' %}"  
-                   class="btn btn-sm btn-outline-primary rounded-pill mt-3">
-                   Read More
-                </a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Dynamic cards from database -->
+        <!-- Dynamic cards from database - Polymath first -->
         {% for article in articles %}
         <div class="col-sm-6 col-lg-4 col-xl-3 d-flex">
             <div class="blog-item bg-light rounded shadow-sm w-100 d-flex flex-column transition hover-shadow overflow-hidden">
                 
                 <!-- Article Image -->
                 <div class="position-relative">
-                    <img src="{{ article.image }}" loading="{% if forloop.counter <= 2 %}eager{% else %}lazy{% endif %}" 
+                    <img src="{{ article.image|default:'/static/img/polymath-cover.jpg' }}" 
+                         loading="{% if forloop.counter <= 2 %}eager{% else %}lazy{% endif %}" 
                          class="img-fluid w-100 rounded-top" 
                          style="height: 180px; object-fit: cover;" 
-                         alt="{{ article.title }}">
+                         alt="{{ article.title|default:'The Decline of the Polymath' }}">
 
                     <!-- Topic -->
                     <span class="position-absolute top-0 start-0 m-2 px-2 py-1 bg-primary text-white rounded small">
-                        {{ article.topic|title }}
+                        {{ article.topic|default:"Intellectual History"|title }}
                     </span>
+                    
                     <!-- Date -->
                     <span class="position-absolute top-0 end-0 m-2 px-2 py-1 bg-dark text-white rounded small">
-                        {{ article.date_published|date:"d M" }}
+                        {% if article.date_published %}
+                            {{ article.date_published|date:"d M" }}
+                        {% endif %}
                     </span>
                 </div>
 
@@ -126,22 +101,27 @@
                     <!-- Author -->
                     <div class="mx-auto mb-3 border border-4 border-white rounded-circle overflow-hidden" 
                          style="width: 80px; height: 80px;">
-                        <img src="{{ article.author_image|default:'/static/img/default-author.jpg' }}" 
-                             alt="{{ article.author|default:'Unknown' }}" 
+                        <img src="{{ article.author_image|default:'/static/img/admin.jpg' }}" 
+                             alt="{{ article.author|default:'Ezz Eldin Ahmed' }}" 
                              style="width: 100%; height: 100%; object-fit: cover;">
                     </div>
 
                     <!-- Title & Desc -->
-                    <h5 class="fw-bold mb-1">{{ article.title }}</h5>
-                    <p class="text-muted mb-2 small">By {{ article.author }}</p>
-                    <p class="text-secondary small flex-grow-1">{{ article.description }}</p>
+                    <h5 class="fw-bold mb-1">{{ article.title|default:"The Decline of the Polymath" }}</h5>
+                    <p class="text-muted mb-2 small">By {{ article.author|default:"Ezz Eldin Ahmed" }}</p>
+                    <p class="text-secondary small flex-grow-1">
+                        {{ article.description|default:"A deep, data-driven, and visual journey into the lost art of universal knowledge, exploring how society moved from Renaissance thinkers to modern-day specialization, and why it matters today." }}
+                    </p>
 
                     <!-- CTA -->
-                    <a href="{% url 'article_detail' slug=article.slug %}" 
-                       class="btn btn-sm btn-outline-primary rounded-pill mt-3">Read More</a>
+                    <a href="{% if article.is_custom %}{% url 'decline_of_polymath' %}{% else %}{% url 'article_detail' slug=article.slug %}{% endif %}" 
+                       class="btn btn-sm btn-outline-primary rounded-pill mt-3">
+                       Read More
+                    </a>
                 </div>
 
-                <!-- Footer -->
+                <!-- Footer (only for non-custom articles) -->
+                {% if not article.is_custom %}
                 <div class="d-flex justify-content-between px-3 py-2 border-top bg-primary text-white small">
                     <a href="#" class="text-white" onclick="toggleShare('{{ article.slug }}'); return false;">
                         <i class="fas fa-share me-1 text-secondary"></i> Share
@@ -172,7 +152,7 @@
                     </button>
                     {% endwith %}
                 </div>
-
+                {% endif %}
             </div>
         </div>
         {% endfor %}
