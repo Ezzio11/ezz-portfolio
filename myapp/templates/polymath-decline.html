@@ -1468,19 +1468,45 @@
               if (leftBtn) leftBtn.addEventListener('click', () => scrollTo('left'));
               if (rightBtn) rightBtn.addEventListener('click', () => scrollTo('right'));
               
-              // Touch/swipe support
+              // Make container focusable
+              container.setAttribute('tabindex', '0');
+              
+              // Keyboard navigation
+              document.addEventListener('keydown', (e) => {
+                if (e.target === document.body || e.target === container) {
+                  if (e.key === 'ArrowLeft') {
+                    scrollTo('left');
+                    e.preventDefault();
+                  } else if (e.key === 'ArrowRight') {
+                    scrollTo('right');
+                    e.preventDefault();
+                  }
+                }
+              });
+            
+              // Improved touch/swipe support
               let touchStartX = 0;
+              let touchStartTime = 0;
+              const swipeThreshold = 50;
+              const maxSwipeTime = 300;
+            
               container.addEventListener('touchstart', (e) => {
                 touchStartX = e.touches[0].clientX;
+                touchStartTime = Date.now();
               }, { passive: true });
-              
+            
               container.addEventListener('touchend', (e) => {
                 const touchEndX = e.changedTouches[0].clientX;
-                const threshold = 50;
-                if (touchStartX - touchEndX > threshold) {
-                  scrollTo('right');
-                } else if (touchEndX - touchStartX > threshold) {
-                  scrollTo('left');
+                const touchEndTime = Date.now();
+                const distance = touchStartX - touchEndX;
+                const time = touchEndTime - touchStartTime;
+                
+                if (Math.abs(distance) > swipeThreshold && time < maxSwipeTime) {
+                  if (distance > 0) {
+                    scrollTo('right');
+                  } else {
+                    scrollTo('left');
+                  }
                 }
               }, { passive: true });
             }
