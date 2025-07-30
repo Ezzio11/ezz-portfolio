@@ -190,17 +190,17 @@ def fetch_polymaths(lang="en"):
         .data
     )
 
-    # Normalize columns
+    # Normalize columns - USE .get() WITH DEFAULTS
     data = []
     for row in rows:
         data.append({
-            "id": row["id"],
-            "name": row[f"name_{lang}"],
-            "fields": row[f"fields_{lang}"],
-            "quote": row[f"quote_{lang}"],
-            "description": row[f"description_{lang}"],
-            "image_url": row["image_url"],
-            "sort_order": row["sort_order"],
+            "id": row.get("id"),
+            "name": row.get(f"name_{lang}", ""),
+            "fields": row.get(f"fields_{lang}", ""),
+            "quote": row.get(f"quote_{lang}", ""),
+            "description": row.get(f"description_{lang}", ""),
+            "image_url": row.get("image_url", ""),
+            "sort_order": row.get("sort_order", 0), 
         })
     return data
 
