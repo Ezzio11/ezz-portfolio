@@ -114,7 +114,7 @@
                     </p>
 
                     <!-- CTA -->
-                    <a href="{% if article.is_custom %}{% url 'decline_of_polymath' %}{% else %}{% url 'article_detail' slug=article.slug %}{% endif %}" 
+                    <a href="{% if article.is_custom %}{{ article.custom_url }}{% else %}{% url 'article_detail' slug=article.slug %}{% endif %}" 
                        class="btn btn-sm btn-outline-primary rounded-pill mt-3">
                        Read More
                     </a>
