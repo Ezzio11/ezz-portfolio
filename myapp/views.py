@@ -197,6 +197,21 @@ def decline_of_polymath(request):
         "polymaths": polymaths
     })
 
+def polymaths_api(request):
+    lang = request.GET.get("lang", "en")
+
+    supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+    data = (
+        supabase
+        .table("polymaths")
+        .select("*")
+        .eq("lang", lang)
+        .order("sort_order")
+        .execute()
+    )
+
+    return JsonResponse(data.data, safe=False)
+
 # ML Pages
 def linear_regression(request):
     return render(request, 'linear_regression.html')
