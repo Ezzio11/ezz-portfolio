@@ -257,6 +257,33 @@
             left: 1rem;
             right: auto;
         }
+        
+        /* Carousel arrow styling */
+        .scroll-left, .scroll-right,
+        .gallery-left, .gallery-right {
+          opacity: 0;
+          transform: scale(0.9);
+          transition: all 0.3s ease;
+        }
+        
+        .polymath-scroller:hover ~ .scroll-left,
+        .polymath-scroller:hover ~ .scroll-right,
+        .scroll-left:hover, .scroll-right:hover,
+        .gallery-scroller:hover ~ .gallery-left,
+        .gallery-scroller:hover ~ .gallery-right,
+        .gallery-left:hover, .gallery-right:hover {
+          opacity: 1;
+          transform: scale(1);
+        }
+        
+        /* Always show on touch devices */
+        @media (pointer: coarse) {
+          .scroll-left, .scroll-right,
+          .gallery-left, .gallery-right {
+            opacity: 1;
+            background: rgba(245, 240, 230, 0.9);
+          }
+        }
     </style>
 </head>
 <body class="bg-inkwell text-deepbrown font-montserrat leading-relaxed">
@@ -1422,16 +1449,9 @@
             });
                 
             // ===== CAROUSEL FUNCTION =====
-            function setupAutoScroller(containerSelector, leftSelector, rightSelector) {
-              const container = document.querySelector(containerSelector);
-              const leftBtn = document.querySelector(leftSelector);
-              const rightBtn = document.querySelector(rightSelector);
-            
+            function setupCarousel(container, leftBtn, rightBtn, scrollAmount = 320) {
               if (!container) return;
-            
-              // Set a fixed scroll amount based on your card width + gap
-              const scrollAmount = 320; // Adjust this based on your card width + gap
-            
+              
               const scrollTo = (direction) => {
                 const currentScroll = container.scrollLeft;
                 const newScroll = direction === 'left' 
@@ -1443,54 +1463,26 @@
                   behavior: 'smooth'
                 });
               };
-            
-              // Add click handlers if buttons exist
-              if (leftBtn) {
-                leftBtn.addEventListener('click', () => scrollTo('left'));
-              }
               
-              if (rightBtn) {
-                rightBtn.addEventListener('click', () => scrollTo('right'));
-              }
-            
+              // Add click handlers
+              if (leftBtn) leftBtn.addEventListener('click', () => scrollTo('left'));
+              if (rightBtn) rightBtn.addEventListener('click', () => scrollTo('right'));
+              
               // Touch/swipe support
               let touchStartX = 0;
-              let touchEndX = 0;
-            
               container.addEventListener('touchstart', (e) => {
-                touchStartX = e.changedTouches[0].screenX;
+                touchStartX = e.touches[0].clientX;
               }, { passive: true });
-            
+              
               container.addEventListener('touchend', (e) => {
-                touchEndX = e.changedTouches[0].screenX;
-                handleSwipe();
-              }, { passive: true });
-            
-              const handleSwipe = () => {
+                const touchEndX = e.changedTouches[0].clientX;
                 const threshold = 50;
                 if (touchStartX - touchEndX > threshold) {
                   scrollTo('right');
                 } else if (touchEndX - touchStartX > threshold) {
                   scrollTo('left');
                 }
-              };
-            
-              // Auto-scroll
-              let interval;
-              const startAutoScroll = () => {
-                interval = setInterval(() => {
-                  const isAtEnd = container.scrollLeft + container.clientWidth >= container.scrollWidth - 1;
-                  scrollTo(isAtEnd ? 'left' : 'right');
-                }, 5000);
-              };
-            
-              const pauseAutoScroll = () => clearInterval(interval);
-              
-              container.addEventListener('mouseenter', pauseAutoScroll);
-              container.addEventListener('mouseleave', startAutoScroll);
-              container.addEventListener('touchstart', pauseAutoScroll);
-            
-              startAutoScroll();
+              }, { passive: true });
             }
     
             // ===== INITIALIZATION =====
@@ -1525,9 +1517,18 @@
             setupLanguageButton('lang-ar', 'ar');
     
             // Initialize carousels
-            setupAutoScroller('.polymath-scroller', '.scroll-left', '.scroll-right');
-            setupAutoScroller('.gallery-scroller', '.gallery-left', '.gallery-right');
-    
+            setupCarousel(
+              document.querySelector('.polymath-scroller'),
+              document.querySelector('.scroll-left'),
+              document.querySelector('.scroll-right')
+            );
+            
+            setupCarousel(
+              document.querySelector('.gallery-scroller'),
+              document.querySelector('.gallery-left'),
+              document.querySelector('.gallery-right')
+            );
+            
             // Initial load
             const initialLang = localStorage.getItem('lang') || 'en';
             i18n.setLanguage(initialLang);
