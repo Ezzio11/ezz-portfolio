@@ -410,7 +410,6 @@
                 </button>
     
                 <div class="flex space-x-8 pb-8 overflow-x-auto scrollbar-hide polymath-scroller scroll-smooth">
-    
                     {% for p in polymaths %}
                     <button class="timeline-img-btn polymath-card flex-shrink-0 w-80 bg-white/90 p-6 rounded-lg shadow-lg border border-deepbrown/10"
                         data-src="{{ p.image_url }}">
@@ -426,8 +425,7 @@
                             {{ p.description_en }}
                         </p>
                     </button>
-                    {% endfor %}
-    
+                    {% endfor %}    
                 </div>
             </div>
         </div>
@@ -1254,8 +1252,8 @@
             // Save preference
             localStorage.setItem('lang', lang);
     
-            // Fetch polymaths dynamically
-            const response = await fetch(`/api/polymaths/?lang=${lang}`);
+            // Fetch polymaths (always returns both en/ar columns)
+            const response = await fetch(`/api/polymaths/`);
             const polymaths = await response.json();
     
             // Replace polymath cards dynamically
@@ -1263,25 +1261,31 @@
             container.innerHTML = ''; // clear old cards
     
             polymaths.forEach(pm => {
+                // Choose fields based on language
+                const name = lang === "ar" ? pm.name_ar : pm.name_en;
+                const fields = lang === "ar" ? pm.fields_ar : pm.fields_en;
+                const quote = lang === "ar" ? pm.quote_ar : pm.quote_en;
+                const description = lang === "ar" ? pm.description_ar : pm.description_en;
+    
                 const card = document.createElement('button');
                 card.className = "timeline-img-btn polymath-card flex-shrink-0 w-80 bg-white/90 p-6 rounded-lg shadow-lg border border-deepbrown/10";
                 card.setAttribute('data-src', pm.image_url);
     
                 card.innerHTML = `
                     <div class="h-48 mb-4 bg-parchment flex items-center justify-center overflow-hidden rounded">
-                        <img src="${pm.image_url}" alt="${pm.name}" class="h-full object-cover" loading="lazy">
+                        <img src="${pm.image_url}" alt="${name}" class="h-full object-cover" loading="lazy">
                     </div>
-                    <h3 class="font-garamond text-2xl text-oxblood mb-2">${pm.name}</h3>
-                    <p class="text-sm text-deepbrown/70 mb-3">${pm.fields}</p>
+                    <h3 class="font-garamond text-2xl text-oxblood mb-2">${name}</h3>
+                    <p class="text-sm text-deepbrown/70 mb-3">${fields}</p>
                     <div class="blockquote-plaque text-sm">
-                        <p class="text-deepbrown/80">${pm.quote}</p>
+                        <p class="text-deepbrown/80">${quote}</p>
                     </div>
-                    <p class="text-xs text-deepbrown/60">${pm.description}</p>
+                    <p class="text-xs text-deepbrown/60">${description}</p>
                 `;
                 container.appendChild(card);
             });
     
-            // RTL/LTR
+            // RTL/LTR direction toggle
             if (lang === "ar") {
                 document.documentElement.dir = "rtl";
                 document.body.classList.add("rtl");
@@ -1291,7 +1295,7 @@
             }
         }
     
-        // Event listeners
+        // Event listeners for language buttons
         document.getElementById("lang-en").addEventListener("click", () => loadLanguage("en"));
         document.getElementById("lang-ar").addEventListener("click", () => loadLanguage("ar"));
     
