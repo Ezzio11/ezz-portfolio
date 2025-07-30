@@ -155,24 +155,18 @@ def article_detail(request, slug):
 
 def mstag(request):
     try:
-        # Fetch regular AND custom articles in one query
+        # Get both regular and custom articles in one query
         response = supabase.table("articles") \
                    .select("*") \
-                   .or_("and(source.eq.mstag,is_custom.is.false)",  # Regular articles
-                        "is_custom.is.true") \  # Custom articles
+                   # Regular articles: source=mstag AND is_custom=False
+                   # Custom articles: is_custom=True
+                   .or_("and(source.eq.mstag,is_custom.is.false)", 
+                        "is_custom.is.true") \
                    .order("date_published", desc=True) \
                    .execute()
         
-        # Separate processing if needed
-        processed_articles = []
-        for article in response.data:
-            if article['is_custom']:
-                article['custom_template'] = f"custom/{article['custom_template_path']}"
-            processed_articles.append(article)
-        
-        return render(request, "mstag.html", {
-            "articles": processed_articles
-        })
+        articles = response.data
+        return render(request, "mstag.html", {"articles": articles})
         
     except Exception as e:
         return HttpResponse(f"Query failed: {e}")
