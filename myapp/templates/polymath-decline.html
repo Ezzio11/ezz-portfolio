@@ -384,17 +384,17 @@
         <div class="max-w-7xl mx-auto fade-in">
             <div class="flex items-center mb-12">
                 <span class="font-garamond text-4xl text-oldgold mr-4">★</span>
-                <h2 data-i18n="hall.title" class="font-garamond text-3xl md:text-4xl text-oxblood border-b border-oldgold/30 pb-2">
+                <h2 class="font-garamond text-3xl md:text-4xl text-oxblood border-b border-oldgold/30 pb-2">
                     Hall of Fame: The Great Polymaths
                 </h2>
             </div>
-
+    
             <div class="pl-6 mb-10">
-                <p data-i18n="hall.subtitle" class="mb-6 text-lg">
+                <p class="mb-6 text-lg">
                     Step into the gallery of extraordinary minds who wove knowledge across disciplines, creating tapestries of innovation that still inspire today.
                 </p>
             </div>
-
+    
             <!-- Horizontal Scroll Container -->
             <div class="relative pl-6">
                 <!-- Carousel buttons -->
@@ -408,189 +408,25 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
                 </button>
-
+    
                 <div class="flex space-x-8 pb-8 overflow-x-auto scrollbar-hide polymath-scroller scroll-smooth">
-
-                    <!-- Imhotep -->
+                    {% for pm in polymaths %}
                     <button class="timeline-img-btn polymath-card flex-shrink-0 w-80 bg-white/90 p-6 rounded-lg shadow-lg border border-deepbrown/10"
-                        data-src="https://images.metmuseum.org/CRDImages/eg/original/DP240479.jpg">
+                            data-src="{{ pm.image_url }}">
                         <div class="h-48 mb-4 bg-parchment flex items-center justify-center overflow-hidden rounded">
-                            <img src="https://images.metmuseum.org/CRDImages/eg/original/DP240479.jpg" alt="Imhotep" class="h-full object-cover" loading="lazy">
+                            <img src="{{ pm.image_url }}" alt="{{ pm.name }}" class="h-full object-cover" loading="lazy">
                         </div>
-                        <h3 class="font-garamond text-2xl text-oxblood mb-2">Imhotep</h3>
-                        <p class="text-sm text-deepbrown/70 mb-3">Architect • Engineer • Physician • Priest</p>
+                        <h3 class="font-garamond text-2xl text-oxblood mb-2">{{ pm.name }}</h3>
+                        <p class="text-sm text-deepbrown/70 mb-3">{{ pm.fields }}</p>
                         <div class="blockquote-plaque text-sm">
-                            <p class="text-deepbrown/80">
-                                Legacy: Often considered history's first recorded polymath. Revered as Egypt's first architect and healer, builder of the Step Pyramid and pioneer of ancient medicine.
-                            </p>
+                            <p class="text-deepbrown/80">{{ pm.quote }}</p>
                         </div>
+                        <p class="text-xs text-deepbrown/60">{{ pm.desc }}</p>
                     </button>
-
-                    <!-- Hypatia -->
-                    <button class="timeline-img-btn polymath-card flex-shrink-0 w-80 bg-white/90 p-6 rounded-lg shadow-lg border border-deepbrown/10"
-                        data-src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhwfi-pd7KVG4WSKNx8zQYMCiAHT7L4GNUglsj3X70f23FbezOlM2mlNdCFr2Z1gSYVfoBQmlBfLjY64TttguaiIzGp2RnfOv1OlxtHc8FgnTa3JbnIUCYG4KhjBvmke-w5bzScAwO5q634/s320/hypatia_portrait_large.jpg">
-                        <div class="h-48 mb-4 bg-parchment flex items-center justify-center overflow-hidden rounded">
-                            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhwfi-pd7KVG4WSKNx8zQYMCiAHT7L4GNUglsj3X70f23FbezOlM2mlNdCFr2Z1gSYVfoBQmlBfLjY64TttguaiIzGp2RnfOv1OlxtHc8FgnTa3JbnIUCYG4KhjBvmke-w5bzScAwO5q634/s320/hypatia_portrait_large.jpg" alt="Hypatia" class="h-full object-cover" loading="lazy">
-                        </div>
-                        <h3 class="font-garamond text-2xl text-oxblood mb-2">Hypatia</h3>
-                        <p class="text-sm text-deepbrown/70 mb-3">Mathematician • Astronomer • Philosopher</p>
-                        <div class="blockquote-plaque text-sm">
-                            <p class="text-deepbrown/80">
-                                Legacy: A leading teacher of Neoplatonism in Alexandria, breaking barriers in mathematics, philosophy, and astronomy.
-                            </p>
-                        </div>
-                        <p data-i18n="hall.hypatia.desc" class="text-xs text-deepbrown/60">
-                            A trailblazer in Alexandria, she advanced mathematics and philosophy.
-                        </p>
-                    </button>
-
-                    <!-- Ibn al-Haytham -->
-                    <button class="timeline-img-btn polymath-card flex-shrink-0 w-80 bg-white/90 p-6 rounded-lg shadow-lg border border-deepbrown/10"
-                        data-src="https://light2015blogdotorg.wordpress.com/wp-content/uploads/2015/05/alhazen.jpg">
-                        <div class="h-48 mb-4 bg-parchment flex items-center justify-center overflow-hidden rounded">
-                            <img src="https://light2015blogdotorg.wordpress.com/wp-content/uploads/2015/05/alhazen.jpg" alt="Ibn al-Haytham" class="h-full object-cover" loading="lazy">
-                        </div>
-                        <h3 class="font-garamond text-2xl text-oxblood mb-2">Ibn al-Haytham</h3>
-                        <p class="text-sm text-deepbrown/70 mb-3">Physicist • Mathematician • Astronomer • Engineer</p>
-                        <div class="blockquote-plaque text-sm">
-                            <p class="text-deepbrown/80">"Truth is sought for its own sake."</p>
-                        </div>
-                        <p class="text-xs text-deepbrown/60">
-                            Living and working in Cairo, he pioneered optics, experimental science, and mathematics, earning the title "Father of Optics."
-                        </p>
-                    </button>
-
-                    <!-- Aristotle -->
-                    <button class="timeline-img-btn polymath-card flex-shrink-0 w-80 bg-white/90 p-6 rounded-lg shadow-lg border border-deepbrown/10"
-                        data-src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Aristotle_Altemps_Inv8575.jpg/800px-Aristotle_Altemps_Inv8575.jpg">
-                        <div class="h-48 mb-4 bg-parchment flex items-center justify-center overflow-hidden rounded">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Aristotle_Altemps_Inv8575.jpg/800px-Aristotle_Altemps_Inv8575.jpg" alt="Aristotle" class="h-full object-cover" loading="lazy">
-                        </div>
-                        <h3 data-i18n="hall.aristotle.name" class="font-garamond text-2xl text-oxblood mb-2">Aristotle</h3>
-                        <p data-i18n="hall.aristotle.fields" class="text-sm text-deepbrown/70 mb-3">Philosopher • Scientist • Biologist • Logician</p>
-                        <div class="blockquote-plaque text-sm">
-                            <p data-i18n="hall.aristotle.quote" class="text-deepbrown/80">"It is the mark of an educated mind to entertain a thought without accepting it."</p>
-                        </div>
-                        <p class="text-xs text-deepbrown/60">
-                            Aristotle laid the foundations for Western philosophy and science, his mind a beacon of inquiry.
-                        </p>
-                    </button>
-
-                    <!-- Al-Idrisi -->
-                    <button class="timeline-img-btn polymath-card flex-shrink-0 w-80 bg-white/90 p-6 rounded-lg shadow-lg border border-deepbrown/10"
-                        data-src="https://www.amust.com.au/wp-content/uploads/2018/02/Idrisi.jpg">
-                        <div class="h-48 mb-4 bg-parchment flex items-center justify-center overflow-hidden rounded">
-                            <img src="https://www.amust.com.au/wp-content/uploads/2018/02/Idrisi.jpg" alt="Al-Idrisi" class="h-full object-cover" loading="lazy">
-                        </div>
-                        <h3 class="font-garamond text-2xl text-oxblood mb-2">Al-Idrisi</h3>
-                        <p class="text-sm text-deepbrown/70 mb-3">Geographer • Cartographer • Botanist • Historian</p>
-                        <div class="blockquote-plaque text-sm">
-                            <p class="text-deepbrown/80">
-                                Legacy: Creator of the Tabula Rogeriana—one of history's most sophisticated medieval world maps—and multilingual botanical catalogues.
-                            </p>
-                        </div>
-                    </button>
-
-                    <!-- Al-Khwarizmi -->
-                    <button class="timeline-img-btn polymath-card flex-shrink-0 w-80 bg-white/90 p-6 rounded-lg shadow-lg border border-deepbrown/10"
-                        data-src="https://i.pinimg.com/474x/86/34/21/8634216d10b6d8808c844c4c1121e4de.jpg">
-                        <div class="h-48 mb-4 bg-parchment flex items-center justify-center overflow-hidden rounded">
-                            <img src="https://i.pinimg.com/474x/86/34/21/8634216d10b6d8808c844c4c1121e4de.jpg" alt="Al-Khwarizmi" class="h-full object-cover" loading="lazy">
-                        </div>
-                        <h3 data-i18n="hall.khwarizmi.name" class="font-garamond text-2xl text-oxblood mb-2">Al-Khwarizmi</h3>
-                        <p data-i18n="hall.khwarizmi.fields" class="text-sm text-deepbrown/70 mb-3">Mathematician • Astronomer • Geographer</p>
-                        <div class="blockquote-plaque text-sm">
-                            <p data-i18n="hall.khwarizmi.quote" class="text-deepbrown/80">
-                                Legacy: Father of algebra and algorithms, he revolutionized mathematics, astronomy, and geography in the Islamic Golden Age.
-                            </p>
-                        </div>
-                        <p data-i18n="hall.khwarizmi.desc" class="text-xs text-deepbrown/60">
-                            The guy behind your algebra headaches—and foundational advancements in mathematics, astronomy, and geography. Fun fact, the word "algorithm" is derived from his name.
-                        </p>
-                    </button>
-
-                    <!-- Ibn Sina -->
-                    <button class="timeline-img-btn polymath-card flex-shrink-0 w-80 bg-white/90 p-6 rounded-lg shadow-lg border border-deepbrown/10"
-                        data-src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/A_man_of_learning_%28Avicenna%3F%29._Oil_painting_by_a_Ne_Wellcome_V0017691.jpg/800px-A_man_of_learning_%28Avicenna%3F%29._Oil_painting_by_a_Ne_Wellcome_V0017691.jpg">
-                        <div class="h-48 mb-4 bg-parchment flex items-center justify-center overflow-hidden rounded">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/A_man_of_learning_%28Avicenna%3F%29._Oil_painting_by_a_Ne_Wellcome_V0017691.jpg/800px-A_man_of_learning_%28Avicenna%3F%29._Oil_painting_by_a_Ne_Wellcome_V0017691.jpg" alt="Ibn Sina" class="h-full object-cover" loading="lazy">
-                        </div>
-                        <h3 data-i18n="hall.ibnsina.name" class="font-garamond text-2xl text-oxblood mb-2">Ibn Sina (Avicenna)</h3>
-                        <p data-i18n="hall.ibnsina.fields" class="text-sm text-deepbrown/70 mb-3">Physician • Philosopher • Scientist</p>
-                        <div class="blockquote-plaque text-sm">
-                            <p data-i18n="hall.ibnsina.quote" class="text-deepbrown/80">"The knowledge of anything, since all things have causes, is not acquired or complete unless it is known by its causes."</p>
-                        </div>
-                        <p data-i18n="hall.ibnsina.desc" class="text-xs text-deepbrown/60">
-                            His prolific works in medicine and philosophy influenced centuries of thought.
-                        </p>
-                    </button>
-
-                    <!-- Leonardo da Vinci -->
-                    <button class="timeline-img-btn polymath-card flex-shrink-0 w-80 bg-white/90 p-6 rounded-lg shadow-lg border border-deepbrown/10"
-                        data-src="https://uploads0.wikiart.org/00323/images/leonardo-da-vinci/pic7.png!Large.png">
-                        <div class="h-48 mb-4 bg-parchment flex items-center justify-center overflow-hidden rounded">
-                            <img src="https://uploads0.wikiart.org/00323/images/leonardo-da-vinci/pic7.png!Large.png" alt="Leonardo da Vinci" class="h-full object-cover" loading="lazy">
-                        </div>
-                        <h3 data-i18n="hall.leonardo.name" class="font-garamond text-2xl text-oxblood mb-2">Leonardo da Vinci</h3>
-                        <p data-i18n="hall.leonardo.fields" class="text-sm text-deepbrown/70 mb-3">Painter • Engineer • Scientist • Architect • Inventor</p>
-                        <div class="blockquote-plaque text-sm">
-                            <p data-i18n="hall.leonardo.quote" class="text-deepbrown/80">"Learning never exhausts the mind."</p>
-                        </div>
-                        <p data-i18n="hall.leonardo.desc" class="text-xs text-deepbrown/60">
-                            A true Renaissance man. Arguably the greatest polymath of all time. Da Vinci wasn't just a brilliant artist—he was a painter, engineer, scientist, architect, and inventor, among other professions. He excelled at all of them—simultaneously.
-                        </p>
-                    </button>
-
-                    <!-- Benjamin Franklin -->
-                    <button class="timeline-img-btn polymath-card flex-shrink-0 w-80 bg-white/90 p-6 rounded-lg shadow-lg border border-deepbrown/10"
-                        data-src="https://npg.si.edu/sites/default/files/class_ben.jpg">
-                        <div class="h-48 mb-4 bg-parchment flex items-center justify-center overflow-hidden rounded">
-                            <img src="https://npg.si.edu/sites/default/files/class_ben.jpg" alt="Benjamin Franklin" class="h-full object-cover" loading="lazy">
-                        </div>
-                        <h3 data-i18n="hall.franklin.name" class="font-garamond text-2xl text-oxblood mb-2">Benjamin Franklin</h3>
-                        <p data-i18n="hall.franklin.fields" class="text-sm text-deepbrown/70 mb-3">Inventor • Writer • Scientist • Diplomat</p>
-                        <div class="blockquote-plaque text-sm">
-                            <p data-i18n="hall.franklin.quote" class="text-deepbrown/80">"An investment in knowledge pays the best interest."</p>
-                        </div>
-                        <p data-i18n="hall.franklin.desc" class="text-xs text-deepbrown/60">
-                            Franklin's diverse contributions in science, literature, and politics defined a nation.
-                        </p>
-                    </button>
-
-                    <!-- Rabindranath Tagore -->
-                    <button class="timeline-img-btn polymath-card flex-shrink-0 w-80 bg-white/90 p-6 rounded-lg shadow-lg border border-deepbrown/10"
-                        data-src="https://www.tallengestore.com/cdn/shop/products/RabindranathTagorePortraitPainting.jpg?v=1704267978">
-                        <div class="h-48 mb-4 bg-parchment flex items-center justify-center overflow-hidden rounded">
-                            <img src="https://www.tallengestore.com/cdn/shop/products/RabindranathTagorePortraitPainting.jpg?v=1704267978" alt="Rabindranath Tagore" class="h-full object-cover" loading="lazy">
-                        </div>
-                        <h3 data-i18n="hall.tagore.name" class="font-garamond text-2xl text-oxblood mb-2">Rabindranath Tagore</h3>
-                        <p data-i18n="hall.tagore.fields" class="text-sm text-deepbrown/70 mb-3">Poet • Writer • Composer • Philosopher</p>
-                        <div class="blockquote-plaque text-sm">
-                            <p data-i18n="hall.tagore.quote" class="text-deepbrown/80">"The highest education is that which does not merely give us information but makes our life in harmony with all existence."</p>
-                        </div>
-                        <p data-i18n="hall.tagore.desc" class="text-xs text-deepbrown/60">
-                            Tagore reshaped Bengali literature and Indian art with his multifaceted genius.
-                        </p>
-                    </button>
-
-                    <!-- Mustafa Mahmoud -->
-                    <button class="timeline-img-btn polymath-card flex-shrink-0 w-80 bg-white/90 p-6 rounded-lg shadow-lg border border-deepbrown/10"
-                        data-src="https://misrconnect.com/storage/profiles/October2024/bZK0eExVrTh3yaO84tZp.jpg">
-                        <div class="h-48 mb-4 bg-parchment flex items-center justify-center overflow-hidden rounded">
-                            <img src="https://misrconnect.com/storage/profiles/October2024/bZK0eExVrTh3yaO84tZp.jpg" alt="Mustafa Mahmoud" class="h-full object-cover" loading="lazy">
-                        </div>
-                        <h3 class="font-garamond text-2xl text-oxblood mb-2">Mustafa Mahmoud</h3>
-                        <p class="text-sm text-deepbrown/70 mb-3">Physician • Philosopher • Writer • Broadcaster</p>
-                        <div class="blockquote-plaque text-sm">
-                            <p class="text-deepbrown/80">"A man's true worth lies in what he adds to life between his birth and his death."</p>
-                        </div>
-                        <p class="text-xs text-deepbrown/60">
-                            A modern Egyptian thinker who journeyed from medicine to philosophy, literature, and public intellectual life, inspiring generations.
-                        </p>
-                    </button>
-
+                    {% endfor %}
                 </div>
             </div>
+        </div>
 
             <div class="pl-6 mt-12 text-center">
                 <div class="blockquote-plaque max-w-xl mx-auto">
