@@ -1359,55 +1359,6 @@
             // Initialize lightbox early
             setupLightbox();
     
-            // ===== POLYMATH CARDS LOADING =====
-            async function loadLanguage(lang) {
-                // Save language preference
-                localStorage.setItem('lang', lang);
-                
-                // Set document direction
-                if (lang === "ar") {
-                    document.documentElement.dir = "rtl";
-                    document.body.classList.add("rtl");
-                } else {
-                    document.documentElement.dir = "ltr";
-                    document.body.classList.remove("rtl");
-                }
-    
-                // Get container and show loading state
-                const container = document.querySelector('.polymath-scroller');
-                container.classList.add('loading');
-                container.innerHTML = '<div class="text-center py-8 text-deepbrown/70 animate-pulse">Loading polymaths...</div>';
-    
-                try {
-                    // Check cache first
-                    if (polymathCache[lang]) {
-                        renderPolymaths(polymathCache[lang], lang);
-                        return;
-                    }
-    
-                    // Fetch data
-                    const response = await fetch(`/api/polymaths/`);
-                    if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
-                    const polymaths = await response.json();
-    
-                    // Validate data
-                    if (!Array.isArray(polymaths) || polymaths.length === 0) {
-                        container.innerHTML = '<div class="text-center py-8 text-deepbrown/70">No polymaths data available</div>';
-                        return;
-                    }
-    
-                    // Cache and render
-                    polymathCache[lang] = polymaths;
-                    renderPolymaths(polymaths, lang);
-    
-                } catch (err) {
-                    console.error("Failed to fetch polymaths:", err);
-                    container.innerHTML = '<div class="text-center py-8 text-red-600">Failed to load data. Please try again.</div>';
-                } finally {
-                    container.classList.remove('loading');
-                }
-            }
-    
             function renderPolymaths(polymaths, lang) {
                 const container = document.querySelector('.polymath-scroller');
                 const fragment = document.createDocumentFragment();
@@ -1471,86 +1422,105 @@
             });
     
             // ===== CAROUSEL FUNCTION =====
-            function setupAutoScroller(containerSelector, leftSelector, rightSelector, cardWidth = 320, delay = 5000) {
-                const container = document.querySelector(containerSelector);
-                const left = document.querySelector(leftSelector);
-                const right = document.querySelector(rightSelector);
-    
-                if (!container || !left || !right) return;
-    
-                let interval;
-                let auto = false;
-    
-                function update() {
-                    const { scrollLeft, scrollWidth, clientWidth } = container;
-                    left.style.visibility = scrollLeft > 0 ? 'visible' : 'hidden';
-                    right.style.visibility = scrollLeft < scrollWidth - clientWidth - 1 ? 'visible' : 'hidden';
-                }
-    
-                function start() {
-                    if (!auto) {
-                        auto = true;
-                        interval = setInterval(() => {
-                            const { scrollLeft, scrollWidth, clientWidth } = container;
-                            const atEnd = scrollLeft >= scrollWidth - clientWidth - 1;
-    
-                            if (atEnd) {
-                                container.scrollTo({ left: 0, behavior: 'smooth' });
-                            } else {
-                                container.scrollBy({ left: cardWidth, behavior: 'smooth' });
-                            }
-                            update();
-                        }, delay);
-                    }
-                }
-    
-                function stop() {
-                    clearInterval(interval);
-                    auto = false;
-                }
-    
-                // Button clicks
-                left.addEventListener('click', () => {
-                    stop();
-                    container.scrollBy({ left: -cardWidth, behavior: 'smooth' });
-                    setTimeout(start, delay * 2);
+            function setupAutoScroller(containerSelector, leftSelector, rightSelector) {
+              const container = document.querySelector(containerSelector);
+              const leftBtn = document.querySelector(leftSelector);
+              const rightBtn = document.querySelector(rightSelector);
+            
+              if (!container) return;
+            
+              // Arrow Navigation
+              const scrollAmount = 320; // Match your card width
+              const scrollTo = (direction) => {
+                const currentScroll = container.scrollLeft;
+                const newScroll = direction === 'left' 
+                  ? Math.max(0, currentScroll - scrollAmount)
+                  : currentScroll + scrollAmount;
+                
+                container.scrollTo({
+                  left: newScroll,
+                  behavior: 'smooth'
                 });
-                right.addEventListener('click', () => {
-                    stop();
-                    container.scrollBy({ left: cardWidth, behavior: 'smooth' });
-                    setTimeout(start, delay * 2);
-                });
-    
-                // Pause on interaction
-                ['mousedown', 'touchstart', 'wheel'].forEach(evt =>
-                    container.addEventListener(evt, stop)
-                );
-                ['mouseup', 'touchend'].forEach(evt =>
-                    container.addEventListener(evt, () => setTimeout(start, delay * 2))
-                );
-    
-                // Pause on hover
-                container.addEventListener('mouseenter', stop);
-                container.addEventListener('mouseleave', () => setTimeout(start, delay * 2));
-    
-                // Update arrows
-                container.addEventListener('scroll', update);
-                window.addEventListener('resize', update);
-    
-                start();
-                update();
+              };
+            
+              // Click Handlers
+              leftBtn?.addEventListener('click', () => scrollTo('left'));
+              rightBtn?.addEventListener('click', () => scrollTo('right'));
+            
+              // Touch Gestures (Swipe)
+              let touchStartX = 0;
+              let touchEndX = 0;
+            
+              container.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+              }, { passive: true });
+            
+              container.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+              }, { passive: true });
+            
+              const handleSwipe = () => {
+                const threshold = 50; // Minimum swipe distance
+                if (touchStartX - touchEndX > threshold) {
+                  scrollTo('right'); // Swipe left
+                } else if (touchEndX - touchStartX > threshold) {
+                  scrollTo('left'); // Swipe right
+                }
+              };
+            
+              // Keyboard Navigation (Optional)
+              container.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') scrollTo('left');
+                if (e.key === 'ArrowRight') scrollTo('right');
+              });
+            
+              // Auto-scroll (Keep your existing logic)
+              let interval;
+              const startAutoScroll = () => {
+                interval = setInterval(() => {
+                  const isAtEnd = container.scrollLeft + container.clientWidth >= container.scrollWidth - 1;
+                  scrollTo(isAtEnd ? 'left' : 'right');
+                }, 5000);
+              };
+            
+              // Pause on interaction
+              const pauseAutoScroll = () => clearInterval(interval);
+              
+              container.addEventListener('mouseenter', pauseAutoScroll);
+              container.addEventListener('mouseleave', startAutoScroll);
+              container.addEventListener('touchstart', pauseAutoScroll);
+            
+              startAutoScroll();
             }
     
             // ===== INITIALIZATION =====
-            // Language switchers
+            // Language switchers:
             function setupLanguageButton(id, lang) {
-                const btn = document.getElementById(id);
-                if (btn) {
-                    btn.addEventListener('click', () => {
-                        clearTimeout(debounceTimer);
-                        debounceTimer = setTimeout(() => loadLanguage(lang), 300);
-                    });
-                }
+              const btn = document.getElementById(id);
+              if (btn) {
+                btn.addEventListener('click', async () => {
+                  await i18n.setLanguage(lang); // Update UI translations
+                  
+                  // Reload polymath data for the new language
+                  const container = document.querySelector('.polymath-scroller');
+                  container.classList.add('loading');
+                  
+                  try {
+                    if (!polymathCache[lang]) {
+                      const response = await fetch(`/api/polymaths/`);
+                      if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+                      polymathCache[lang] = await response.json();
+                    }
+                    renderPolymaths(polymathCache[lang], lang);
+                  } catch (err) {
+                    console.error("Failed to fetch polymaths:", err);
+                    container.innerHTML = '<div class="text-center py-8 text-red-600">Failed to load data. Please try again.</div>';
+                  } finally {
+                    container.classList.remove('loading');
+                  }
+                });
+              }
             }
             setupLanguageButton('lang-en', 'en');
             setupLanguageButton('lang-ar', 'ar');
@@ -1561,7 +1531,7 @@
     
             // Initial load
             const initialLang = localStorage.getItem('lang') || 'en';
-            loadLanguage(initialLang);
+            i18n.setLanguage(initialLang);
     
             // Fade-in animations
             const fadeElements = document.querySelectorAll('.fade-in');
