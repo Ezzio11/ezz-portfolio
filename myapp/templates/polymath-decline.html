@@ -1599,6 +1599,19 @@
             // Initial load
             const initialLang = localStorage.getItem('lang') || 'en';
             i18n.setLanguage(initialLang);
+            
+            (async () => {
+              try {
+                if (!polymathCache[initialLang]) {
+                  const response = await fetch(`/api/polymaths/`);
+                  if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+                  polymathCache[initialLang] = await response.json();
+                }
+                renderPolymaths(polymathCache[initialLang], initialLang);
+              } catch (err) {
+                console.error("Failed to fetch polymaths:", err);
+              }
+            })();
     
             // Fade-in animations
             const fadeElements = document.querySelectorAll('.fade-in');
