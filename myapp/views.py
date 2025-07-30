@@ -156,14 +156,16 @@ def article_detail(request, slug):
 def mstag(request):
     try:
         # Get both regular and custom articles in one query
-        response = supabase.table("articles") \
-                   .select("*") \
-                   # Regular articles: source=mstag AND is_custom=False
-                   # Custom articles: is_custom=True
-                   .or_("and(source.eq.mstag,is_custom.is.false)", 
-                        "is_custom.is.true") \
-                   .order("date_published", desc=True) \
-                   .execute()
+        response = (
+            supabase.table("articles")
+            .select("*")
+            # Regular articles: source=mstag AND is_custom=False
+            # Custom articles: is_custom=True
+            .or_("and(source.eq.mstag,is_custom.is.false)", 
+                 "is_custom.is.true")
+            .order("date_published", desc=True)
+            .execute()
+        )
         
         articles = response.data
         return render(request, "mstag.html", {"articles": articles})
