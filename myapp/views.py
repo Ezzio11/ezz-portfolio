@@ -155,22 +155,49 @@ def article_detail(request, slug):
 
 def mstag(request):
     try:
+        # Get both regular and custom articles in one query
         response = (
             supabase.table("articles")
-            .select("id, title, description, image, is_custom, custom_url, date_published")
+            .select("""
+                id, 
+                title, 
+                description, 
+                image, 
+                is_custom, 
+                custom_url, 
+                date_published,
+                source,  # Required for filtering
+                slug     # Required for URL generation
+            """)
             .or_("and(source.eq.mstag,is_custom.is.false)", 
                  "is_custom.is.true")
             .order("date_published", desc=True)
             .execute()
         )
+        
         articles = response.data
-        return render(request, "mstag.html", {"articles": articles})
+        
+        # Process articles to set correct URLs
+        processed_articles = []
+        for article in articles:
+            # Set URL based on article type
+            if article.get('is_custom') and article.get('custom_url'):
+                article['url'] = article['custom_url']
+            else:
+                article['url'] = f"/mstag/{article['slug']}"
+            
+            processed_articles.append(article)
+        
+        return render(request, "mstag.html", {
+            "articles": processed_articles
+        })
         
     except Exception as e:
-        # More specific error handling
-        if hasattr(e, 'code') and e.code == 'PGRST108':
-            return HttpResponse("Database query configuration error", status=500)
-        return HttpResponse(f"Query failed: {e}", status=500)
+        # Improved error handling
+        if hasattr(e, 'args') and len(e.args) > 0 and hasattr(e.args[0], 'code'):
+            if e.args[0].code == 'PGRST108':
+                return HttpResponse("Database configuration error: missing required fields in select", status=500)
+        return HttpResponse(f"Query failed: {str(e)}", status=500)
 
 def resume_dl(request):
     file_path = r"myapp/static/docs/Ezz_Eldin_Ahmed's_Resume.pdf"
