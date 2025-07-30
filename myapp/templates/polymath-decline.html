@@ -1240,103 +1240,274 @@
         </div>
      
     <script>
-    document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', () => {
+            // Cache for loaded polymaths data
+            const polymathCache = {
+                en: null,
+                ar: null
+            };
+            let debounceTimer;
     
-        async function loadLanguage(lang) {
-            // Save preference
-            localStorage.setItem('lang', lang);
-    
-            let polymaths = [];
-            try {
-                const response = await fetch(`/api/polymaths/`);
-                if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
-                polymaths = await response.json();
-            } catch (err) {
-                console.error("Failed to fetch polymaths:", err);
-                return; // stop if no data
+            // ===== LIGHTBOX/MODAL SETUP =====
+            function setupLightbox() {
+                // Create modal element if it doesn't exist
+                let modal = document.getElementById('lightboxModal');
+                if (!modal) {
+                    modal = document.createElement('div');
+                    modal.id = 'lightboxModal';
+                    modal.className = 'fixed inset-0 bg-black/90 z-50 hidden flex items-center justify-center p-4';
+                    modal.innerHTML = `
+                        <div class="relative max-w-full max-h-full">
+                            <img id="lightboxImage" class="max-w-[90vw] max-h-[90vh] object-contain">
+                            <button class="absolute -top-12 right-0 text-white text-4xl hover:text-oldgold transition-colors">&times;</button>
+                        </div>
+                    `;
+                    document.body.appendChild(modal);
+                    
+                    // Close modal
+                    modal.addEventListener('click', (e) => {
+                        if (e.target === modal || e.target.tagName === 'BUTTON') {
+                            modal.classList.add('hidden');
+                            document.getElementById('lightboxImage').src = '';
+                        }
+                    });
+                    
+                    // Close on ESC key
+                    document.addEventListener('keydown', (e) => {
+                        if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+                            modal.classList.add('hidden');
+                            document.getElementById('lightboxImage').src = '';
+                        }
+                    });
+                }
+                
+                // Handle image clicks using event delegation
+                document.addEventListener('click', (e) => {
+                    const imgBtn = e.target.closest('.timeline-img-btn');
+                    if (imgBtn && imgBtn.dataset.src) {
+                        e.preventDefault();
+                        const modal = document.getElementById('lightboxModal');
+                        const modalImg = document.getElementById('lightboxImage');
+                        modalImg.src = imgBtn.dataset.src;
+                        modal.classList.remove('hidden');
+                    }
+                });
             }
     
-            const container = document.querySelector('.polymath-scroller');
-            container.innerHTML = ''; // clear old cards
+            // Initialize lightbox early
+            setupLightbox();
     
-            if (!Array.isArray(polymaths) || polymaths.length === 0) {
-                container.innerHTML = `<p class="text-center text-red-600">No data available</p>`;
-                return;
+            // ===== POLYMATH CARDS LOADING =====
+            async function loadLanguage(lang) {
+                // Save language preference
+                localStorage.setItem('lang', lang);
+                
+                // Set document direction
+                if (lang === "ar") {
+                    document.documentElement.dir = "rtl";
+                    document.body.classList.add("rtl");
+                } else {
+                    document.documentElement.dir = "ltr";
+                    document.body.classList.remove("rtl");
+                }
+    
+                // Get container and show loading state
+                const container = document.querySelector('.polymath-scroller');
+                container.classList.add('loading');
+                container.innerHTML = '<div class="text-center py-8 text-deepbrown/70 animate-pulse">Loading polymaths...</div>';
+    
+                try {
+                    // Check cache first
+                    if (polymathCache[lang]) {
+                        renderPolymaths(polymathCache[lang], lang);
+                        return;
+                    }
+    
+                    // Fetch data
+                    const response = await fetch(`/api/polymaths/`);
+                    if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+                    const polymaths = await response.json();
+    
+                    // Validate data
+                    if (!Array.isArray(polymaths) || polymaths.length === 0) {
+                        container.innerHTML = '<div class="text-center py-8 text-deepbrown/70">No polymaths data available</div>';
+                        return;
+                    }
+    
+                    // Cache and render
+                    polymathCache[lang] = polymaths;
+                    renderPolymaths(polymaths, lang);
+    
+                } catch (err) {
+                    console.error("Failed to fetch polymaths:", err);
+                    container.innerHTML = '<div class="text-center py-8 text-red-600">Failed to load data. Please try again.</div>';
+                } finally {
+                    container.classList.remove('loading');
+                }
             }
     
-            polymaths.forEach(pm => {
-                // Defensive access with fallback to English
-                const name = lang === "ar" ? (pm.name_ar || pm.name_en) : pm.name_en;
-                const fields = lang === "ar" ? (pm.fields_ar || pm.fields_en) : pm.fields_en;
-                const quote = lang === "ar" ? (pm.quote_ar || pm.quote_en) : pm.quote_en;
-                const description = lang === "ar" ? (pm.description_ar || pm.description_en) : pm.description_en;
+            function renderPolymaths(polymaths, lang) {
+                const container = document.querySelector('.polymath-scroller');
+                const fragment = document.createDocumentFragment();
     
-                const card = document.createElement('button');
-                card.className = "timeline-img-btn polymath-card flex-shrink-0 w-80 bg-white/90 p-6 rounded-lg shadow-lg border border-deepbrown/10";
-                card.setAttribute('data-src', pm.image_url || '');
+                polymaths.forEach(pm => {
+                    // Use appropriate language fields with fallback to English
+                    const name = lang === "ar" ? (pm.name_ar || pm.name_en) : pm.name_en;
+                    const fields = lang === "ar" ? (pm.fields_ar || pm.fields_en) : pm.fields_en;
+                    const quote = lang === "ar" ? (pm.quote_ar || pm.quote_en) : pm.quote_en;
+                    const description = lang === "ar" ? (pm.description_ar || pm.description_en) : pm.description_en;
     
-                card.innerHTML = `
-                    <div class="h-48 mb-4 bg-parchment flex items-center justify-center overflow-hidden rounded">
-                        <img src="${pm.image_url}" alt="${name}" class="h-full object-cover" loading="lazy">
-                    </div>
-                    <h3 class="font-garamond text-2xl text-oxblood mb-2">${name}</h3>
-                    <p class="text-sm text-deepbrown/70 mb-3">${fields || ''}</p>
-                    <div class="blockquote-plaque text-sm">
-                        <p class="text-deepbrown/80">${quote || ''}</p>
-                    </div>
-                    <p class="text-xs text-deepbrown/60">${description || ''}</p>
-                `;
-                container.appendChild(card);
-            });
+                    const card = document.createElement('button');
+                    card.className = "timeline-img-btn polymath-card flex-shrink-0 w-80 bg-white/90 p-6 rounded-lg shadow-lg border border-deepbrown/10 hover:shadow-xl transition-all";
+                    card.setAttribute('data-src', pm.image_url || '');
     
-            // RTL/LTR direction toggle
-            if (lang === "ar") {
-                document.documentElement.dir = "rtl";
-                document.body.classList.add("rtl");
-            } else {
-                document.documentElement.dir = "ltr";
-                document.body.classList.remove("rtl");
+                    card.innerHTML = `
+                        <div class="h-48 mb-4 bg-parchment flex items-center justify-center overflow-hidden rounded">
+                            <img src="${pm.image_url}" alt="${name}" class="h-full object-cover" loading="lazy">
+                        </div>
+                        <h3 class="font-garamond text-2xl text-oxblood mb-2">${name}</h3>
+                        <p class="text-sm text-deepbrown/70 mb-3">${fields || ''}</p>
+                        <div class="blockquote-plaque text-sm">
+                            <p class="text-deepbrown/80">${quote || ''}</p>
+                        </div>
+                        <p class="text-xs text-deepbrown/60 mt-2">${description || ''}</p>
+                    `;
+                    fragment.appendChild(card);
+                });
+    
+                // Clear and render with animation
+                container.innerHTML = '';
+                container.appendChild(fragment);
+    
+                // Observe new cards for intersection
+                const cards = container.querySelectorAll('.polymath-card');
+                cards.forEach((card, index) => {
+                    setTimeout(() => {
+                        intersectionObserver.observe(card);
+                    }, index * 100);
+                });
             }
-        }
     
-        // Event listeners
-        document.getElementById("lang-en").addEventListener("click", () => loadLanguage("en"));
-        document.getElementById("lang-ar").addEventListener("click", () => loadLanguage("ar"));
-    
-        // Initial load
-        loadLanguage(localStorage.getItem('lang') || 'en');
-        
-            // Fade-in animations
-            const fadeElements = document.querySelectorAll('.fade-in');
-            const timelineItems = document.querySelectorAll('.timeline-item');
-            const polymathCards = document.querySelectorAll('.polymath-card');
-
-            const observer = new IntersectionObserver((entries) => {
+            // ===== INTERSECTION OBSERVER =====
+            const intersectionObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('visible');
-            
+                        
                         if (entry.target.id === 'geography') {
                             document.querySelectorAll('.country-bar-fill').forEach(bar => {
                                 bar.style.width = bar.style.width;
                             });
                         }
-            
-                        // Stop observing once visible (performance)
-                        observer.unobserve(entry.target);
+                        
+                        intersectionObserver.unobserve(entry.target);
                     }
                 });
             }, {
-                rootMargin: '0px 0px -10% 0px', // triggers slightly before fully in view
-                threshold: 0.05                  // 5% visible is 
+                rootMargin: '0px 0px -10% 0px',
+                threshold: 0.05
             });
-
-            fadeElements.forEach(el => observer.observe(el));
-            timelineItems.forEach(el => observer.observe(el));
-            polymathCards.forEach((card, index) => {
-                setTimeout(() => observer.observe(card), index * 200);
-            });
-
+    
+            // ===== CAROUSEL FUNCTION =====
+            function setupAutoScroller(containerSelector, leftSelector, rightSelector, cardWidth = 320, delay = 5000) {
+                const container = document.querySelector(containerSelector);
+                const left = document.querySelector(leftSelector);
+                const right = document.querySelector(rightSelector);
+    
+                if (!container || !left || !right) return;
+    
+                let interval;
+                let auto = false;
+    
+                function update() {
+                    const { scrollLeft, scrollWidth, clientWidth } = container;
+                    left.style.visibility = scrollLeft > 0 ? 'visible' : 'hidden';
+                    right.style.visibility = scrollLeft < scrollWidth - clientWidth - 1 ? 'visible' : 'hidden';
+                }
+    
+                function start() {
+                    if (!auto) {
+                        auto = true;
+                        interval = setInterval(() => {
+                            const { scrollLeft, scrollWidth, clientWidth } = container;
+                            const atEnd = scrollLeft >= scrollWidth - clientWidth - 1;
+    
+                            if (atEnd) {
+                                container.scrollTo({ left: 0, behavior: 'smooth' });
+                            } else {
+                                container.scrollBy({ left: cardWidth, behavior: 'smooth' });
+                            }
+                            update();
+                        }, delay);
+                    }
+                }
+    
+                function stop() {
+                    clearInterval(interval);
+                    auto = false;
+                }
+    
+                // Button clicks
+                left.addEventListener('click', () => {
+                    stop();
+                    container.scrollBy({ left: -cardWidth, behavior: 'smooth' });
+                    setTimeout(start, delay * 2);
+                });
+                right.addEventListener('click', () => {
+                    stop();
+                    container.scrollBy({ left: cardWidth, behavior: 'smooth' });
+                    setTimeout(start, delay * 2);
+                });
+    
+                // Pause on interaction
+                ['mousedown', 'touchstart', 'wheel'].forEach(evt =>
+                    container.addEventListener(evt, stop)
+                );
+                ['mouseup', 'touchend'].forEach(evt =>
+                    container.addEventListener(evt, () => setTimeout(start, delay * 2))
+                );
+    
+                // Pause on hover
+                container.addEventListener('mouseenter', stop);
+                container.addEventListener('mouseleave', () => setTimeout(start, delay * 2));
+    
+                // Update arrows
+                container.addEventListener('scroll', update);
+                window.addEventListener('resize', update);
+    
+                start();
+                update();
+            }
+    
+            // ===== INITIALIZATION =====
+            // Language switchers
+            function setupLanguageButton(id, lang) {
+                const btn = document.getElementById(id);
+                if (btn) {
+                    btn.addEventListener('click', () => {
+                        clearTimeout(debounceTimer);
+                        debounceTimer = setTimeout(() => loadLanguage(lang), 300);
+                    });
+                }
+            }
+            setupLanguageButton('lang-en', 'en');
+            setupLanguageButton('lang-ar', 'ar');
+    
+            // Initialize carousels
+            setupAutoScroller('.polymath-scroller', '.scroll-left', '.scroll-right', 320, 5000);
+            setupAutoScroller('.gallery-scroller', '.gallery-left', '.gallery-right', 300, 5000);
+    
+            // Initial load
+            const initialLang = localStorage.getItem('lang') || 'en';
+            loadLanguage(initialLang);
+    
+            // Fade-in animations
+            const fadeElements = document.querySelectorAll('.fade-in');
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            
+            fadeElements.forEach(el => intersectionObserver.observe(el));
+            timelineItems.forEach(el => intersectionObserver.observe(el));
+    
             // Smooth scroll
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function(e) {
@@ -1348,15 +1519,14 @@
                     }
                 });
             });
-
+    
             // Mobile menu toggle
             const mobileMenuButton = document.querySelector('button.md\\:hidden');
             if (mobileMenuButton) {
                 mobileMenuButton.addEventListener('click', () => {
                     const mobileMenu = document.createElement('div');
                     mobileMenu.className = 'fixed inset-0 bg-parchment/95 z-50 flex flex-col items-center justify-center space-y-6';
-
-                    // Use data-i18n for menu items instead of hardcoded text
+    
                     mobileMenu.innerHTML = `
                         <button class="absolute top-6 right-6 text-deepbrown">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1372,8 +1542,8 @@
                         <a href="#epilogue" data-i18n="nav.epilogue" class="font-garamond text-2xl text-oxblood">Epilogue</a>
                     `;
                     document.body.appendChild(mobileMenu);
-
-                    // Apply translations to the newly created elements
+    
+                    // Apply translations
                     const currentLang = localStorage.getItem('lang') || 'en';
                     fetch(`i18n/${currentLang}.json`)
                         .then(r => r.json())
@@ -1383,7 +1553,7 @@
                                 if (translations[key]) el.textContent = translations[key];
                             });
                         });
-
+    
                     // Close menu
                     mobileMenu.querySelector('button').addEventListener('click', () => document.body.removeChild(mobileMenu));
                     mobileMenu.querySelectorAll('a').forEach(link => {
@@ -1391,105 +1561,14 @@
                     });
                 });
             }
-
-            // Carousel scroller
-            function setupAutoScroller(containerSelector, leftSelector, rightSelector, cardWidth = 320, delay = 5000) {
-                const container = document.querySelector(containerSelector);
-                const left = document.querySelector(leftSelector);
-                const right = document.querySelector(rightSelector);
-
-                if (!container || !left || !right) return;
-
-                let interval;
-                let auto = false;
-
-                function update() {
-                    const { scrollLeft, scrollWidth, clientWidth } = container;
-                    left.style.visibility = scrollLeft > 0 ? 'visible' : 'hidden';
-                    right.style.visibility = scrollLeft < scrollWidth - clientWidth - 1 ? 'visible' : 'hidden';
-                }
-
-                function start() {
-                    if (!auto) {
-                        auto = true;
-                        interval = setInterval(() => {
-                            const { scrollLeft, scrollWidth, clientWidth } = container;
-                            const atEnd = scrollLeft >= scrollWidth - clientWidth - 1;
-
-                            if (atEnd) {
-                                container.scrollTo({ left: 0, behavior: 'smooth' });
-                            } else {
-                                container.scrollBy({ left: cardWidth, behavior: 'smooth' });
-                            }
-                            update();
-                        }, delay);
-                    }
-                }
-
-                function stop() {
-                    clearInterval(interval);
-                    auto = false;
-                }
-
-                // Button clicks
-                left.addEventListener('click', () => {
-                    stop();
-                    container.scrollBy({ left: -cardWidth, behavior: 'smooth' });
-                    setTimeout(start, delay * 2);
-                });
-                right.addEventListener('click', () => {
-                    stop();
-                    container.scrollBy({ left: cardWidth, behavior: 'smooth' });
-                    setTimeout(start, delay * 2);
-                });
-
-                // Pause on user interaction
-                ['mousedown', 'touchstart', 'wheel'].forEach(evt =>
-                    container.addEventListener(evt, stop)
-                );
-                ['mouseup', 'touchend'].forEach(evt =>
-                    container.addEventListener(evt, () => setTimeout(start, delay * 2))
-                );
-
-                // Pause on hover
-                container.addEventListener('mouseenter', stop);
-                container.addEventListener('mouseleave', () => setTimeout(start, delay * 2));
-
-                // Update arrows
-                container.addEventListener('scroll', update);
-                window.addEventListener('resize', update);
-
-                start();
-                update();
-            }
-
-            // Initialize carousels
-            setupAutoScroller('.polymath-scroller', '.scroll-left', '.scroll-right', 320, 5000);
-            setupAutoScroller('.gallery-scroller', '.gallery-left', '.gallery-right', 300, 5000);
-
-            // Timeline image lightbox
-            const modal = document.getElementById('lightboxModal');
-            const modalImg = document.getElementById('lightboxImage');
-
-            document.querySelectorAll('.timeline-img-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    modalImg.src = btn.getAttribute('data-src');
-                    modal.classList.remove('hidden');
-                });
-            });
-
-            modal.addEventListener('click', () => {
-                modal.classList.add('hidden');
-                modalImg.src = '';
-            });
-
+    
             // === ECharts Dual-Axis Chart ===
             Papa.parse("/static/data/polymaths_clean.csv", {
                 download: true,
                 header: true,
                 complete: function(results) {
                     const raw = results.data;
-
+    
                     // Aggregate by birth_year
                     const grouped = {};
                     raw.forEach(d => {
@@ -1500,7 +1579,7 @@
                             grouped[year].push(score);
                         }
                     });
-
+    
                     // Compute avg and counts
                     const years = Object.keys(grouped).map(Number).sort((a,b) => a - b);
                     const avgScores = years.map(y => {
@@ -1508,7 +1587,7 @@
                         return scores.reduce((a,b) => a + b, 0) / scores.length;
                     });
                     const counts = years.map(y => grouped[y].length);
-
+    
                     // Smooth average scores (moving average)
                     function smooth(values, window = 5) {
                         const smoothed = [];
@@ -1522,11 +1601,11 @@
                         return smoothed;
                     }
                     const smoothedScores = smooth(avgScores, 5);
-
+    
                     // Initialize ECharts instance
                     const chartDom = document.getElementById('polymathTimeSeries');
                     const myChart = echarts.init(chartDom);
-
+    
                     const option = {
                         backgroundColor: '#f5f0e6',
                         title: {
@@ -1561,8 +1640,8 @@
                                 type: 'value',
                                 name: 'Average Polymath Score',
                                 position: 'left',
-                                min: 2, // start a bit above zero (tightens scale)
-                                max: 7, // cap close to data max
+                                min: 2,
+                                max: 7,
                                 axisLabel: { color: 'goldenrod' },
                                 axisLine: { lineStyle: { color: 'goldenrod' } },
                                 splitLine: { lineStyle: { color: 'rgba(0,0,0,0.05)' } }
@@ -1571,7 +1650,7 @@
                                 type: 'value',
                                 name: 'Number of Polymaths',
                                 position: 'right',
-                                scale: true // don't force 0 baseline
+                                scale: true
                             }
                         ],
                         series: [
@@ -1593,12 +1672,11 @@
                             }
                         ]
                     };
-
+    
                     myChart.setOption(option);
                     window.addEventListener('resize', () => myChart.resize());
-
+    
                     // === World Map Heatmap ===
-                    // === Count citizenships dynamically from cleaned CSV ===
                     const countryCounts = {};
                     raw.forEach(d => {
                         if (d.citizenship && d.citizenship !== "Unknown") {
@@ -1610,16 +1688,14 @@
                             });
                         }
                     });
-
-                    // Convert counts into array of {name, value}
+    
                     const countryData = Object.entries(countryCounts)
                         .map(([name, value]) => ({ name, value }))
                         .sort((a,b) => b.value - a.value);
-
-
+    
                     const mapDom = document.getElementById('countryMap');
                     const mapChart = echarts.init(mapDom);
-
+    
                     const mapOption = {
                         backgroundColor: '#f5f0e6',
                         tooltip: {
@@ -1647,33 +1723,29 @@
                             }
                         ]
                     };
-
+    
                     mapChart.setOption(mapOption);
                     window.addEventListener('resize', () => mapChart.resize());
-
+    
                     // === Bubble Scatter Chart ===
-                    // Scatter Bubble Chart (Highlight Exceptional Polymaths)
-                    // Prepare scatter data
                     let scatterData = raw.map(d => {
                         const year = parseInt(d.birth_year);
                         const score = parseFloat(d.polymath_score_mapped);
                         return [year, score, d.name];
                     }).filter(item => !isNaN(item[0]) && !isNaN(item[1]));
-
-                    // Sort so largest bubbles appear on top
-                    scatterData.sort((a, b) => b[1] - a[1]); // sort by score descending
-
-                    // Dynamic axis ranges
+    
+                    scatterData.sort((a, b) => b[1] - a[1]);
+    
                     const yearsAll = scatterData.map(d => d[0]);
                     const scoresAll = scatterData.map(d => d[1]);
                     const minYear = Math.min(...yearsAll);
                     const maxYear = Math.max(...yearsAll);
                     const minScore = Math.min(...scoresAll);
                     const maxScore = Math.max(...scoresAll);
-
+    
                     const bubbleDom = document.getElementById('polymathScatter');
                     const bubbleChart = echarts.init(bubbleDom);
-
+    
                     const bubbleOption = {
                         backgroundColor: '#f5f0e6',
                         title: {
@@ -1722,12 +1794,12 @@
                                 symbolSize: function (data) {
                                     const minSize = 12;
                                     const maxSize = 70;
-                                    const score = data[1]; // polymath_score_mapped
+                                    const score = data[1];
                                     const normalized = (score - minScore) / (maxScore - minScore || 1);
                                     return minSize + normalized * (maxSize - minSize);
                                 },
                                 itemStyle: {
-                                    color: 'rgba(34, 139, 140, 0.65)', // elegant teal
+                                    color: 'rgba(34, 139, 140, 0.65)',
                                     borderColor: '#5A4636',
                                     borderWidth: 1
                                 },
@@ -1738,10 +1810,9 @@
                             }
                         ]
                     };
-
+    
                     bubbleChart.setOption(bubbleOption);
                     window.addEventListener('resize', () => bubbleChart.resize());
-
                 }
             });
         });
