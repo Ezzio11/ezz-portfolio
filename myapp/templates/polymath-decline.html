@@ -1452,15 +1452,21 @@
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('visible');
+            
                         if (entry.target.id === 'geography') {
-                            const bars = document.querySelectorAll('.country-bar-fill');
-                            bars.forEach(bar => {
+                            document.querySelectorAll('.country-bar-fill').forEach(bar => {
                                 bar.style.width = bar.style.width;
                             });
                         }
+            
+                        // Stop observing once visible (performance)
+                        observer.unobserve(entry.target);
                     }
                 });
-            }, { threshold: 0.2 });
+            }, {
+                rootMargin: '0px 0px -10% 0px', // triggers slightly before fully in view
+                threshold: 0.05                  // 5% visible is 
+            });
 
             fadeElements.forEach(el => observer.observe(el));
             timelineItems.forEach(el => observer.observe(el));
