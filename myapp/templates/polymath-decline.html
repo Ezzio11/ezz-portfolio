@@ -258,31 +258,32 @@
             right: auto;
         }
         
-        /* Carousel arrow styling */
-        .scroll-left, .scroll-right,
-        .gallery-left, .gallery-right {
-          opacity: 0;
-          transform: scale(0.9);
-          transition: all 0.3s ease;
+        .lightbox-nav {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          background: rgba(0,0,0,0.5);
+          color: white;
+          border: none;
+          border-radius: 50%;
+          width: 48px;
+          height: 48px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          z-index: 10;
+          opacity: 0.7;
+          transition: opacity 0.3s;
         }
         
-        .polymath-scroller:hover ~ .scroll-left,
-        .polymath-scroller:hover ~ .scroll-right,
-        .scroll-left:hover, .scroll-right:hover,
-        .gallery-scroller:hover ~ .gallery-left,
-        .gallery-scroller:hover ~ .gallery-right,
-        .gallery-left:hover, .gallery-right:hover {
+        .lightbox-nav:hover {
           opacity: 1;
-          transform: scale(1);
+          background: rgba(0,0,0,0.7);
         }
         
-        /* Always show on touch devices */
-        @media (pointer: coarse) {
-          .scroll-left, .scroll-right,
-          .gallery-left, .gallery-right {
-            opacity: 1;
-            background: rgba(245, 240, 230, 0.9);
-          }
+        .lightbox-nav svg {
+          pointer-events: none;
         }
     </style>
 </head>
@@ -1339,48 +1340,87 @@
     
             // ===== LIGHTBOX/MODAL SETUP =====
             function setupLightbox() {
-                // Create modal element if it doesn't exist
-                let modal = document.getElementById('lightboxModal');
-                if (!modal) {
-                    modal = document.createElement('div');
-                    modal.id = 'lightboxModal';
-                    modal.className = 'fixed inset-0 bg-black/90 z-50 hidden flex items-center justify-center p-4';
-                    modal.innerHTML = `
-                        <div class="relative max-w-full max-h-full">
-                            <img id="lightboxImage" class="max-w-[90vw] max-h-[90vh] object-contain">
-                            <button class="absolute -top-12 right-0 text-white text-4xl hover:text-oldgold transition-colors">&times;</button>
-                        </div>
-                    `;
-                    document.body.appendChild(modal);
-                    
-                    // Close modal
-                    modal.addEventListener('click', (e) => {
-                        if (e.target === modal || e.target.tagName === 'BUTTON') {
-                            modal.classList.add('hidden');
-                            document.getElementById('lightboxImage').src = '';
-                        }
-                    });
-                    
-                    // Close on ESC key
-                    document.addEventListener('keydown', (e) => {
-                        if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
-                            modal.classList.add('hidden');
-                            document.getElementById('lightboxImage').src = '';
-                        }
-                    });
-                }
+              // Create modal element if it doesn't exist
+              let modal = document.getElementById('lightboxModal');
+              const lightboxImages = Array.from(document.querySelectorAll('.timeline-img-btn[data-src]'));
+              let currentIndex = 0;
+              
+              if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'lightboxModal';
+                modal.className = 'fixed inset-0 bg-black/90 z-50 hidden flex items-center justify-center p-4';
+                modal.innerHTML = `
+                  <div class="relative max-w-full max-h-full">
+                    <img id="lightboxImage" class="max-w-[90vw] max-h-[90vh] object-contain">
+                    <button class="absolute -top-12 right-0 text-white text-4xl hover:text-oldgold transition-colors">&times;</button>
+                    <button class="lightbox-nav left-4 md:left-8" id="lightboxPrev">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </button>
+                    <button class="lightbox-nav right-4 md:right-8" id="lightboxNext">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                  </div>
+                `;
+                document.body.appendChild(modal);
                 
-                // Handle image clicks using event delegation
-                document.addEventListener('click', (e) => {
-                    const imgBtn = e.target.closest('.timeline-img-btn');
-                    if (imgBtn && imgBtn.dataset.src) {
-                        e.preventDefault();
-                        const modal = document.getElementById('lightboxModal');
-                        const modalImg = document.getElementById('lightboxImage');
-                        modalImg.src = imgBtn.dataset.src;
-                        modal.classList.remove('hidden');
+                // Navigation functions
+                const navigate = (direction) => {
+                  if (direction === 'prev') {
+                    currentIndex = (currentIndex - 1 + lightboxImages.length) % lightboxImages.length;
+                  } else {
+                    currentIndex = (currentIndex + 1) % lightboxImages.length;
+                  }
+                  updateLightboxImage();
+                };
+                
+                const updateLightboxImage = () => {
+                  if (lightboxImages[currentIndex]) {
+                    document.getElementById('lightboxImage').src = lightboxImages[currentIndex].dataset.src;
+                  }
+                };
+                
+                // Button event listeners
+                document.getElementById('lightboxPrev').addEventListener('click', () => navigate('prev'));
+                document.getElementById('lightboxNext').addEventListener('click', () => navigate('next'));
+                
+                // Keyboard navigation
+                document.addEventListener('keydown', (e) => {
+                  if (!modal.classList.contains('hidden')) {
+                    if (e.key === 'ArrowLeft') {
+                      navigate('prev');
+                      e.preventDefault();
+                    } else if (e.key === 'ArrowRight') {
+                      navigate('next');
+                      e.preventDefault();
                     }
+                  }
                 });
+                
+                // Close modal
+                modal.addEventListener('click', (e) => {
+                  if (e.target === modal || e.target.closest('button:not(.lightbox-nav)')) {
+                    modal.classList.add('hidden');
+                  }
+                });
+              }
+              
+              // Update the click handler for image buttons
+              document.addEventListener('click', (e) => {
+                const imgBtn = e.target.closest('.timeline-img-btn');
+                if (imgBtn && imgBtn.dataset.src) {
+                  e.preventDefault();
+                  currentIndex = lightboxImages.indexOf(imgBtn);
+                  const modal = document.getElementById('lightboxModal');
+                  const modalImg = document.getElementById('lightboxImage');
+                  modalImg.src = imgBtn.dataset.src;
+                  modal.classList.remove('hidden');
+                  modal.focus(); // Focus the modal for keyboard navigation
+                }
+              });
             }
     
             // Initialize lightbox early
@@ -1447,11 +1487,17 @@
                 rootMargin: '0px 0px -10% 0px',
                 threshold: 0.05
             });
-                
+    
             // ===== CAROUSEL FUNCTION =====
-            function setupCarousel(container, leftBtn, rightBtn, scrollAmount = 320) {
+            function setupAutoScroller(containerSelector, leftSelector, rightSelector) {
+              const container = document.querySelector(containerSelector);
+              const leftBtn = document.querySelector(leftSelector);
+              const rightBtn = document.querySelector(rightSelector);
+            
               if (!container) return;
-              
+            
+              // Arrow Navigation
+              const scrollAmount = 320; // Match your card width
               const scrollTo = (direction) => {
                 const currentScroll = container.scrollLeft;
                 const newScroll = direction === 'left' 
@@ -1463,52 +1509,56 @@
                   behavior: 'smooth'
                 });
               };
-              
-              // Add click handlers
-              if (leftBtn) leftBtn.addEventListener('click', () => scrollTo('left'));
-              if (rightBtn) rightBtn.addEventListener('click', () => scrollTo('right'));
-              
-              // Make container focusable
-              container.setAttribute('tabindex', '0');
-              
-              // Keyboard navigation
-              document.addEventListener('keydown', (e) => {
-                if (e.target === document.body || e.target === container) {
-                  if (e.key === 'ArrowLeft') {
-                    scrollTo('left');
-                    e.preventDefault();
-                  } else if (e.key === 'ArrowRight') {
-                    scrollTo('right');
-                    e.preventDefault();
-                  }
-                }
-              });
             
-              // Improved touch/swipe support
+              // Click Handlers
+              leftBtn?.addEventListener('click', () => scrollTo('left'));
+              rightBtn?.addEventListener('click', () => scrollTo('right'));
+            
+              // Touch Gestures (Swipe)
               let touchStartX = 0;
-              let touchStartTime = 0;
-              const swipeThreshold = 50;
-              const maxSwipeTime = 300;
+              let touchEndX = 0;
             
               container.addEventListener('touchstart', (e) => {
-                touchStartX = e.touches[0].clientX;
-                touchStartTime = Date.now();
+                touchStartX = e.changedTouches[0].screenX;
               }, { passive: true });
             
               container.addEventListener('touchend', (e) => {
-                const touchEndX = e.changedTouches[0].clientX;
-                const touchEndTime = Date.now();
-                const distance = touchStartX - touchEndX;
-                const time = touchEndTime - touchStartTime;
-                
-                if (Math.abs(distance) > swipeThreshold && time < maxSwipeTime) {
-                  if (distance > 0) {
-                    scrollTo('right');
-                  } else {
-                    scrollTo('left');
-                  }
-                }
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
               }, { passive: true });
+            
+              const handleSwipe = () => {
+                const threshold = 50; // Minimum swipe distance
+                if (touchStartX - touchEndX > threshold) {
+                  scrollTo('right'); // Swipe left
+                } else if (touchEndX - touchStartX > threshold) {
+                  scrollTo('left'); // Swipe right
+                }
+              };
+            
+              // Keyboard Navigation (Optional)
+              container.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') scrollTo('left');
+                if (e.key === 'ArrowRight') scrollTo('right');
+              });
+            
+              // Auto-scroll (Keep your existing logic)
+              let interval;
+              const startAutoScroll = () => {
+                interval = setInterval(() => {
+                  const isAtEnd = container.scrollLeft + container.clientWidth >= container.scrollWidth - 1;
+                  scrollTo(isAtEnd ? 'left' : 'right');
+                }, 5000);
+              };
+            
+              // Pause on interaction
+              const pauseAutoScroll = () => clearInterval(interval);
+              
+              container.addEventListener('mouseenter', pauseAutoScroll);
+              container.addEventListener('mouseleave', startAutoScroll);
+              container.addEventListener('touchstart', pauseAutoScroll);
+            
+              startAutoScroll();
             }
     
             // ===== INITIALIZATION =====
@@ -1543,18 +1593,9 @@
             setupLanguageButton('lang-ar', 'ar');
     
             // Initialize carousels
-            setupCarousel(
-              document.querySelector('.polymath-scroller'),
-              document.querySelector('.scroll-left'),
-              document.querySelector('.scroll-right')
-            );
-            
-            setupCarousel(
-              document.querySelector('.gallery-scroller'),
-              document.querySelector('.gallery-left'),
-              document.querySelector('.gallery-right')
-            );
-            
+            setupAutoScroller('.polymath-scroller', '.scroll-left', '.scroll-right', 320, 5000);
+            setupAutoScroller('.gallery-scroller', '.gallery-left', '.gallery-right', 300, 5000);
+    
             // Initial load
             const initialLang = localStorage.getItem('lang') || 'en';
             i18n.setLanguage(initialLang);
