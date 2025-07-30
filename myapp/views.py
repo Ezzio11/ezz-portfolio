@@ -180,30 +180,22 @@ def projects(request):
     return render(request, 'projects.html')
 
 def fetch_polymaths(lang="en"):
-    """Fetch polymaths and return only fields for the given language."""
-    rows = (
-        supabase
-        .table("polymaths")
-        .select("*")
-        .order("sort_order")
-        .execute()
-        .data
-    )
-
-    # Normalize columns - USE .get() WITH DEFAULTS
-    data = []
-    for row in rows:
-        data.append({
-            "id": row.get("id"),
-            "name": row.get(f"name_{lang}", ""),
-            "fields": row.get(f"fields_{lang}", ""),
-            "quote": row.get(f"quote_{lang}", ""),
-            "description": row.get(f"description_{lang}", ""),
-            "image_url": row.get("image_url", ""),
-            "sort_order": row.get("sort_order", 0), 
-        })
-    return data
-
+    rows = supabase.table("polymaths").select("*").order("sort_order").execute().data
+    
+    return [{
+        "id": row["id"],
+        "name_en": row["name_en"],  # All language variants
+        "name_ar": row["name_ar"],
+        "fields_en": row["fields_en"],
+        "fields_ar": row["fields_ar"],
+        "quote_en": row["quote_en"],
+        "quote_ar": row["quote_ar"],
+        "description_en": row["description_en"],
+        "description_ar": row["description_ar"],
+        "image_url": row["image_url"],
+        "sort_order": row["sort_order"]
+    } for row in rows]
+    
 def decline_of_polymath(request):
     # Default English for SSR
     polymaths = fetch_polymaths(lang="en")
@@ -214,8 +206,6 @@ def decline_of_polymath(request):
 def polymaths_api(request):
     lang = request.GET.get("lang", "en")
     return JsonResponse(fetch_polymaths(lang), safe=False)
-
-
 
 # ML Pages
 def linear_regression(request):
