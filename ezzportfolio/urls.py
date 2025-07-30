@@ -34,4 +34,5 @@ urlpatterns = [
     path('time_series_analysis/', views.time_series_analysis, name='time_series_analysis'),
     path('mstag/the-decline-of-the-polymath/', views.decline_of_polymath, name='decline_of_polymath'),
     path('mstag/<slug:slug>/', views.article_detail, name='article_detail'),
+    path("api/polymaths/", views.polymaths_api, name="polymaths_api"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
