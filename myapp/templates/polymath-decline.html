@@ -1248,40 +1248,55 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            async function loadLanguage(lang) {
-                // Save language preference
-                localStorage.setItem('lang', lang);
-
-                // Fetch translation file
-                const response = await fetch(`/static/i18n/${lang}.json`);
-                const translations = await response.json();
-
-                // Apply translations
-                document.querySelectorAll("[data-i18n]").forEach(el => {
-                    const key = el.getAttribute("data-i18n");
-                    if (translations[key]) {
-                        el.textContent = translations[key];
-                    }
-                });
-
-                // RTL support for Arabic
-                if (lang === "ar") {
-                    document.documentElement.dir = "rtl";
-                    document.body.classList.add("rtl");
-                } else {
-                    document.documentElement.dir = "ltr";
-                    document.body.classList.remove("rtl");
-                }
+    document.addEventListener('DOMContentLoaded', () => {
+    
+        async function loadLanguage(lang) {
+            // Save preference
+            localStorage.setItem('lang', lang);
+    
+            // Fetch polymaths dynamically
+            const response = await fetch(`/api/polymaths/?lang=${lang}`);
+            const polymaths = await response.json();
+    
+            // Replace polymath cards dynamically
+            const container = document.querySelector('.polymath-scroller');
+            container.innerHTML = ''; // clear old cards
+    
+            polymaths.forEach(pm => {
+                const card = document.createElement('button');
+                card.className = "timeline-img-btn polymath-card flex-shrink-0 w-80 bg-white/90 p-6 rounded-lg shadow-lg border border-deepbrown/10";
+                card.setAttribute('data-src', pm.image_url);
+    
+                card.innerHTML = `
+                    <div class="h-48 mb-4 bg-parchment flex items-center justify-center overflow-hidden rounded">
+                        <img src="${pm.image_url}" alt="${pm.name}" class="h-full object-cover" loading="lazy">
+                    </div>
+                    <h3 class="font-garamond text-2xl text-oxblood mb-2">${pm.name}</h3>
+                    <p class="text-sm text-deepbrown/70 mb-3">${pm.fields}</p>
+                    <div class="blockquote-plaque text-sm">
+                        <p class="text-deepbrown/80">${pm.quote}</p>
+                    </div>
+                    <p class="text-xs text-deepbrown/60">${pm.description}</p>
+                `;
+                container.appendChild(card);
+            });
+    
+            // RTL/LTR
+            if (lang === "ar") {
+                document.documentElement.dir = "rtl";
+                document.body.classList.add("rtl");
+            } else {
+                document.documentElement.dir = "ltr";
+                document.body.classList.remove("rtl");
             }
-
-            // Language buttons
-            document.getElementById("lang-en").addEventListener("click", () => loadLanguage("en"));
-            document.getElementById("lang-ar").addEventListener("click", () => loadLanguage("ar"));
-
-            // Load preferred language or default to English
-            const savedLang = localStorage.getItem('lang') || 'en';
-            loadLanguage(savedLang);
+        }
+    
+        // Event listeners
+        document.getElementById("lang-en").addEventListener("click", () => loadLanguage("en"));
+        document.getElementById("lang-ar").addEventListener("click", () => loadLanguage("ar"));
+    
+        // Initial load
+        loadLanguage(localStorage.getItem('lang') || 'en');
         
             // Fade-in animations
             const fadeElements = document.querySelectorAll('.fade-in');
