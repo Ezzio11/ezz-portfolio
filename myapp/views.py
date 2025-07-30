@@ -179,32 +179,33 @@ def chatbot(request):
 def projects(request):
     return render(request, 'projects.html')
 
-def fetch_polymaths(lang=None):
-    """Fetch polymaths from Supabase, optionally filtered by language."""
-    supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
-    query = (
+def fetch_polymaths():
+    """Fetch all polymaths from Supabase (all columns)."""
+    return (
         supabase
         .table("polymaths")
         .select("*")
         .order("sort_order")
+        .execute()
+        .data
     )
-    if lang:
-        query = query.eq("lang", lang)
-
-    return query.execute().data
 
 
 def decline_of_polymath(request):
-    # Load initial data (default to English)
-    polymaths = fetch_polymaths(lang="en")
+    # Fetch all polymaths (we'll pick en or ar on the frontend)
+    polymaths = fetch_polymaths()
     return render(request, "polymath-decline.html", {
         "polymaths": polymaths
     })
 
 
 def polymaths_api(request):
-    lang = request.GET.get("lang", "en")
-    return JsonResponse(fetch_polymaths(lang), safe=False)
+    """
+    API endpoint that returns all polymaths, frontend chooses which language
+    fields to use.
+    """
+    return JsonResponse(fetch_polymaths(), safe=False)
+
 
 # ML Pages
 def linear_regression(request):
