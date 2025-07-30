@@ -1303,6 +1303,38 @@
               this.applyTranslations();
               this.applyDirection();
             }
+
+            async function initializePolymathCarousel() {
+              const container = document.querySelector('.polymath-scroller');
+              const initialLang = localStorage.getItem('lang') || 'en';
+              
+              try {
+                // First try to load from cache
+                if (!polymathCache[initialLang]) {
+                  const response = await fetch('/api/polymaths/');
+                  if (!response.ok) throw new Error('Failed to fetch polymaths');
+                  polymathCache[initialLang] = await response.json();
+                }
+                
+                // Render initial data
+                renderPolymaths(polymathCache[initialLang], initialLang);
+                
+                // Initialize carousel controls
+                setupAutoScroller(
+                  '.polymath-scroller', 
+                  '.scroll-left', 
+                  '.scroll-right'
+                );
+                
+              } catch (error) {
+                console.error('Error initializing polymath carousel:', error);
+                container.innerHTML = `
+                  <div class="text-center py-8 text-oxblood">
+                    Failed to load polymath data. Please refresh the page.
+                  </div>
+                `;
+              }
+            }
         
             applyTranslations() {
               document.querySelectorAll('[data-i18n]').forEach(element => {
@@ -1337,7 +1369,9 @@
                 ar: null
             };
             let debounceTimer;
-    
+
+            initializePolymathCarousel();
+
             // ===== LIGHTBOX/MODAL SETUP =====
             function setupLightbox() {
               // Create modal element if it doesn't exist
@@ -1489,20 +1523,21 @@
             });
     
             // ===== CAROUSEL FUNCTION =====
-            function setupAutoScroller(containerSelector, leftSelector, rightSelector) {
+            function setupAutoScroller(containerSelector, prevSelector, nextSelector) {
               const container = document.querySelector(containerSelector);
-              const leftBtn = document.querySelector(leftSelector);
-              const rightBtn = document.querySelector(rightSelector);
-            
+              const prevBtn = document.querySelector(prevSelector);
+              const nextBtn = document.querySelector(nextSelector);
+              
               if (!container) return;
             
-              // Arrow Navigation
-              const scrollAmount = 320; // Match your card width
+              const scrollAmount = containerSelector.includes('polymath') ? 320 : 280;
+              
               const scrollTo = (direction) => {
                 const currentScroll = container.scrollLeft;
-                const newScroll = direction === 'left' 
+                const maxScroll = container.scrollWidth - container.clientWidth;
+                const newScroll = direction === 'prev'
                   ? Math.max(0, currentScroll - scrollAmount)
-                  : currentScroll + scrollAmount;
+                  : Math.min(maxScroll, currentScroll + scrollAmount);
                 
                 container.scrollTo({
                   left: newScroll,
@@ -1510,39 +1545,40 @@
                 });
               };
             
-              // Click Handlers
-              leftBtn?.addEventListener('click', () => scrollTo('left'));
-              rightBtn?.addEventListener('click', () => scrollTo('right'));
+              // Button controls
+              prevBtn?.addEventListener('click', () => scrollTo('prev'));
+              nextBtn?.addEventListener('click', () => scrollTo('next'));
             
-              // Touch Gestures (Swipe)
+              // Touch/swipe support
               let touchStartX = 0;
-              let touchEndX = 0;
-            
               container.addEventListener('touchstart', (e) => {
-                touchStartX = e.changedTouches[0].screenX;
+                touchStartX = e.touches[0].clientX;
               }, { passive: true });
             
               container.addEventListener('touchend', (e) => {
-                touchEndX = e.changedTouches[0].screenX;
-                handleSwipe();
+                const touchEndX = e.changedTouches[0].clientX;
+                const diff = touchStartX - touchEndX;
+                if (Math.abs(diff) > 50) {
+                  scrollTo(diff > 0 ? 'next' : 'prev');
+                }
               }, { passive: true });
             
-              const handleSwipe = () => {
-                const threshold = 50; // Minimum swipe distance
-                if (touchStartX - touchEndX > threshold) {
-                  scrollTo('right'); // Swipe left
-                } else if (touchEndX - touchStartX > threshold) {
-                  scrollTo('left'); // Swipe right
-                }
-              };
-            
-              // Keyboard Navigation (Optional)
+              // Keyboard navigation
               container.addEventListener('keydown', (e) => {
-                if (e.key === 'ArrowLeft') scrollTo('left');
-                if (e.key === 'ArrowRight') scrollTo('right');
+                if (e.key === 'ArrowLeft') {
+                  scrollTo('prev');
+                  e.preventDefault();
+                } else if (e.key === 'ArrowRight') {
+                  scrollTo('next');
+                  e.preventDefault();
+                }
               });
+              
+              // Make container focusable
+              container.setAttribute('tabindex', '0');
+            }
             
-              // Auto-scroll (Keep your existing logic)
+              // Auto-scroll
               let interval;
               const startAutoScroll = () => {
                 interval = setInterval(() => {
@@ -1567,25 +1603,21 @@
               const btn = document.getElementById(id);
               if (btn) {
                 btn.addEventListener('click', async () => {
-                  await i18n.setLanguage(lang); // Update UI translations
+                  await i18n.setLanguage(lang);
                   
-                  // Reload polymath data for the new language
-                  const container = document.querySelector('.polymath-scroller');
-                  container.classList.add('loading');
-                  
-                  try {
-                    if (!polymathCache[lang]) {
-                      const response = await fetch(`/api/polymaths/`);
+                  // Check if we already have data for this language
+                  if (!polymathCache[lang]) {
+                    try {
+                      const response = await fetch('/api/polymaths/');
                       if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
                       polymathCache[lang] = await response.json();
+                    } catch (err) {
+                      console.error("Failed to fetch polymaths:", err);
+                      return;
                     }
-                    renderPolymaths(polymathCache[lang], lang);
-                  } catch (err) {
-                    console.error("Failed to fetch polymaths:", err);
-                    container.innerHTML = '<div class="text-center py-8 text-red-600">Failed to load data. Please try again.</div>';
-                  } finally {
-                    container.classList.remove('loading');
                   }
+                  
+                  renderPolymaths(polymathCache[lang], lang);
                 });
               }
             }
