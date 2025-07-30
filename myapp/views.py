@@ -155,15 +155,32 @@ def article_detail(request, slug):
 
 def mstag(request):
     try:
-        response = (
+        # First get all custom articles
+        custom_articles = (
             supabase.table("articles")
-            .select("id, title, description, image, is_custom, custom_url, date_published, source, slug")
-            .or_("and(source.eq.mstag,is_custom.is.false)", "is_custom.is.true")
-            .order("date_published", desc=True)
+            .select("*")
+            .eq("is_custom", True)
             .execute()
+        ).data
+
+        # Then get regular mstag articles
+        regular_articles = (
+            supabase.table("articles")
+            .select("*")
+            .eq("source", "mstag")
+            .eq("is_custom", False)
+            .execute()
+        ).data
+
+        # Combine and sort
+        articles = sorted(
+            custom_articles + regular_articles,
+            key=lambda x: x["date_published"],
+            reverse=True
         )
-        articles = response.data
+
         return render(request, "mstag.html", {"articles": articles})
+        
     except Exception as e:
         return HttpResponse(f"Query failed: {str(e)}", status=500)
 
