@@ -1258,7 +1258,7 @@
         
             async loadTranslations(lang) {
               try {
-                const response = await fetch(`/i18n/${lang}.json`);
+                const response = await fetch(`/static/i18n/${lang}.json`);
                 if (!response.ok) throw new Error('Translation file not found');
                 this.translations[lang] = await response.json();
               } catch (error) {
