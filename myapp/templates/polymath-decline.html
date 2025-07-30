@@ -384,49 +384,58 @@
         <div class="max-w-7xl mx-auto fade-in">
             <div class="flex items-center mb-12">
                 <span class="font-garamond text-4xl text-oldgold mr-4">★</span>
-                <h2 class="font-garamond text-3xl md:text-4xl text-oxblood border-b border-oldgold/30 pb-2">
+                <h2 data-i18n="hall.title" class="font-garamond text-3xl md:text-4xl text-oxblood border-b border-oldgold/30 pb-2">
                     Hall of Fame: The Great Polymaths
                 </h2>
             </div>
     
             <div class="pl-6 mb-10">
-                <p class="mb-6 text-lg">
-                    Step into the gallery of extraordinary minds who wove knowledge across disciplines, creating tapestries of innovation that still inspire today.
+                <p data-i18n="hall.intro" class="mb-6 text-lg">
+                    Step into the gallery of extraordinary minds who wove knowledge across disciplines,
+                    creating tapestries of innovation that still inspire today.
                 </p>
             </div>
     
-            <!-- Horizontal Scroll Container -->
-            <div class="relative pl-6">
-                <!-- Carousel buttons -->
-                <button class="scroll-left absolute -left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-oldgold/30 flex items-center justify-center hover:bg-oldgold/50 transition-colors z-10">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-oxblood" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                    </svg>
-                </button>
-                <button class="scroll-right absolute -right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-oldgold/30 flex items-center justify-center hover:bg-oldgold/50 transition-colors z-10">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-oxblood" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                </button>
+        <!-- Horizontal Scroll Container -->
+        <div class="relative pl-6">
+            <!-- Carousel buttons -->
+            <button class="scroll-left absolute -left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-oldgold/30 flex items-center justify-center hover:bg-oldgold/50 transition-colors z-10">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-oxblood" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+            </button>
+            <button class="scroll-right absolute -right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-oldgold/30 flex items-center justify-center hover:bg-oldgold/50 transition-colors z-10">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-oxblood" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </button>
+
+            <div class="flex space-x-8 pb-8 overflow-x-auto scrollbar-hide polymath-scroller scroll-smooth">
     
-                <div class="flex space-x-8 pb-8 overflow-x-auto scrollbar-hide polymath-scroller scroll-smooth">
-                    {% for pm in polymaths %}
-                    <button class="timeline-img-btn polymath-card flex-shrink-0 w-80 bg-white/90 p-6 rounded-lg shadow-lg border border-deepbrown/10"
-                            data-src="{{ pm.image_url }}">
-                        <div class="h-48 mb-4 bg-parchment flex items-center justify-center overflow-hidden rounded">
-                            <img src="{{ pm.image_url }}" alt="{{ pm.name }}" class="h-full object-cover" loading="lazy">
-                        </div>
-                        <h3 class="font-garamond text-2xl text-oxblood mb-2">{{ pm.name }}</h3>
-                        <p class="text-sm text-deepbrown/70 mb-3">{{ pm.fields }}</p>
-                        <div class="blockquote-plaque text-sm">
-                            <p class="text-deepbrown/80">{{ pm.quote }}</p>
-                        </div>
-                        <p class="text-xs text-deepbrown/60">{{ pm.desc }}</p>
-                    </button>
-                    {% endfor %}
-                </div>
-            </div>
+            {% for poly in polymaths %}
+            <button class="timeline-img-btn polymath-card flex-shrink-0 w-80 bg-white/90 p-6 rounded-lg shadow-lg border border-deepbrown/10"
+                    data-src="{{ poly.data_src }}">
+              <div class="h-48 mb-4 bg-parchment flex items-center justify-center overflow-hidden rounded">
+                <img src="{{ poly.image_url }}" alt="{{ poly.name }}" class="h-full object-cover" loading="lazy">
+              </div>
+              <h3 class="font-garamond text-2xl text-oxblood mb-2">{{ poly.name }}</h3>
+              <p class="text-sm text-deepbrown/70 mb-3">
+                {{ poly.fields|join:" • " }}
+              </p>
+              <div class="blockquote-plaque text-sm">
+                <p class="text-deepbrown/80">
+                  {{ poly.quote }}
+                </p>
+              </div>
+              <p class="text-xs text-deepbrown/60">
+                {{ poly.description }}
+              </p>
+            </button>
+            {% endfor %}
+    
+          </div>
         </div>
+      </div>
 
             <div class="pl-6 mt-12 text-center">
                 <div class="blockquote-plaque max-w-xl mx-auto">
