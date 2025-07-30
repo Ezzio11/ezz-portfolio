@@ -1420,7 +1420,7 @@
                 rootMargin: '0px 0px -10% 0px',
                 threshold: 0.05
             });
-    
+                
             // ===== CAROUSEL FUNCTION =====
             function setupAutoScroller(containerSelector, leftSelector, rightSelector) {
               const container = document.querySelector(containerSelector);
@@ -1429,8 +1429,9 @@
             
               if (!container) return;
             
-              // Arrow Navigation
-              const scrollAmount = 320; // Match your card width
+              // Set a fixed scroll amount based on your card width + gap
+              const scrollAmount = 320; // Adjust this based on your card width + gap
+            
               const scrollTo = (direction) => {
                 const currentScroll = container.scrollLeft;
                 const newScroll = direction === 'left' 
@@ -1443,11 +1444,16 @@
                 });
               };
             
-              // Click Handlers
-              leftBtn?.addEventListener('click', () => scrollTo('left'));
-              rightBtn?.addEventListener('click', () => scrollTo('right'));
+              // Add click handlers if buttons exist
+              if (leftBtn) {
+                leftBtn.addEventListener('click', () => scrollTo('left'));
+              }
+              
+              if (rightBtn) {
+                rightBtn.addEventListener('click', () => scrollTo('right'));
+              }
             
-              // Touch Gestures (Swipe)
+              // Touch/swipe support
               let touchStartX = 0;
               let touchEndX = 0;
             
@@ -1461,21 +1467,15 @@
               }, { passive: true });
             
               const handleSwipe = () => {
-                const threshold = 50; // Minimum swipe distance
+                const threshold = 50;
                 if (touchStartX - touchEndX > threshold) {
-                  scrollTo('right'); // Swipe left
+                  scrollTo('right');
                 } else if (touchEndX - touchStartX > threshold) {
-                  scrollTo('left'); // Swipe right
+                  scrollTo('left');
                 }
               };
             
-              // Keyboard Navigation (Optional)
-              container.addEventListener('keydown', (e) => {
-                if (e.key === 'ArrowLeft') scrollTo('left');
-                if (e.key === 'ArrowRight') scrollTo('right');
-              });
-            
-              // Auto-scroll (Keep your existing logic)
+              // Auto-scroll
               let interval;
               const startAutoScroll = () => {
                 interval = setInterval(() => {
@@ -1484,7 +1484,6 @@
                 }, 5000);
               };
             
-              // Pause on interaction
               const pauseAutoScroll = () => clearInterval(interval);
               
               container.addEventListener('mouseenter', pauseAutoScroll);
@@ -1526,8 +1525,8 @@
             setupLanguageButton('lang-ar', 'ar');
     
             // Initialize carousels
-            setupAutoScroller('.polymath-scroller', '.scroll-left', '.scroll-right', 320, 5000);
-            setupAutoScroller('.gallery-scroller', '.gallery-left', '.gallery-right', 300, 5000);
+            setupAutoScroller('.polymath-scroller', '.scroll-left', '.scroll-right');
+            setupAutoScroller('.gallery-scroller', '.gallery-left', '.gallery-right');
     
             // Initial load
             const initialLang = localStorage.getItem('lang') || 'en';
