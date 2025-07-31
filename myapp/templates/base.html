@@ -295,7 +295,7 @@
             localStorage.setItem('chatBubbleTop', bubble.style.top);
         }
     
-        // Improved chat form submission logic
+        // Chat form submission logic
         chatForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const message = chatInput.value.trim();
@@ -304,17 +304,18 @@
             // Store current scroll position
             const scrollPosition = window.scrollY;
             
-            // Create a temporary element to maintain focus
-            const tempFocusHolder = document.createElement('div');
-            tempFocusHolder.tabIndex = -1;
-            tempFocusHolder.style.position = 'absolute';
-            tempFocusHolder.style.left = '-9999px';
-            document.body.appendChild(tempFocusHolder);
-            tempFocusHolder.focus();
-            
+            // Create message element
             appendMessage('You', message);
             chatInput.value = '';
             chatInput.disabled = true;
+        
+            // Create bot message element
+            const botMessageDiv = document.createElement('div');
+            botMessageDiv.style.marginBottom = '10px';
+            botMessageDiv.innerHTML = '<strong>Bot:</strong> ';
+            chatMessages.appendChild(botMessageDiv);
+            const botMessageContent = document.createTextNode('');
+            botMessageDiv.appendChild(botMessageContent);
         
             try {
                 const response = await fetch('/chatbot/api/', {
@@ -326,22 +327,35 @@
                     body: JSON.stringify({ prompt: message }),
                 });
         
-                if (!response.ok) throw new Error('Network error');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
         
-                const data = await response.json();
-                appendMessage('Bot', data.response || 'Sorry, no reply.');
+                // Handle streaming response
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let done = false;
+        
+                while (!done) {
+                    const { value, done: readerDone } = await reader.read();
+                    done = readerDone;
+                    if (value) {
+                        const chunk = decoder.decode(value, { stream: true });
+                        botMessageContent.nodeValue += chunk;
+                        // Scroll to bottom without affecting page scroll
+                        const scrollPosition = window.scrollY;
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                        window.scrollTo(0, scrollPosition);
+                    }
+                }
         
             } catch (error) {
-                appendMessage('Bot', 'Sorry, something went wrong.');
+                console.error('Error:', error);
+                botMessageContent.nodeValue = 'An error occurred. Please try again.';
             } finally {
                 chatInput.disabled = false;
-                
-                // Remove the temporary focus holder
-                document.body.removeChild(tempFocusHolder);
-                
                 // Restore scroll position
                 window.scrollTo(0, scrollPosition);
-                
                 // Delay focus to prevent any potential scroll
                 setTimeout(() => {
                     focusWithoutScroll(chatInput);
