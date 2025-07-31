@@ -1,0 +1,124 @@
+[ABOUT]
+Full Name: Ezz Eldin Ahmed
+Title: Data Scientist and Statistical Modeler
+Location: Giza, Egypt
+Contact: 
+Phone: +20 01226566818
+Email: ezzeldinahmad96@gmail.com
+LinkedIn: linkedin.com/in/ezzeldinahmed11
+GitHub: github.com/Ezzio11
+WhatsApp: api.whatsapp.com/send?phone=01226566818
+
+[SKILLS]
+Statistical Data Analysis:
+- Python (Pandas, NumPy), R, Excel
+- End-to-end regression and forecasting tools
+
+Machine Learning:
+- Supervised and unsupervised learning
+- Scikit-learn, XGBoost, SHAP interpretation
+- Time series forecasting
+
+Web Development:
+- Full-stack with Python (Django, Flask)
+- Streamlit dashboards
+- Supabase backend
+
+Automation and Programming:
+- Python scripting
+- Data pipeline construction
+- Custom tool development
+
+Leadership:
+- Scholarship initiative leadership
+- Research center co-founder
+- Team coordination and management
+
+[PROJECTS]
+XANE Chatbot:
+AI assistant for portfolio interaction
+Features:
+- OpenRouter API integration
+- Multi-format file processing including text, PDF, and images
+- Flux and Turbo image generation
+- Supabase storage backend
+Tech stack: Python, Streamlit, Supabase
+
+Statistical Modeling Toolkit:
+Three specialized modules:
+1. Linear Regression
+2. Logistic Regression
+3. Time Series Analysis
+Features:
+- Automated diagnostics including multicollinearity and normality checks
+- Interactive Plotly visualizations
+- Detailed statistical explanations
+Tech stack: Python, Statsmodels, Streamlit
+
+Academic Research:
+1. Fixed Effects Panel Data Analysis of Spanish Dairy Farms
+- Analyzed 247 farms with 1482 observations
+- Key Findings: Cows 0.66 percent, Feed 0.38 percent as significant drivers
+- Tools: R, Panel Data Techniques
+
+2. Time Series Analysis of VIX
+- AR(I) and cubic models with 6.67 percent MAPE
+- Forecast range: 19.3 to 28.65 through 2034
+
+3. Blood Pressure Modeling
+- Key predictors: Age, BSA, Pulse with 90.1 percent adjusted R squared
+
+[MSTAG]
+Concept:
+Platform for interdisciplinary projects
+Philosophy: Where passion beats polish
+Focus areas: Intellectual exploration, creative experimentation, unconventional research
+
+Featured Publications:
+The Decline of the Polymath by Ezz Eldin Ahmed
+Data-driven exploration of specialization versus universal knowledge
+
+المثقف المؤسس في الرواية العربية المعاصرة
+The Founding Intellectual in Contemporary Arabic Literature by Ali Ashraf
+Analysis of Makram Mikhail in Ahmed Khaled Tawfik's Shaaeb
+Key Concepts: Gramsci's organic intellectual, Said's critical intellectual, political imagination
+
+عوائق التواصل وتأثيرها في بناء العلاقات الدولية
+Communication Barriers in International Relations by Abdullah Hossam
+Comprehensive analysis of:
+- Linguistic barriers such as polysemy and translation issues
+- Psychological barriers such as cognitive biases
+- Technical barriers such as digital divide and AI limitations
+Historical evolution from the 19th century to the present
+
+[TESTIMONIALS]
+Abdulrahman Mostafa Kamel, Statistician:
+Ezz combines persistence, kindness and hard work despite questionable movie tastes.
+
+Amr Walid, Economist:
+One of the most diligent people I know - always the first to help.
+
+Ali Ashraf, Political Researcher:
+Genuine, clear and dedicated in both work and friendship.
+
+Mohamed Elsamahy, Statistician:
+An outstanding team player with passion for continuous learning.
+
+[RESEARCH PUBLICATIONS]
+Sampling Techniques in Big Data
+Comparative analysis with IoT and social media case studies
+
+Social Media Impact Study
+Twelve-variable analysis across mental health, education and politics
+
+[COLLABORATION]
+Available for:
+- Data science consulting
+- Statistical modeling projects
+- Interdisciplinary research
+- MSTAG contributions
+
+Why Collaborate:
+- Rigorous analytical approach
+- Cross-domain expertise in statistics, technology and social science
+- Focus on actionable insights
