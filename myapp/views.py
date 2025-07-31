@@ -1,33 +1,131 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.http import FileResponse, JsonResponse, HttpResponse, Http404
-from django.core.mail import send_mail
-from django.conf import settings
-from django.views.decorators.http import require_http_methods
-import markdown
-from django.utils.safestring import mark_safe
+# portfolio/views.py
+
+# ==========================
+# Standard library imports
+# ==========================
 import os
-from supabase import create_client
-from .comments import get_comments
-from django.utils import timezone
+import json
 import logging
-from .comments import get_comments, add_comment
 from uuid import UUID
 
-# Supabase setup
-SUPABASE_URL = "https://gefqshdrgozkxdiuligl.supabase.co"
-SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlZnFzaGRyZ296a3hkaXVsaWdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM0NjgyNDMsImV4cCI6MjA1OTA0NDI0M30.QJbcNl479A5_tdq8lqNubMQS26fkwcPyk-zvTU0Ffy0"
+# ==========================
+# Django imports
+# ==========================
+from django.shortcuts import render, redirect
+from django.http import (
+    FileResponse,
+    JsonResponse,
+    HttpResponse,
+    Http404,
+    StreamingHttpResponse,
+)
+from django.core.mail import send_mail
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+from django.utils.safestring import mark_safe
+from django.conf import settings
+
+# ==========================
+# Third-party imports
+# ==========================
+import markdown
+from openai import OpenAI
+from supabase import create_client
+
+# ==========================
+# Local imports
+# ==========================
+from .comments import get_comments, add_comment
+
+# ==========================
+# Globals / setup
+# ==========================
+logger = logging.getLogger(__name__)
+OR_API_KEY = os.getenv("OR_API_KEY")
+OR_API_URL = os.getenv("OR_API_URL")
+MODEL = os.getenv("MODEL")
+
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
+# --------------------------
+# Chatbot helper
+# --------------------------
+def build_prompt(user_question: str) -> str:
+    """
+    Builds a prompt using knowledge.txt for the XANE chatbot.
+    """
+    knowledge_file = os.path.join(settings.BASE_DIR, "knowledge.txt")
+    with open(knowledge_file, "r", encoding="utf-8") as f:
+        knowledge = f.read()
+    return f"""
+You are XANE, the portfolio assistant for Ezz Eldin Ahmed.
+Answer questions strictly using the information below.
+If the answer is not found in this knowledge, say "I don't know".
+
+Knowledge:
+{knowledge}
+
+User question: {user_question}
+"""
+
+
+@csrf_exempt
+def chatbot(request):
+    if request.method != "POST":
+        return JsonResponse({"error": "POST required"}, status=400)
+
+    data = json.loads(request.body)
+    question = data.get("question", "")
+    prompt = build_prompt(question)
+
+    # Prepare request payload for OpenRouter
+    headers = {
+        "Authorization": f"Bearer {OR_API_KEY}",
+        "Content-Type": "application/json",
+    }
+
+    payload = {
+        "model": MODEL,
+        "messages": [
+            {"role": "user", "content": prompt}
+        ],
+        "stream": True  # enable streaming response
+    }
+
+    def stream():
+        with requests.post(OR_API_URL, headers=headers, json=payload, stream=True) as r:
+            r.raise_for_status()
+            for line in r.iter_lines():
+                if line:
+                    try:
+                        # OpenRouter uses JSON lines, parse each chunk
+                        data = json.loads(line.decode("utf-8"))
+                        delta = data.get("choices", [{}])[0].get("delta", {}).get("content", "")
+                        if delta:
+                            yield delta
+                    except Exception:
+                        continue
+
+    return StreamingHttpResponse(stream(), content_type="text/plain")
+
+
+# --------------------------
+# Contact view
+# --------------------------
 @require_http_methods(["GET", "POST"])
 def contact_view(request):
-    if request.method == 'POST':
-        is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
-        
-        name = request.POST.get('name')
-        email = request.POST.get('email')
-        subject = request.POST.get('subject')
-        message = request.POST.get('message')
-        
+    """
+    Handles contact form submissions and sends email.
+    """
+    if request.method == "POST":
+        is_ajax = request.headers.get("X-Requested-With") == "XMLHttpRequest"
+        name = request.POST.get("name")
+        email = request.POST.get("email")
+        subject = request.POST.get("subject")
+        message = request.POST.get("message")
+
         try:
             send_mail(
                 f"Contact Form: {subject}",
@@ -36,35 +134,37 @@ def contact_view(request):
                 [settings.CONTACT_EMAIL],
                 fail_silently=False,
             )
-            
             if is_ajax:
-                return JsonResponse({
-                    'status': 'success', 
-                    'message': 'Your message has been sent successfully!'
-                })
-            return redirect('contact')
-            
+                return JsonResponse(
+                    {"status": "success", "message": "Your message has been sent successfully!"}
+                )
+            return redirect("contact")
+
         except Exception as e:
+            logger.error(f"Contact form error: {e}")
             if is_ajax:
-                return JsonResponse({
-                    'status': 'error', 
-                    'message': 'Failed to send message. Please try again later.'
-                }, status=400)
-            return render(request, 'contact.html', {'error': str(e)})
-    
-    return render(request, 'contact.html')
+                return JsonResponse(
+                    {"status": "error", "message": "Failed to send message. Please try again later."},
+                    status=400,
+                )
+            return render(request, "contact.html", {"error": str(e)})
 
-logger = logging.getLogger(__name__)
+    return render(request, "contact.html")
 
+
+# --------------------------
+# Article detail (Supabase)
+# --------------------------
 def article_detail(request, slug):
-    # --- Fetch article ---
     try:
-        response = supabase.table("articles") \
-            .select("*") \
-            .eq("slug", slug) \
-            .eq("source", "mstag") \
-            .single() \
+        response = (
+            supabase.table("articles")
+            .select("*")
+            .eq("slug", slug)
+            .eq("source", "mstag")
+            .single()
             .execute()
+        )
     except Exception as e:
         logger.error(f"Supabase error fetching article: {e}")
         raise Http404("Article not found")
@@ -75,36 +175,33 @@ def article_detail(request, slug):
 
     article_id = str(article["id"])
 
-    # --- Render Markdown if needed ---
+    # Render Markdown if needed
     if article.get("is_markdown", False):
         try:
-            rendered_content = mark_safe(markdown.markdown(
-                article["content"],
-                extensions=["extra", "toc", "codehilite"],
-                output_format="html5"
-            ))
+            rendered_content = mark_safe(
+                markdown.markdown(
+                    article["content"],
+                    extensions=["extra", "toc", "codehilite"],
+                    output_format="html5",
+                )
+            )
         except Exception as e:
             logger.error(f"Error rendering markdown: {e}")
             rendered_content = "<p>Error rendering content.</p>"
     else:
         rendered_content = article["content"]
 
-    # --- Initialize comments ---
+    # Fetch comments
     comments = []
-    comment_error = None
-    comment_success = request.GET.get("comment_success") == "true"
-
-    # --- Fetch comments ---
     try:
         comments = get_comments(article_id)
     except Exception as e:
         logger.error(f"Error fetching comments: {e}")
 
-    # --- Handle POST request ---
+    # Handle comment submission
     if request.method == "POST":
         name = request.POST.get("name", "").strip()
         content = request.POST.get("content", "").strip()
-        
         if name and content:
             try:
                 new_comment = add_comment(
@@ -112,58 +209,50 @@ def article_detail(request, slug):
                     user_id=name,
                     content=content,
                     name=name,
-                    parent_id=None
+                    parent_id=None,
                 )
-                
-                # For AJAX requests
-                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                    return JsonResponse({
-                        'status': 'success',
-                        'message': 'Comment posted successfully!',
-                        'comment': new_comment
-                    })
-                
-                # For regular form submissions
+                if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                    return JsonResponse(
+                        {
+                            "status": "success",
+                            "message": "Comment posted successfully!",
+                            "comment": new_comment,
+                        }
+                    )
                 return redirect(f"{request.path}?comment_success=true#comments")
-                
             except Exception as e:
                 logger.error(f"Comment error: {e}")
-                if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                    return JsonResponse({
-                        'status': 'error',
-                        'message': 'Error saving comment'
-                    }, status=400)
+                if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                    return JsonResponse(
+                        {"status": "error", "message": "Error saving comment"}, status=400
+                    )
                 return redirect(f"{request.path}?comment_error=true#comments")
         else:
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return JsonResponse({
-                    'status': 'error',
-                    'message': 'Both name and content are required'
-                }, status=400)
+            if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+                return JsonResponse(
+                    {"status": "error", "message": "Both name and content are required"},
+                    status=400,
+                )
             return redirect(f"{request.path}?comment_error=validation#comments")
 
-    # --- Context ---
     context = {
-        'article': article,
-        'rendered_content': rendered_content,
-        'comments': comments,
-        'comment_error': comment_error,
-        'comment_success': comment_success,
+        "article": article,
+        "rendered_content": rendered_content,
+        "comments": comments,
+        "comment_error": request.GET.get("comment_error"),
+        "comment_success": request.GET.get("comment_success") == "true",
     }
+    return render(request, "article_detail.html", context)
 
-    return render(request, 'article_detail.html', context)
 
+# --------------------------
+# MSTAG page
+# --------------------------
 def mstag(request):
     try:
-        # First get all custom articles
         custom_articles = (
-            supabase.table("articles")
-            .select("*")
-            .eq("is_custom", True)
-            .execute()
+            supabase.table("articles").select("*").eq("is_custom", True).execute()
         ).data
-
-        # Then get regular mstag articles
         regular_articles = (
             supabase.table("articles")
             .select("*")
@@ -171,71 +260,83 @@ def mstag(request):
             .eq("is_custom", False)
             .execute()
         ).data
-
-        # Combine and sort
         articles = sorted(
             custom_articles + regular_articles,
             key=lambda x: x["date_published"],
-            reverse=True
+            reverse=True,
         )
-
         return render(request, "mstag.html", {"articles": articles})
-        
     except Exception as e:
         return HttpResponse(f"Query failed: {str(e)}", status=500)
 
+
+# --------------------------
+# Resume download
+# --------------------------
 def resume_dl(request):
     file_path = r"myapp/static/docs/Ezz_Eldin_Ahmed's_Resume.pdf"
-    return FileResponse(open(file_path, 'rb'), as_attachment=True, filename="Ezz_Eldin_Ahmed's_Resume.pdf")
+    return FileResponse(
+        open(file_path, "rb"),
+        as_attachment=True,
+        filename="Ezz_Eldin_Ahmed's_Resume.pdf",
+    )
 
 
-# Static Pages
+# --------------------------
+# Static pages
+# --------------------------
 def home(request):
-    return render(request, 'home.html')
+    return render(request, "home.html")
 
 def about(request):
-    return render(request, 'about.html')
+    return render(request, "about.html")
 
 def chatbot(request):
-    return render(request, 'chatbot.html')
+    return render(request, "chatbot.html")
 
 def projects(request):
-    return render(request, 'projects.html')
+    return render(request, "projects.html")
 
+
+# --------------------------
+# Polymaths
+# --------------------------
 def fetch_polymaths(lang="en"):
     rows = supabase.table("polymaths").select("*").order("sort_order").execute().data
-    
-    return [{
-        "id": row["id"],
-        "name_en": row["name_en"],  # All language variants
-        "name_ar": row["name_ar"],
-        "fields_en": row["fields_en"],
-        "fields_ar": row["fields_ar"],
-        "quote_en": row["quote_en"],
-        "quote_ar": row["quote_ar"],
-        "description_en": row["description_en"],
-        "description_ar": row["description_ar"],
-        "image_url": row["image_url"],
-        "sort_order": row["sort_order"]
-    } for row in rows]
-    
+    return [
+        {
+            "id": row["id"],
+            "name_en": row["name_en"],
+            "name_ar": row["name_ar"],
+            "fields_en": row["fields_en"],
+            "fields_ar": row["fields_ar"],
+            "quote_en": row["quote_en"],
+            "quote_ar": row["quote_ar"],
+            "description_en": row["description_en"],
+            "description_ar": row["description_ar"],
+            "image_url": row["image_url"],
+            "sort_order": row["sort_order"],
+        }
+        for row in rows
+    ]
+
 def decline_of_polymath(request):
-    # Default English for SSR
     polymaths = fetch_polymaths(lang="en")
-    return render(request, "polymath-decline.html", {
-        "polymaths": polymaths
-    })
+    return render(request, "polymath-decline.html", {"polymaths": polymaths})
 
 def polymaths_api(request):
     lang = request.GET.get("lang", "en")
     return JsonResponse(fetch_polymaths(lang), safe=False)
 
-# ML Pages
+
+# --------------------------
+# ML Tools
+# --------------------------
 def linear_regression(request):
-    return render(request, 'linear_regression.html')
+    return render(request, "linear_regression.html")
 
 def logistic_regression(request):
-    return render(request, 'logistic_regression.html')
+    return render(request, "logistic_regression.html")
 
 def time_series_analysis(request):
-    return render(request, 'time_series_analysis.html')
+    return render(request, "time_series_analysis.html")
