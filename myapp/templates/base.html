@@ -302,57 +302,41 @@
             const message = input.value.trim();
             if (!message) return;
         
-            // Disable input during processing
             input.disabled = true;
-            
-            // Add user message to chat
             appendMessage('You', message);
             input.value = '';
-            
-            // Create bot message container
-            const botMessageDiv = document.createElement('div');
-            botMessageDiv.innerHTML = '<strong>Bot:</strong> ';
-            document.getElementById('chat-messages').appendChild(botMessageDiv);
-            const botMessageContent = document.createTextNode('');
-            botMessageDiv.appendChild(botMessageContent);
         
+            const botMessage = appendMessage('Bot', '...');
+            
             try {
+                console.log('Sending request...');
                 const response = await fetch('/chatbot/api/', {
                     method: 'POST',
                     headers: { 
                         'Content-Type': 'application/json',
                         'X-CSRFToken': getCookie('csrftoken'),
-                        'X-Requested-With': 'XMLHttpRequest'
+                        'Accept': 'text/plain'
                     },
                     body: JSON.stringify({ question: message }),
                 });
-        
-                // Check for HTML response
-                const contentType = response.headers.get('content-type');
-                if (contentType && contentType.includes('text/html')) {
-                    throw new Error('Server returned HTML instead of API response');
-                }
+                console.log('Response status:', response.status);
         
                 if (!response.ok) {
-                    throw new Error(`Request failed with status ${response.status}`);
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
         
-                // Process streaming response
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder();
+                botMessage.textContent = '';
                 
                 while (true) {
                     const { done, value } = await reader.read();
                     if (done) break;
-                    
-                    const chunk = decoder.decode(value);
-                    botMessageContent.nodeValue += chunk;
-                    // Scroll to bottom
-                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                    botMessage.textContent += decoder.decode(value);
                 }
             } catch (error) {
-                console.error('Chat error:', error);
-                botMessageContent.nodeValue = `Error: ${error.message}`;
+                console.error('Error:', error);
+                botMessage.textContent = `Error: ${error.message}`;
             } finally {
                 input.disabled = false;
                 input.focus();
