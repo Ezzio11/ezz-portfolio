@@ -185,17 +185,19 @@
         const chatForm = document.getElementById('chat-form');
         const chatInput = document.getElementById('chat-input');
     
-        // Focus helper to prevent scrolling when focusing
+        // Improved focus helper to prevent scrolling
         function focusWithoutScroll(el) {
             if (!el || !el.focus) return;
-            try {
-                el.focus({ preventScroll: true });
-            } catch {
-                // fallback for browsers without preventScroll support
-                const x = window.scrollX, y = window.scrollY;
-                el.focus();
-                window.scrollTo(x, y);
-            }
+            
+            // Store current scroll position
+            const scrollX = window.scrollX;
+            const scrollY = window.scrollY;
+            
+            // Focus the element
+            el.focus();
+            
+            // Immediately restore scroll position
+            window.scrollTo(scrollX, scrollY);
         }
     
         // Load bubble position from localStorage or default
@@ -244,8 +246,9 @@
             }, 20);
         }
     
-        bubble.addEventListener('click', () => {
+        bubble.addEventListener('click', (e) => {
             if (bubble.dataset.dragging === 'true') return;
+            e.preventDefault();
             if (panel.style.display === 'flex') {
                 hidePanel();
             } else {
@@ -292,7 +295,7 @@
             localStorage.setItem('chatBubbleTop', bubble.style.top);
         }
     
-        // Chat form submission logic
+        // Improved chat form submission logic
         chatForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const message = chatInput.value.trim();
@@ -300,6 +303,14 @@
         
             // Store current scroll position
             const scrollPosition = window.scrollY;
+            
+            // Create a temporary element to maintain focus
+            const tempFocusHolder = document.createElement('div');
+            tempFocusHolder.tabIndex = -1;
+            tempFocusHolder.style.position = 'absolute';
+            tempFocusHolder.style.left = '-9999px';
+            document.body.appendChild(tempFocusHolder);
+            tempFocusHolder.focus();
             
             appendMessage('You', message);
             chatInput.value = '';
@@ -325,13 +336,16 @@
             } finally {
                 chatInput.disabled = false;
                 
+                // Remove the temporary focus holder
+                document.body.removeChild(tempFocusHolder);
+                
                 // Restore scroll position
                 window.scrollTo(0, scrollPosition);
                 
                 // Delay focus to prevent any potential scroll
                 setTimeout(() => {
                     focusWithoutScroll(chatInput);
-                }, 50);
+                }, 100);
             }
         });
     
@@ -340,7 +354,11 @@
             div.style.marginBottom = '10px';
             div.innerHTML = `<strong>${sender}:</strong> ${escapeHtml(text)}`;
             chatMessages.appendChild(div);
+            
+            // Scroll to bottom without affecting page scroll
+            const scrollPosition = window.scrollY;
             chatMessages.scrollTop = chatMessages.scrollHeight;
+            window.scrollTo(0, scrollPosition);
         }
     
         function escapeHtml(text) {
@@ -363,9 +381,15 @@
             }
             return cookieValue;
         }
+    
+        // Additional prevention for form submission causing scroll
+        document.addEventListener('scroll', function() {
+            if (document.activeElement === chatInput) {
+                window.scrollTo(0, 0);
+            }
+        }, { passive: false });
     </script>
     {% endblock %}
-
 
     <style>
         /* Chat bubble button */
