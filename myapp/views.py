@@ -70,52 +70,66 @@ User question: {user_question}
 """
 
 
+# --------------------------
+# Chatbot helper
+# --------------------------
+def build_prompt(user_question: str) -> str:
+    """
+    Builds a prompt using knowledge.txt for the XANE chatbot.
+    """
+    knowledge_file = os.path.join(settings.BASE_DIR, "knowledge.txt")
+    with open(knowledge_file, "r", encoding="utf-8") as f:
+        knowledge = f.read()
+    return f"""
+You are XANE, the portfolio assistant for Ezz Eldin Ahmed.
+Answer questions strictly using the information below.
+If the answer is not found in this knowledge, say "I don't know".
+
+Knowledge:
+{knowledge}
+
+User question: {user_question}
+"""
+
+
 @csrf_exempt
 def chatbot(request):
     if request.method != "POST":
         return JsonResponse({"error": "POST required"}, status=400)
 
-    try:
-        data = json.loads(request.body)
-        question = data.get("question", "")
-        if not question:
-            return JsonResponse({"error": "Question is required"}, status=400)
+    data = json.loads(request.body)
+    question = data.get("question", "")
+    prompt = build_prompt(question)
 
-        prompt = build_prompt(question)
+    # Prepare request payload for OpenRouter
+    headers = {
+        "Authorization": f"Bearer {OR_API_KEY}",
+        "Content-Type": "application/json",
+    }
 
-        headers = {
-            "Authorization": f"Bearer {OR_API_KEY}",
-            "Content-Type": "application/json",
-        }
+    payload = {
+        "model": MODEL,
+        "messages": [
+            {"role": "user", "content": prompt}
+        ],
+        "stream": True  # enable streaming response
+    }
 
-        payload = {
-            "model": MODEL,
-            "messages": [{"role": "user", "content": prompt}],
-            "stream": True
-        }
+    def stream():
+        with requests.post(OR_API_URL, headers=headers, json=payload, stream=True) as r:
+            r.raise_for_status()
+            for line in r.iter_lines():
+                if line:
+                    try:
+                        # OpenRouter uses JSON lines, parse each chunk
+                        data = json.loads(line.decode("utf-8"))
+                        delta = data.get("choices", [{}])[0].get("delta", {}).get("content", "")
+                        if delta:
+                            yield delta
+                    except Exception:
+                        continue
 
-        def stream():
-            try:
-                with requests.post(OR_API_URL, headers=headers, json=payload, stream=True) as r:
-                    r.raise_for_status()
-                    for line in r.iter_lines():
-                        if line:
-                            try:
-                                data = json.loads(line.decode("utf-8"))
-                                delta = data.get("choices", [{}])[0].get("delta", {}).get("content", "")
-                                if delta:
-                                    yield delta
-                            except json.JSONDecodeError:
-                                continue
-            except Exception as e:
-                logger.error(f"Error in chatbot stream: {str(e)}")
-                yield "An error occurred. Please try again."
-
-        return StreamingHttpResponse(stream(), content_type="text/plain")
-
-    except Exception as e:
-        logger.error(f"Error in chatbot view: {str(e)}")
-        return JsonResponse({"error": "An error occurred. Please try again."}, status=500)
+    return StreamingHttpResponse(stream(), content_type="text/plain")
 
 
 # --------------------------
