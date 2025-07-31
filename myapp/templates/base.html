@@ -296,24 +296,23 @@
         }
     
         // Chat form submission logic
-        chatForm.addEventListener('submit', async (e) => {
+        document.getElementById('chat-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const message = chatInput.value.trim();
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
             if (!message) return;
         
-            // Clear previous errors
-            document.querySelectorAll('.error-message').forEach(el => el.remove());
+            // Disable input during processing
+            input.disabled = true;
             
-            // Display user message
+            // Add user message to chat
             appendMessage('You', message);
-            chatInput.value = '';
-            chatInput.disabled = true;
-        
+            input.value = '';
+            
             // Create bot message container
             const botMessageDiv = document.createElement('div');
-            botMessageDiv.style.marginBottom = '10px';
             botMessageDiv.innerHTML = '<strong>Bot:</strong> ';
-            chatMessages.appendChild(botMessageDiv);
+            document.getElementById('chat-messages').appendChild(botMessageDiv);
             const botMessageContent = document.createTextNode('');
             botMessageDiv.appendChild(botMessageContent);
         
@@ -331,37 +330,32 @@
                 // Check for HTML response
                 const contentType = response.headers.get('content-type');
                 if (contentType && contentType.includes('text/html')) {
-                    throw new Error("Server configuration issue detected");
+                    throw new Error('Server returned HTML instead of API response');
                 }
         
                 if (!response.ok) {
-                    const error = await response.json().catch(() => ({}));
-                    throw new Error(error.error || "Request failed");
+                    throw new Error(`Request failed with status ${response.status}`);
                 }
         
-                // Process stream
+                // Process streaming response
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder();
                 
                 while (true) {
-                    const { value, done } = await reader.read();
+                    const { done, value } = await reader.read();
                     if (done) break;
                     
                     const chunk = decoder.decode(value);
                     botMessageContent.nodeValue += chunk;
+                    // Scroll to bottom
                     chatMessages.scrollTop = chatMessages.scrollHeight;
                 }
-        
             } catch (error) {
                 console.error('Chat error:', error);
-                const errorDiv = document.createElement('div');
-                errorDiv.className = 'error-message';
-                errorDiv.style.color = '#dc3545';
-                errorDiv.textContent = `Error: ${error.message || 'Failed to get response'}`;
-                chatMessages.appendChild(errorDiv);
+                botMessageContent.nodeValue = `Error: ${error.message}`;
             } finally {
-                chatInput.disabled = false;
-                setTimeout(() => focusWithoutScroll(chatInput), 100);
+                input.disabled = false;
+                input.focus();
             }
         });
     
