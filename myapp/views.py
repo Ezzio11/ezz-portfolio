@@ -94,13 +94,18 @@ User question: {user_question}
 
 @csrf_exempt
 def chatbot(request):
-    logger.info("Chatbot endpoint hit")
+    logger.info("Chatbot endpoint hit - Method: %s", request.method)
+    
     if request.method != "POST":
-        logger.warning("Non-POST request received")
-        return JsonResponse({"error": "POST required"}, status=400)
+        logger.warning("Invalid request method")
+        return JsonResponse({"error": "POST required"}, status=405)  # 405 Method Not Allowed
 
     try:
-        logger.info("Attempting to parse request body")
+        # Verify content type
+        if not request.content_type == 'application/json':
+            logger.warning("Invalid content type: %s", request.content_type)
+            return JsonResponse({"error": "Content-Type must be application/json"}, status=415)
+            
         data = json.loads(request.body)
         question = data.get("question", "")
         
@@ -108,16 +113,21 @@ def chatbot(request):
             logger.warning("Empty question received")
             return JsonResponse({"error": "Question is required"}, status=400)
 
-        logger.info(f"Received question: {question}")
+        logger.info("Processing question: %s", question[:100])  # Log first 100 chars
         
         # Verify knowledge file exists
         knowledge_file = os.path.join(settings.BASE_DIR, "knowledge.txt")
         if not os.path.exists(knowledge_file):
-            logger.error(f"Knowledge file not found at {knowledge_file}")
+            logger.error("Knowledge file not found at: %s", knowledge_file)
             return JsonResponse({"error": "Knowledge base unavailable"}, status=500)
 
         prompt = build_prompt(question)
-        logger.debug(f"Built prompt: {prompt[:200]}...")  # Log first 200 chars
+        
+        # Verify API keys
+        if not OR_API_KEY or not OR_API_URL or not MODEL:
+            logger.error("Missing API configuration (KEY: %s, URL: %s, MODEL: %s)", 
+                        bool(OR_API_KEY), bool(OR_API_URL), bool(MODEL))
+            return JsonResponse({"error": "Server configuration error"}, status=500)
 
         headers = {
             "Authorization": f"Bearer {OR_API_KEY}",
@@ -130,45 +140,57 @@ def chatbot(request):
             "stream": True
         }
 
-        logger.info("Making request to OpenRouter API")
+        logger.info("Making request to OpenRouter")
         
         def stream():
             try:
-                with requests.post(OR_API_URL, headers=headers, json=payload, stream=True) as r:
-                    logger.info(f"OpenRouter response status: {r.status_code}")
-                    r.raise_for_status()
-                    
-                    for line in r.iter_lines():
-                        if line:
-                            try:
-                                decoded_line = line.decode("utf-8")
-                                logger.debug(f"Received line: {decoded_line}")
-                                data = json.loads(decoded_line)
-                                delta = data.get("choices", [{}])[0].get("delta", {}).get("content", "")
-                                if delta:
-                                    logger.debug(f"Yielding delta: {delta}")
-                                    yield delta
-                            except json.JSONDecodeError as je:
-                                logger.warning(f"JSON decode error: {je}")
-                                continue
-                            except Exception as e:
-                                logger.error(f"Error processing line: {e}")
-                                continue
+                response = requests.post(
+                    OR_API_URL,
+                    headers=headers,
+                    json=payload,
+                    stream=True,
+                    timeout=30  # 30 second timeout
+                )
+                response.raise_for_status()
+                
+                logger.info("OpenRouter response status: %s", response.status_code)
+                
+                for line in response.iter_lines():
+                    if line:
+                        try:
+                            decoded_line = line.decode('utf-8')
+                            data = json.loads(decoded_line)
+                            delta = data.get("choices", [{}])[0].get("delta", {}).get("content", "")
+                            if delta:
+                                yield delta
+                        except json.JSONDecodeError:
+                            continue
+                        except Exception as e:
+                            logger.error("Error processing line: %s", str(e))
+                            continue
+                            
             except requests.exceptions.RequestException as re:
-                logger.error(f"Request exception: {re}")
-                yield "Error connecting to AI service. "
+                logger.error("OpenRouter request failed: %s", str(re))
+                yield "Error connecting to AI service. Please try again later."
             except Exception as e:
-                logger.error(f"Stream error: {e}")
-                yield "An error occurred. "
+                logger.error("Unexpected error in stream: %s", str(e))
+                yield "An unexpected error occurred."
 
-        return StreamingHttpResponse(stream(), content_type="text/plain")
+        return StreamingHttpResponse(
+            stream(),
+            content_type='text/plain',
+            status=200
+        )
 
     except json.JSONDecodeError:
         logger.error("Invalid JSON in request body")
-        return JsonResponse({"error": "Invalid request format"}, status=400)
+        return JsonResponse({"error": "Invalid JSON format"}, status=400)
     except Exception as e:
         logger.exception("Unexpected error in chatbot view")
-        return JsonResponse({"error": "An unexpected error occurred"}, status=500)
+        return JsonResponse({"error": "Internal server error"}, status=500)
+
+
+print(f"OpenRouter Config - Key: {bool(OR_API_KEY)}, URL: {OR_API_URL}, Model: {MODEL}")
 
 
 # --------------------------
