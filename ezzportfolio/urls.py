@@ -35,5 +35,4 @@ urlpatterns = [
     path('mstag/<slug:slug>/', views.article_detail, name='article_detail'),
     path("api/polymaths/", views.polymaths_api, name="polymaths_api"),
     path('chatbot/', views.chatbot_html, name='chatbot'),
-    path('chatbot/api/', views.chatbot_api, name='chatbot_api'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
