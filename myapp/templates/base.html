@@ -147,7 +147,17 @@
     <!-- Footer End -->
 
     <!-- Back to Top -->
-    <a href="#" class="btn btn-secondary btn-square rounded-circle back-to-top"><i class="fa fa-arrow-up text-white"></i></a>
+    {% if request.resolver_match.url_name == 'mstag_article' %}
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-secondary btn-square rounded-circle back-to-top">
+            <i class="fa fa-arrow-up text-white"></i>
+        </a>
+    {% endif %}
+    
+    <!-- Chat Bubble -->
+    <div id="chat-bubble" class="btn btn-secondary btn-square rounded-circle">
+        <i class="fa-solid fa-message text-white"></i>
+    </div>
 
     <!-- JavaScript Libraries -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
@@ -161,33 +171,18 @@
 
     {% block extra_scripts %}{% endblock %}
 
-    <!-- Chat Bubble -->
-    <div id="chat-bubble">
-      💬
-    </div>
-    <div id="chat-panel">
-      <iframe id="chat-iframe" src="/chatbot/" title="Chatbot"></iframe>
-    </div>
-    
     <style>
     #chat-bubble {
         position: fixed;
         bottom: 20px;
-        right: 20px;
-        background: #007bff;
-        color: white;
-        font-size: 24px;
-        border-radius: 50%;
-        width: 55px;
-        height: 55px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        left: 20px;
+        z-index: 999;
         cursor: pointer;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-        z-index: 1000;
-        transition: background 0.2s ease;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
+
     #chat-bubble:hover {
         background: #0056b3;
     }
