@@ -29,7 +29,6 @@ from django.conf import settings
 # Third-party imports
 # ==========================
 import markdown
-from openai import OpenAI
 from supabase import create_client
 
 # ==========================
