@@ -284,7 +284,7 @@
     
         // Chat form submission logic: send message to backend and show response
         chatForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
+            e.preventDefault(); // prevent form submit default scrolling
             const message = chatInput.value.trim();
             if (!message) return;
     
@@ -302,14 +302,27 @@
                     body: JSON.stringify({ prompt: message }),
                 });
     
-                if (!response.ok) throw new Error('Network error');
+                if (!response.ok) {
+                    // Attempt to get error message from backend
+                    let errorMsg = 'Network error';
+                    try {
+                        const errData = await response.json();
+                        if (errData.error) errorMsg = errData.error;
+                    } catch {}
+                    throw new Error(errorMsg);
+                }
     
                 const data = await response.json();
     
-                appendMessage('Bot', data.response || 'Sorry, no reply.');
+                if (data.error) {
+                    appendMessage('Bot', `Error: ${data.error}`);
+                } else {
+                    appendMessage('Bot', data.response || 'Sorry, no reply.');
+                }
     
             } catch (error) {
                 appendMessage('Bot', 'Sorry, something went wrong.');
+                console.error('Chatbot error:', error);
             } finally {
                 chatInput.disabled = false;
                 chatInput.focus();
@@ -321,7 +334,10 @@
             div.style.marginBottom = '10px';
             div.innerHTML = `<strong>${sender}:</strong> ${escapeHtml(text)}`;
             chatMessages.appendChild(div);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+            // Only scroll if panel is visible (prevents weird jumps)
+            if (panel.style.display === 'flex') {
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
         }
     
         function escapeHtml(text) {
@@ -347,7 +363,7 @@
         }
     </script>
     {% endblock %}
-    
+
     <style>
         /* Chat bubble button */
         #chat-bubble {
