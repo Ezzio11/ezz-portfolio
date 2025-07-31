@@ -147,16 +147,20 @@
     <!-- Footer End -->
 
     <!-- Back to Top -->
-    {% if request.resolver_match.url_name == 'mstag_article' %}
-        <!-- Back to Top -->
-        <a href="#" class="btn btn-secondary btn-square rounded-circle back-to-top">
-            <i class="fa fa-arrow-up text-white"></i>
-        </a>
+    {% if request.resolver_match.url_name == 'article_detail' %}
+    <a href="#" class="btn btn-secondary btn-square rounded-circle back-to-top">
+        <i class="fa fa-arrow-up text-white"></i>
+    </a>
     {% endif %}
-    
+
     <!-- Chat Bubble -->
     <div id="chat-bubble" class="btn btn-secondary btn-square rounded-circle">
         <i class="fa-solid fa-message text-white"></i>
+    </div>
+
+    <!-- Chat Panel -->
+    <div id="chat-panel">
+        <iframe src="about:blank"></iframe>
     </div>
 
     <!-- JavaScript Libraries -->
@@ -172,47 +176,84 @@
     {% block extra_scripts %}{% endblock %}
 
     <style>
-    #chat-bubble {
-        position: fixed;
-        bottom: 20px;
-        left: 20px;
-        z-index: 999;
-        cursor: pointer;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    #chat-bubble:hover {
-        background: #0056b3;
-    }
-    #chat-panel {
-        position: fixed;
-        bottom: 90px;
-        right: 20px;
-        width: 350px;
-        height: 500px;
-        background: white;
-        border-radius: 10px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        display: none;
-        flex-direction: column;
-        overflow: hidden;
-        z-index: 1000;
-    }
-    #chat-panel iframe {
-        width: 100%;
-        height: 100%;
-        border: none;
-    }
-    </style>
+        /* Chat bubble button */
+        #chat-bubble {
+            position: fixed;
+            bottom: 20px;
+            right: 20px; /* changed from left to right */
+            z-index: 999;
+            cursor: grab;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            user-select: none;
+        }
+        #chat-bubble:active {
+            cursor: grabbing;
+        }
     
+        /* Chat panel popup */
+        #chat-panel {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 350px;
+            height: 500px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 1000;
+        }
+    
+        #chat-panel iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+
     <script>
-    document.getElementById('chat-bubble').addEventListener('click', function() {
+        const bubble = document.getElementById('chat-bubble');
         const panel = document.getElementById('chat-panel');
-        panel.style.display = panel.style.display === 'flex' ? 'none' : 'flex';
-    });
+
+        // Toggle chat panel on click
+        bubble.addEventListener('click', () => {
+            // Prevent click toggle if we just dragged
+            if (bubble.dataset.dragging === 'true') return;
+            panel.style.display = panel.style.display === 'flex' ? 'none' : 'flex';
+        });
+
+        // Dragging logic
+        let isDragging = false, offsetX = 0, offsetY = 0;
+
+        bubble.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            bubble.dataset.dragging = 'false'; // reset
+            offsetX = e.clientX - bubble.offsetLeft;
+            offsetY = e.clientY - bubble.offsetTop;
+            document.addEventListener('mousemove', moveBubble);
+            document.addEventListener('mouseup', stopDrag);
+        });
+
+        function moveBubble(e) {
+            isDragging = true;
+            bubble.dataset.dragging = 'true';
+            bubble.style.left = (e.clientX - offsetX) + 'px';
+            bubble.style.top = (e.clientY - offsetY) + 'px';
+            bubble.style.bottom = 'auto';
+            bubble.style.right = 'auto';
+        }
+
+        function stopDrag() {
+            document.removeEventListener('mousemove', moveBubble);
+            document.removeEventListener('mouseup', stopDrag);
+            setTimeout(() => { bubble.dataset.dragging = 'false'; }, 100);
+        }
     </script>
+
 
 </body>
 </html>
