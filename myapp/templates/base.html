@@ -152,41 +152,224 @@
         <i class="fa fa-arrow-up text-white"></i>
     </a>
     {% endif %}
-
+    
     <!-- Chat Bubble -->
-    <div id="chat-bubble" class="btn btn-secondary btn-square rounded-circle">
-        <i class="fa-solid fa-message text-white"></i>
+    <div id="chat-bubble" class="btn btn-secondary btn-square rounded-circle" title="Chat with us" aria-label="Open chat panel" role="button" tabindex="0">
+        <i class="fa-solid fa-robot text-white" style="font-size: 1.8rem;"></i>
     </div>
-
+    
     <!-- Chat Panel -->
-    <div id="chat-panel">
-        <iframe src="about:blank"></iframe>
+    <div id="chat-panel" aria-live="polite" role="region" aria-label="Chat panel" tabindex="-1">
+        <div id="chat-messages" style="flex: 1; overflow-y: auto; padding: 10px; font-size: 0.9rem; min-height: 400px;"></div>
+        <form id="chat-form" style="display: flex; padding: 10px; border-top: 1px solid #ddd;" aria-label="Send message form">
+            <input id="chat-input" type="text" placeholder="Ask me..." style="flex: 1; padding: 8px; border-radius: 5px; border: 1px solid #ccc;" autocomplete="off" aria-required="true" />
+            <button type="submit" style="margin-left: 10px; padding: 8px 12px; border-radius: 5px; border: none; background-color: #6c757d; color: white;" aria-label="Send message">Send</button>
+        </form>
     </div>
-
+    
     <!-- JavaScript Libraries -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{% static 'lib/easing/easing.min.js' %}"></script>
     <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
     <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
-
+    
     <!-- Template Javascript -->
     <script src="{% static 'js/main.js' %}"></script>
-
-    {% block extra_scripts %}{% endblock %}
-
+    
+    {% block extra_scripts %}
+    <script>
+        const bubble = document.getElementById('chat-bubble');
+        const panel = document.getElementById('chat-panel');
+        const chatMessages = document.getElementById('chat-messages');
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input');
+    
+        // Load bubble position from localStorage or default
+        function loadBubblePosition() {
+            const left = localStorage.getItem('chatBubbleLeft');
+            const top = localStorage.getItem('chatBubbleTop');
+            if (left && top) {
+                bubble.style.left = left;
+                bubble.style.top = top;
+                bubble.style.bottom = 'auto';
+                bubble.style.right = 'auto';
+            } else {
+                // default position bottom-right
+                bubble.style.bottom = '20px';
+                bubble.style.right = '20px';
+            }
+        }
+    
+        loadBubblePosition();
+    
+        // Toggle chat panel with fade animation
+        function showPanel() {
+            panel.style.display = 'flex';
+            panel.style.opacity = 0;
+            let opacity = 0;
+            const fadeIn = setInterval(() => {
+                if (opacity >= 1) {
+                    clearInterval(fadeIn);
+                    chatInput.focus();
+                } else {
+                    opacity += 0.1;
+                    panel.style.opacity = opacity;
+                }
+            }, 20);
+        }
+    
+        function hidePanel() {
+            let opacity = 1;
+            const fadeOut = setInterval(() => {
+                if (opacity <= 0) {
+                    clearInterval(fadeOut);
+                    panel.style.display = 'none';
+                } else {
+                    opacity -= 0.1;
+                    panel.style.opacity = opacity;
+                }
+            }, 20);
+        }
+    
+        bubble.addEventListener('click', () => {
+            if (bubble.dataset.dragging === 'true') return;
+            if (panel.style.display === 'flex') {
+                hidePanel();
+            } else {
+                showPanel();
+            }
+        });
+    
+        // Dragging logic with position persistence
+        let isDragging = false, offsetX = 0, offsetY = 0;
+    
+        bubble.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            bubble.dataset.dragging = 'false'; // reset dragging state
+            offsetX = e.clientX - bubble.offsetLeft;
+            offsetY = e.clientY - bubble.offsetTop;
+            document.addEventListener('mousemove', moveBubble);
+            document.addEventListener('mouseup', stopDrag);
+        });
+    
+        function moveBubble(e) {
+            if (!isDragging) return;
+            bubble.dataset.dragging = 'true';
+            let newLeft = (e.clientX - offsetX);
+            let newTop = (e.clientY - offsetY);
+    
+            // Optional: constrain bubble inside viewport
+            const maxLeft = window.innerWidth - bubble.offsetWidth;
+            const maxTop = window.innerHeight - bubble.offsetHeight;
+            newLeft = Math.min(Math.max(0, newLeft), maxLeft);
+            newTop = Math.min(Math.max(0, newTop), maxTop);
+    
+            bubble.style.left = newLeft + 'px';
+            bubble.style.top = newTop + 'px';
+            bubble.style.bottom = 'auto';
+            bubble.style.right = 'auto';
+        }
+    
+        function stopDrag() {
+            isDragging = false;
+            document.removeEventListener('mousemove', moveBubble);
+            document.removeEventListener('mouseup', stopDrag);
+            setTimeout(() => { bubble.dataset.dragging = 'false'; }, 100);
+    
+            // Save current position
+            localStorage.setItem('chatBubbleLeft', bubble.style.left);
+            localStorage.setItem('chatBubbleTop', bubble.style.top);
+        }
+    
+        // Chat form submission logic: send message to backend and show response
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const message = chatInput.value.trim();
+            if (!message) return;
+    
+            appendMessage('You', message);
+            chatInput.value = '';
+            chatInput.disabled = true;
+    
+            try {
+                const response = await fetch('/chatbot/api/', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json', 
+                        'X-CSRFToken': getCookie('csrftoken') 
+                    },
+                    body: JSON.stringify({ prompt: message }),
+                });
+    
+                if (!response.ok) throw new Error('Network error');
+    
+                const data = await response.json();
+    
+                appendMessage('Bot', data.response || 'Sorry, no reply.');
+    
+            } catch (error) {
+                appendMessage('Bot', 'Sorry, something went wrong.');
+            } finally {
+                chatInput.disabled = false;
+                chatInput.focus();
+            }
+        });
+    
+        function appendMessage(sender, text) {
+            const div = document.createElement('div');
+            div.style.marginBottom = '10px';
+            div.innerHTML = `<strong>${sender}:</strong> ${escapeHtml(text)}`;
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    
+        // Standard Django CSRF cookie getter
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let cookie of cookies) {
+                    cookie = cookie.trim();
+                    if (cookie.startsWith(name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+    {% endblock %}
+    
     <style>
         /* Chat bubble button */
         #chat-bubble {
             position: fixed;
             bottom: 20px;
-            right: 20px; /* changed from left to right */
-            z-index: 999;
+            right: 20px;
+            z-index: 9999; /* make sure it’s above most elements */
             cursor: grab;
             display: flex;
             justify-content: center;
             align-items: center;
             user-select: none;
+            width: 60px;
+            height: 60px;
+            font-size: 1.8rem;
+            border-radius: 50%;
+            background-color: #6c757d; /* match btn-secondary */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            transition: background-color 0.3s ease;
+        }
+        #chat-bubble:hover {
+            background-color: #5a6268;
         }
         #chat-bubble:active {
             cursor: grabbing;
@@ -205,55 +388,58 @@
             display: none;
             flex-direction: column;
             overflow: hidden;
-            z-index: 1000;
+            z-index: 10000; /* above bubble */
+            font-family: Arial, sans-serif;
+            opacity: 1;
         }
     
-        #chat-panel iframe {
-            width: 100%;
-            height: 100%;
+        #chat-panel #chat-messages {
+            padding: 10px;
+            overflow-y: auto;
+            flex-grow: 1;
+            scrollbar-width: thin;
+            scrollbar-color: #888 #eee;
+        }
+    
+        /* Optional nice scrollbar for WebKit */
+        #chat-panel #chat-messages::-webkit-scrollbar {
+            width: 8px;
+        }
+        #chat-panel #chat-messages::-webkit-scrollbar-track {
+            background: #eee;
+        }
+        #chat-panel #chat-messages::-webkit-scrollbar-thumb {
+            background-color: #888;
+            border-radius: 4px;
+        }
+    
+        #chat-panel form {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+        }
+    
+        #chat-panel input[type="text"] {
+            flex-grow: 1;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+    
+        #chat-panel button {
+            margin-left: 10px;
+            padding: 8px 12px;
+            border-radius: 5px;
             border: none;
+            background-color: #6c757d;
+            color: white;
+            cursor: pointer;
+        }
+    
+        #chat-panel button:hover {
+            background-color: #5a6268;
         }
     </style>
-
-    <script>
-        const bubble = document.getElementById('chat-bubble');
-        const panel = document.getElementById('chat-panel');
-
-        // Toggle chat panel on click
-        bubble.addEventListener('click', () => {
-            // Prevent click toggle if we just dragged
-            if (bubble.dataset.dragging === 'true') return;
-            panel.style.display = panel.style.display === 'flex' ? 'none' : 'flex';
-        });
-
-        // Dragging logic
-        let isDragging = false, offsetX = 0, offsetY = 0;
-
-        bubble.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            bubble.dataset.dragging = 'false'; // reset
-            offsetX = e.clientX - bubble.offsetLeft;
-            offsetY = e.clientY - bubble.offsetTop;
-            document.addEventListener('mousemove', moveBubble);
-            document.addEventListener('mouseup', stopDrag);
-        });
-
-        function moveBubble(e) {
-            isDragging = true;
-            bubble.dataset.dragging = 'true';
-            bubble.style.left = (e.clientX - offsetX) + 'px';
-            bubble.style.top = (e.clientY - offsetY) + 'px';
-            bubble.style.bottom = 'auto';
-            bubble.style.right = 'auto';
-        }
-
-        function stopDrag() {
-            document.removeEventListener('mousemove', moveBubble);
-            document.removeEventListener('mouseup', stopDrag);
-            setTimeout(() => { bubble.dataset.dragging = 'false'; }, 100);
-        }
-    </script>
-
 
 </body>
 </html>
