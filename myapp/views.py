@@ -94,42 +94,81 @@ User question: {user_question}
 
 @csrf_exempt
 def chatbot(request):
+    logger.info("Chatbot endpoint hit")
     if request.method != "POST":
+        logger.warning("Non-POST request received")
         return JsonResponse({"error": "POST required"}, status=400)
 
-    data = json.loads(request.body)
-    question = data.get("question", "")
-    prompt = build_prompt(question)
+    try:
+        logger.info("Attempting to parse request body")
+        data = json.loads(request.body)
+        question = data.get("question", "")
+        
+        if not question:
+            logger.warning("Empty question received")
+            return JsonResponse({"error": "Question is required"}, status=400)
 
-    # Prepare request payload for OpenRouter
-    headers = {
-        "Authorization": f"Bearer {OR_API_KEY}",
-        "Content-Type": "application/json",
-    }
+        logger.info(f"Received question: {question}")
+        
+        # Verify knowledge file exists
+        knowledge_file = os.path.join(settings.BASE_DIR, "knowledge.txt")
+        if not os.path.exists(knowledge_file):
+            logger.error(f"Knowledge file not found at {knowledge_file}")
+            return JsonResponse({"error": "Knowledge base unavailable"}, status=500)
 
-    payload = {
-        "model": MODEL,
-        "messages": [
-            {"role": "user", "content": prompt}
-        ],
-        "stream": True  # enable streaming response
-    }
+        prompt = build_prompt(question)
+        logger.debug(f"Built prompt: {prompt[:200]}...")  # Log first 200 chars
 
-    def stream():
-        with requests.post(OR_API_URL, headers=headers, json=payload, stream=True) as r:
-            r.raise_for_status()
-            for line in r.iter_lines():
-                if line:
-                    try:
-                        # OpenRouter uses JSON lines, parse each chunk
-                        data = json.loads(line.decode("utf-8"))
-                        delta = data.get("choices", [{}])[0].get("delta", {}).get("content", "")
-                        if delta:
-                            yield delta
-                    except Exception:
-                        continue
+        headers = {
+            "Authorization": f"Bearer {OR_API_KEY}",
+            "Content-Type": "application/json",
+        }
 
-    return StreamingHttpResponse(stream(), content_type="text/plain")
+        payload = {
+            "model": MODEL,
+            "messages": [{"role": "user", "content": prompt}],
+            "stream": True
+        }
+
+        logger.info("Making request to OpenRouter API")
+        
+        def stream():
+            try:
+                with requests.post(OR_API_URL, headers=headers, json=payload, stream=True) as r:
+                    logger.info(f"OpenRouter response status: {r.status_code}")
+                    r.raise_for_status()
+                    
+                    for line in r.iter_lines():
+                        if line:
+                            try:
+                                decoded_line = line.decode("utf-8")
+                                logger.debug(f"Received line: {decoded_line}")
+                                data = json.loads(decoded_line)
+                                delta = data.get("choices", [{}])[0].get("delta", {}).get("content", "")
+                                if delta:
+                                    logger.debug(f"Yielding delta: {delta}")
+                                    yield delta
+                            except json.JSONDecodeError as je:
+                                logger.warning(f"JSON decode error: {je}")
+                                continue
+                            except Exception as e:
+                                logger.error(f"Error processing line: {e}")
+                                continue
+            except requests.exceptions.RequestException as re:
+                logger.error(f"Request exception: {re}")
+                yield "Error connecting to AI service. "
+            except Exception as e:
+                logger.error(f"Stream error: {e}")
+                yield "An error occurred. "
+
+        return StreamingHttpResponse(stream(), content_type="text/plain")
+
+    except json.JSONDecodeError:
+        logger.error("Invalid JSON in request body")
+        return JsonResponse({"error": "Invalid request format"}, status=400)
+    except Exception as e:
+        logger.exception("Unexpected error in chatbot view")
+        return JsonResponse({"error": "An unexpected error occurred"}, status=500)
 
 
 # --------------------------
