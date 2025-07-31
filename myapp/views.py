@@ -94,103 +94,77 @@ User question: {user_question}
 
 @csrf_exempt
 def chatbot(request):
-    logger.info("Chatbot endpoint hit - Method: %s", request.method)
-    
+    # Immediate validation checks
     if request.method != "POST":
-        logger.warning("Invalid request method")
-        return JsonResponse({"error": "POST required"}, status=405)  # 405 Method Not Allowed
+        return JsonResponse({"error": "POST requests only"}, status=405)
+    
+    if not request.content_type == 'application/json':
+        return JsonResponse({"error": "Content-Type must be application/json"}, status=415)
 
     try:
-        # Verify content type
-        if not request.content_type == 'application/json':
-            logger.warning("Invalid content type: %s", request.content_type)
-            return JsonResponse({"error": "Content-Type must be application/json"}, status=415)
-            
+        # Parse request
         data = json.loads(request.body)
         question = data.get("question", "")
         
-        if not question:
-            logger.warning("Empty question received")
-            return JsonResponse({"error": "Question is required"}, status=400)
+        if not question or not isinstance(question, str):
+            return JsonResponse({"error": "Valid question required"}, status=400)
 
-        logger.info("Processing question: %s", question[:100])  # Log first 100 chars
-        
-        # Verify knowledge file exists
+        # Build prompt
         knowledge_file = os.path.join(settings.BASE_DIR, "knowledge.txt")
-        if not os.path.exists(knowledge_file):
-            logger.error("Knowledge file not found at: %s", knowledge_file)
-            return JsonResponse({"error": "Knowledge base unavailable"}, status=500)
-
-        prompt = build_prompt(question)
+        with open(knowledge_file, "r", encoding="utf-8") as f:
+            knowledge = f.read()
         
-        # Verify API keys
-        if not OR_API_KEY or not OR_API_URL or not MODEL:
-            logger.error("Missing API configuration (KEY: %s, URL: %s, MODEL: %s)", 
-                        bool(OR_API_KEY), bool(OR_API_URL), bool(MODEL))
-            return JsonResponse({"error": "Server configuration error"}, status=500)
+        prompt = f"""You are XANE, the portfolio assistant for Ezz Eldin Ahmed.
+Answer questions strictly using this knowledge:
+{knowledge}
 
+Question: {question}"""
+
+        # Prepare OpenRouter request
         headers = {
             "Authorization": f"Bearer {OR_API_KEY}",
             "Content-Type": "application/json",
         }
 
         payload = {
-            "model": MODEL,
+            "model": "deepseek/deepseek-chat-v3-0324:free",
             "messages": [{"role": "user", "content": prompt}],
             "stream": True
         }
 
-        logger.info("Making request to OpenRouter")
-        
-        def stream():
+        # Stream response
+        def generate():
             try:
-                response = requests.post(
-                    OR_API_URL,
+                with requests.post(
+                    "https://openrouter.ai/api/v1/chat/completions",
                     headers=headers,
                     json=payload,
                     stream=True,
-                    timeout=30  # 30 second timeout
-                )
-                response.raise_for_status()
-                
-                logger.info("OpenRouter response status: %s", response.status_code)
-                
-                for line in response.iter_lines():
-                    if line:
-                        try:
-                            decoded_line = line.decode('utf-8')
-                            data = json.loads(decoded_line)
-                            delta = data.get("choices", [{}])[0].get("delta", {}).get("content", "")
-                            if delta:
-                                yield delta
-                        except json.JSONDecodeError:
-                            continue
-                        except Exception as e:
-                            logger.error("Error processing line: %s", str(e))
-                            continue
-                            
-            except requests.exceptions.RequestException as re:
-                logger.error("OpenRouter request failed: %s", str(re))
-                yield "Error connecting to AI service. Please try again later."
+                    timeout=10
+                ) as r:
+                    r.raise_for_status()
+                    for line in r.iter_lines():
+                        if line:
+                            try:
+                                data = json.loads(line.decode("utf-8"))
+                                if 'choices' in data:
+                                    delta = data['choices'][0]['delta'].get('content', '')
+                                    if delta:
+                                        yield delta
+                            except json.JSONDecodeError:
+                                continue
             except Exception as e:
-                logger.error("Unexpected error in stream: %s", str(e))
-                yield "An unexpected error occurred."
+                yield f"[Error: {str(e)}]"
 
-        return StreamingHttpResponse(
-            stream(),
-            content_type='text/plain',
-            status=200
+        response = StreamingHttpResponse(
+            generate(),
+            content_type='text/plain'
         )
+        response['Cache-Control'] = 'no-cache'
+        return response
 
-    except json.JSONDecodeError:
-        logger.error("Invalid JSON in request body")
-        return JsonResponse({"error": "Invalid JSON format"}, status=400)
     except Exception as e:
-        logger.exception("Unexpected error in chatbot view")
-        return JsonResponse({"error": "Internal server error"}, status=500)
-
-
-print(f"OpenRouter Config - Key: {bool(OR_API_KEY)}, URL: {OR_API_URL}, Model: {MODEL}")
+        return JsonResponse({"error": str(e)}, status=500)
 
 
 # --------------------------
