@@ -301,18 +301,15 @@
             const message = chatInput.value.trim();
             if (!message) return;
         
-            // Clear any previous error messages
+            // Clear previous messages/errors
             document.querySelectorAll('.error-message').forEach(el => el.remove());
-        
-            // Store current scroll position
-            const scrollPosition = window.scrollY;
             
-            // Create message element
+            // Create user message
             appendMessage('You', message);
             chatInput.value = '';
             chatInput.disabled = true;
         
-            // Create bot message element
+            // Create bot message container
             const botMessageDiv = document.createElement('div');
             botMessageDiv.style.marginBottom = '10px';
             botMessageDiv.innerHTML = '<strong>Bot:</strong> ';
@@ -321,21 +318,31 @@
             botMessageDiv.appendChild(botMessageContent);
         
             try {
-                console.log("Sending request to chatbot API");
+                console.log("Sending request to:", '/chatbot/api/');
                 const response = await fetch('/chatbot/api/', {
                     method: 'POST',
                     headers: { 
-                        'Content-Type': 'application/json', 
-                        'X-CSRFToken': getCookie('csrftoken') 
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken'),
+                        'Accept': 'text/plain'  // Explicitly accept text response
                     },
-                    body: JSON.stringify({ question: message }), // Changed from 'prompt' to 'question'
+                    body: JSON.stringify({ question: message }),
                 });
         
-                console.log("Received response:", response);
+                console.log("Response status:", response.status, response.statusText);
+                
+                // Check if response is HTML (error case)
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('text/html')) {
+                    const errorHtml = await response.text();
+                    console.error("Received HTML error response:", errorHtml);
+                    throw new Error("Server returned an HTML page instead of API response");
+                }
         
                 if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({}));
-                    throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+                    const errorText = await response.text();
+                    console.error("API error:", errorText);
+                    throw new Error(errorText || `HTTP error! status: ${response.status}`);
                 }
         
                 // Handle streaming response
@@ -351,8 +358,6 @@
                         const chunk = decoder.decode(value, { stream: true });
                         console.log("Received chunk:", chunk);
                         botMessageContent.nodeValue += chunk;
-                        
-                        // Scroll to bottom without affecting page scroll
                         chatMessages.scrollTop = chatMessages.scrollHeight;
                     }
                 }
@@ -360,19 +365,16 @@
             } catch (error) {
                 console.error('Chatbot error:', error);
                 
-                // Create error message element
+                // Create error message
                 const errorDiv = document.createElement('div');
                 errorDiv.className = 'error-message';
                 errorDiv.style.color = '#dc3545';
                 errorDiv.style.marginTop = '10px';
-                errorDiv.textContent = `Error: ${error.message || 'Please try again later.'}`;
+                errorDiv.textContent = `Error: ${error.message || 'Failed to get response from chatbot'}`;
                 chatMessages.appendChild(errorDiv);
                 
             } finally {
                 chatInput.disabled = false;
-                // Restore scroll position
-                window.scrollTo(0, scrollPosition);
-                // Delay focus to prevent any potential scroll
                 setTimeout(() => {
                     focusWithoutScroll(chatInput);
                 }, 100);
