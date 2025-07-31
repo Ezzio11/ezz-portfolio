@@ -26,7 +26,9 @@ from .comments import get_comments, add_comment
 
 logger = logging.getLogger(__name__)
 OR_API_KEY = os.getenv("OR_API_KEY")
-MODEL = "deepseek/deepseek-chat-v3-0324:free"
+OR_API_URL = os.getenv("OR_API_URL")
+MODEL = os.getenv("MODEL")
+
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
@@ -34,55 +36,6 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 def chatbot_html(request):
     """Render the chatbot HTML interface"""
     return render(request, 'chatbot.html')
-
-@csrf_exempt
-def chatbot_api(request):
-    if request.method != 'POST':
-        return JsonResponse({'error': 'POST required'}, status=405)
-    
-    try:
-        data = json.loads(request.body)
-        question = data.get('question', '').strip()
-        if not question:
-            return JsonResponse({'error': 'Question required'}, status=400)
-
-        # Simple prompt - verify this works first
-        prompt = f"User asked: {question}\n\nPlease respond to this question."
-
-        def generate():
-            try:
-                with requests.post(
-                    'https://openrouter.ai/api/v1/chat/completions',
-                    headers={
-                        'Authorization': f'Bearer {OR_API_KEY}',
-                        'Content-Type': 'application/json'
-                    },
-                    json={
-                        'model': 'deepseek/deepseek-chat-v3-0324:free',
-                        'messages': [{'role': 'user', 'content': prompt}],
-                        'stream': True
-                    },
-                    stream=True,
-                    timeout=10
-                ) as r:
-                    r.raise_for_status()
-                    for line in r.iter_lines():
-                        if line:
-                            try:
-                                data = json.loads(line.decode('utf-8'))
-                                if 'choices' in data:
-                                    content = data['choices'][0]['delta'].get('content', '')
-                                    if content:
-                                        yield content
-                            except:
-                                continue
-            except Exception as e:
-                yield f"[Error: {str(e)}]"
-
-        return StreamingHttpResponse(generate(), content_type='text/plain')
-
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)
 
 # Static Pages
 def home(request):
