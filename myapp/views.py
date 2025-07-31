@@ -31,55 +31,65 @@ SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# Chatbot Views
 def chatbot_html(request):
     """Render the chatbot HTML interface"""
-    return render(request, "chatbot.html")
+    return render(request, 'chatbot.html')
 
 @csrf_exempt
 def chatbot_api(request):
     """Handle chatbot API requests"""
-    if request.method != "POST":
-        return JsonResponse({"error": "POST required"}, status=405)
+    # Strict validation
+    if request.method != 'POST':
+        return JsonResponse({'error': 'POST requests only'}, status=405)
     
     if not request.content_type == 'application/json':
-        return JsonResponse({"error": "Content-Type must be application/json"}, status=415)
+        return JsonResponse({'error': 'Content-Type must be application/json'}, status=415)
 
     try:
+        # Parse and validate request
         data = json.loads(request.body)
-        question = data.get("question", "")
-        
-        if not question or not isinstance(question, str):
-            return JsonResponse({"error": "Valid question required"}, status=400)
+        question = data.get('question', '').strip()
+        if not question:
+            return JsonResponse({'error': 'Question is required'}, status=400)
 
-        with open(os.path.join(settings.BASE_DIR, "knowledge.txt"), "r", encoding="utf-8") as f:
-            prompt = f"""You are XANE, the portfolio assistant for Ezz Eldin Ahmed.
-Answer using this knowledge:
-{f.read()}
+        # Read knowledge base
+        knowledge_file = os.path.join(settings.BASE_DIR, 'knowledge.txt')
+        with open(knowledge_file, 'r', encoding='utf-8') as f:
+            knowledge = f.read()
+
+        # Build prompt
+        prompt = f"""You are XANE, the portfolio assistant for Ezz Eldin Ahmed.
+Answer questions using this knowledge:
+{knowledge}
 
 Question: {question}"""
 
+        # Make API request to OpenRouter
+        headers = {
+            'Authorization': f'Bearer {OR_API_KEY}',
+            'Content-Type': 'application/json'
+        }
+        payload = {
+            'model': 'deepseek/deepseek-chat-v3-0324:free',
+            'messages': [{'role': 'user', 'content': prompt}],
+            'stream': True
+        }
+
         def generate():
+            """Generator function for streaming response"""
             try:
                 with requests.post(
-                    "https://openrouter.ai/api/v1/chat/completions",
-                    headers={
-                        "Authorization": f"Bearer {OR_API_KEY}",
-                        "Content-Type": "application/json"
-                    },
-                    json={
-                        "model": MODEL,
-                        "messages": [{"role": "user", "content": prompt}],
-                        "stream": True
-                    },
+                    'https://openrouter.ai/api/v1/chat/completions',
+                    headers=headers,
+                    json=payload,
                     stream=True,
-                    timeout=10
+                    timeout=30
                 ) as r:
                     r.raise_for_status()
                     for line in r.iter_lines():
                         if line:
                             try:
-                                data = json.loads(line.decode("utf-8"))
+                                data = json.loads(line.decode('utf-8'))
                                 if 'choices' in data:
                                     content = data['choices'][0]['delta'].get('content', '')
                                     if content:
@@ -87,12 +97,19 @@ Question: {question}"""
                             except json.JSONDecodeError:
                                 continue
             except Exception as e:
-                yield f"[Error: {str(e)}]"
+                yield f'[Error: {str(e)}]'
 
-        return StreamingHttpResponse(generate(), content_type='text/plain')
+        # Return streaming response
+        response = StreamingHttpResponse(
+            generate(),
+            content_type='text/plain'
+        )
+        response['Cache-Control'] = 'no-cache'
+        return response
 
     except Exception as e:
-        return JsonResponse({"error": str(e)}, status=500)
+        logger.error(f'Chatbot API error: {str(e)}')
+        return JsonResponse({'error': str(e)}, status=500)
 
 # Static Pages
 def home(request):
