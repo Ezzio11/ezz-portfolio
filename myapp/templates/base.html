@@ -301,10 +301,10 @@
             const message = chatInput.value.trim();
             if (!message) return;
         
-            // Clear previous messages/errors
+            // Clear previous errors
             document.querySelectorAll('.error-message').forEach(el => el.remove());
             
-            // Create user message
+            // Display user message
             appendMessage('You', message);
             chatInput.value = '';
             chatInput.disabled = true;
@@ -318,66 +318,50 @@
             botMessageDiv.appendChild(botMessageContent);
         
             try {
-                console.log("Sending request to:", '/chatbot/api/');
                 const response = await fetch('/chatbot/api/', {
                     method: 'POST',
                     headers: { 
                         'Content-Type': 'application/json',
                         'X-CSRFToken': getCookie('csrftoken'),
-                        'Accept': 'text/plain'  // Explicitly accept text response
+                        'X-Requested-With': 'XMLHttpRequest'
                     },
                     body: JSON.stringify({ question: message }),
                 });
         
-                console.log("Response status:", response.status, response.statusText);
-                
-                // Check if response is HTML (error case)
+                // Check for HTML response
                 const contentType = response.headers.get('content-type');
                 if (contentType && contentType.includes('text/html')) {
-                    const errorHtml = await response.text();
-                    console.error("Received HTML error response:", errorHtml);
-                    throw new Error("Server returned an HTML page instead of API response");
+                    throw new Error("Server configuration issue detected");
                 }
         
                 if (!response.ok) {
-                    const errorText = await response.text();
-                    console.error("API error:", errorText);
-                    throw new Error(errorText || `HTTP error! status: ${response.status}`);
+                    const error = await response.json().catch(() => ({}));
+                    throw new Error(error.error || "Request failed");
                 }
         
-                // Handle streaming response
+                // Process stream
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder();
-                let done = false;
-        
-                while (!done) {
-                    const { value, done: readerDone } = await reader.read();
-                    done = readerDone;
+                
+                while (true) {
+                    const { value, done } = await reader.read();
+                    if (done) break;
                     
-                    if (value) {
-                        const chunk = decoder.decode(value, { stream: true });
-                        console.log("Received chunk:", chunk);
-                        botMessageContent.nodeValue += chunk;
-                        chatMessages.scrollTop = chatMessages.scrollHeight;
-                    }
+                    const chunk = decoder.decode(value);
+                    botMessageContent.nodeValue += chunk;
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
                 }
         
             } catch (error) {
-                console.error('Chatbot error:', error);
-                
-                // Create error message
+                console.error('Chat error:', error);
                 const errorDiv = document.createElement('div');
                 errorDiv.className = 'error-message';
                 errorDiv.style.color = '#dc3545';
-                errorDiv.style.marginTop = '10px';
-                errorDiv.textContent = `Error: ${error.message || 'Failed to get response from chatbot'}`;
+                errorDiv.textContent = `Error: ${error.message || 'Failed to get response'}`;
                 chatMessages.appendChild(errorDiv);
-                
             } finally {
                 chatInput.disabled = false;
-                setTimeout(() => {
-                    focusWithoutScroll(chatInput);
-                }, 100);
+                setTimeout(() => focusWithoutScroll(chatInput), 100);
             }
         });
     
