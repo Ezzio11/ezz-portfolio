@@ -75,39 +75,47 @@ def chatbot(request):
     if request.method != "POST":
         return JsonResponse({"error": "POST required"}, status=400)
 
-    data = json.loads(request.body)
-    question = data.get("question", "")
-    prompt = build_prompt(question)
+    try:
+        data = json.loads(request.body)
+        question = data.get("question", "")
+        if not question:
+            return JsonResponse({"error": "Question is required"}, status=400)
 
-    # Prepare request payload for OpenRouter
-    headers = {
-        "Authorization": f"Bearer {OR_API_KEY}",
-        "Content-Type": "application/json",
-    }
+        prompt = build_prompt(question)
 
-    payload = {
-        "model": MODEL,
-        "messages": [
-            {"role": "user", "content": prompt}
-        ],
-        "stream": True  # enable streaming response
-    }
+        headers = {
+            "Authorization": f"Bearer {OR_API_KEY}",
+            "Content-Type": "application/json",
+        }
 
-    def stream():
-        with requests.post(OR_API_URL, headers=headers, json=payload, stream=True) as r:
-            r.raise_for_status()
-            for line in r.iter_lines():
-                if line:
-                    try:
-                        # OpenRouter uses JSON lines, parse each chunk
-                        data = json.loads(line.decode("utf-8"))
-                        delta = data.get("choices", [{}])[0].get("delta", {}).get("content", "")
-                        if delta:
-                            yield delta
-                    except Exception:
-                        continue
+        payload = {
+            "model": MODEL,
+            "messages": [{"role": "user", "content": prompt}],
+            "stream": True
+        }
 
-    return StreamingHttpResponse(stream(), content_type="text/plain")
+        def stream():
+            try:
+                with requests.post(OR_API_URL, headers=headers, json=payload, stream=True) as r:
+                    r.raise_for_status()
+                    for line in r.iter_lines():
+                        if line:
+                            try:
+                                data = json.loads(line.decode("utf-8"))
+                                delta = data.get("choices", [{}])[0].get("delta", {}).get("content", "")
+                                if delta:
+                                    yield delta
+                            except json.JSONDecodeError:
+                                continue
+            except Exception as e:
+                logger.error(f"Error in chatbot stream: {str(e)}")
+                yield "An error occurred. Please try again."
+
+        return StreamingHttpResponse(stream(), content_type="text/plain")
+
+    except Exception as e:
+        logger.error(f"Error in chatbot view: {str(e)}")
+        return JsonResponse({"error": "An error occurred. Please try again."}, status=500)
 
 
 # --------------------------
