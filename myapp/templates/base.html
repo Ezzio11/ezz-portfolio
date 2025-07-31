@@ -185,6 +185,19 @@
         const chatForm = document.getElementById('chat-form');
         const chatInput = document.getElementById('chat-input');
     
+        // Focus helper to prevent scrolling when focusing
+        function focusWithoutScroll(el) {
+            if (!el || !el.focus) return;
+            try {
+                el.focus({ preventScroll: true });
+            } catch {
+                // fallback for browsers without preventScroll support
+                const x = window.scrollX, y = window.scrollY;
+                el.focus();
+                window.scrollTo(x, y);
+            }
+        }
+    
         // Load bubble position from localStorage or default
         function loadBubblePosition() {
             const left = localStorage.getItem('chatBubbleLeft');
@@ -195,7 +208,6 @@
                 bubble.style.bottom = 'auto';
                 bubble.style.right = 'auto';
             } else {
-                // default position bottom-right
                 bubble.style.bottom = '20px';
                 bubble.style.right = '20px';
             }
@@ -211,7 +223,7 @@
             const fadeIn = setInterval(() => {
                 if (opacity >= 1) {
                     clearInterval(fadeIn);
-                    chatInput.focus();
+                    focusWithoutScroll(chatInput);
                 } else {
                     opacity += 0.1;
                     panel.style.opacity = opacity;
@@ -246,7 +258,7 @@
     
         bubble.addEventListener('mousedown', (e) => {
             isDragging = true;
-            bubble.dataset.dragging = 'false'; // reset dragging state
+            bubble.dataset.dragging = 'false';
             offsetX = e.clientX - bubble.offsetLeft;
             offsetY = e.clientY - bubble.offsetTop;
             document.addEventListener('mousemove', moveBubble);
@@ -259,7 +271,6 @@
             let newLeft = (e.clientX - offsetX);
             let newTop = (e.clientY - offsetY);
     
-            // Optional: constrain bubble inside viewport
             const maxLeft = window.innerWidth - bubble.offsetWidth;
             const maxTop = window.innerHeight - bubble.offsetHeight;
             newLeft = Math.min(Math.max(0, newLeft), maxLeft);
@@ -277,14 +288,13 @@
             document.removeEventListener('mouseup', stopDrag);
             setTimeout(() => { bubble.dataset.dragging = 'false'; }, 100);
     
-            // Save current position
             localStorage.setItem('chatBubbleLeft', bubble.style.left);
             localStorage.setItem('chatBubbleTop', bubble.style.top);
         }
     
-        // Chat form submission logic: send message to backend and show response
+        // Chat form submission logic
         chatForm.addEventListener('submit', async (e) => {
-            e.preventDefault(); // prevent form submit default scrolling
+            e.preventDefault();
             const message = chatInput.value.trim();
             if (!message) return;
     
@@ -302,30 +312,17 @@
                     body: JSON.stringify({ prompt: message }),
                 });
     
-                if (!response.ok) {
-                    // Attempt to get error message from backend
-                    let errorMsg = 'Network error';
-                    try {
-                        const errData = await response.json();
-                        if (errData.error) errorMsg = errData.error;
-                    } catch {}
-                    throw new Error(errorMsg);
-                }
+                if (!response.ok) throw new Error('Network error');
     
                 const data = await response.json();
     
-                if (data.error) {
-                    appendMessage('Bot', `Error: ${data.error}`);
-                } else {
-                    appendMessage('Bot', data.response || 'Sorry, no reply.');
-                }
+                appendMessage('Bot', data.response || 'Sorry, no reply.');
     
             } catch (error) {
                 appendMessage('Bot', 'Sorry, something went wrong.');
-                console.error('Chatbot error:', error);
             } finally {
                 chatInput.disabled = false;
-                chatInput.focus();
+                focusWithoutScroll(chatInput);
             }
         });
     
@@ -334,10 +331,7 @@
             div.style.marginBottom = '10px';
             div.innerHTML = `<strong>${sender}:</strong> ${escapeHtml(text)}`;
             chatMessages.appendChild(div);
-            // Only scroll if panel is visible (prevents weird jumps)
-            if (panel.style.display === 'flex') {
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }
+            chatMessages.scrollTop = chatMessages.scrollHeight;
         }
     
         function escapeHtml(text) {
@@ -346,7 +340,6 @@
             return div.innerHTML;
         }
     
-        // Standard Django CSRF cookie getter
         function getCookie(name) {
             let cookieValue = null;
             if (document.cookie && document.cookie !== '') {
@@ -363,6 +356,7 @@
         }
     </script>
     {% endblock %}
+
 
     <style>
         /* Chat bubble button */
