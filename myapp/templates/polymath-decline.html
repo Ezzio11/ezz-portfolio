@@ -1777,6 +1777,12 @@
                     const chartDom = document.getElementById('polymathTimeSeries');
                     const myChart = echarts.init(chartDom);
     
+                    // Detect if mobile
+                    const isMobile = window.innerWidth < 640;
+                    
+                    // Adjust x-axis labels: show fewer labels on mobile
+                    const labelInterval = isMobile ? Math.ceil(years.length / 6) : 1;
+                    
                     const option = {
                         backgroundColor: '#f5f0e6',
                         title: {
@@ -1785,7 +1791,7 @@
                             textStyle: {
                                 fontFamily: 'EB Garamond, serif',
                                 color: '#3A2D23',
-                                fontSize: 18
+                                fontSize: isMobile ? 14 : 18
                             }
                         },
                         tooltip: {
@@ -1793,16 +1799,31 @@
                             axisPointer: { type: 'cross' }
                         },
                         legend: {
-                            top: 30,
-                            textStyle: { color: '#3A2D23', fontFamily: 'EB Garamond, serif' }
+                            top: isMobile ? 10 : 30,
+                            textStyle: {
+                                color: '#3A2D23',
+                                fontFamily: 'EB Garamond, serif',
+                                fontSize: isMobile ? 10 : 12
+                            }
                         },
-                        grid: { top: 80, right: 60, left: 60, bottom: 60 },
+                        grid: {
+                            top: isMobile ? 60 : 80,
+                            right: isMobile ? 40 : 60,
+                            left: isMobile ? 40 : 60,
+                            bottom: isMobile ? 40 : 60
+                        },
                         xAxis: {
                             type: 'category',
                             data: years,
                             name: 'Birth Year',
-                            nameTextStyle: { fontFamily: 'EB Garamond, serif' },
-                            axisLabel: { color: '#3A2D23' },
+                            nameTextStyle: {
+                                fontFamily: 'EB Garamond, serif',
+                                fontSize: isMobile ? 10 : 12
+                            },
+                            axisLabel: {
+                                color: '#3A2D23',
+                                interval: labelInterval // skip labels on mobile
+                            },
                             axisLine: { lineStyle: { color: '#3A2D23' } },
                             splitLine: { lineStyle: { color: 'rgba(0,0,0,0.05)' } }
                         },
@@ -1813,7 +1834,7 @@
                                 position: 'left',
                                 min: 2,
                                 max: 7,
-                                axisLabel: { color: 'goldenrod' },
+                                axisLabel: { color: 'goldenrod', fontSize: isMobile ? 10 : 12 },
                                 axisLine: { lineStyle: { color: 'goldenrod' } },
                                 splitLine: { lineStyle: { color: 'rgba(0,0,0,0.05)' } }
                             },
@@ -1821,7 +1842,8 @@
                                 type: 'value',
                                 name: 'Number of Polymaths',
                                 position: 'right',
-                                scale: true
+                                scale: true,
+                                axisLabel: { fontSize: isMobile ? 10 : 12 }
                             }
                         ],
                         series: [
@@ -1830,7 +1852,7 @@
                                 type: 'bar',
                                 yAxisIndex: 1,
                                 itemStyle: { color: 'dimgrey' },
-                                barMaxWidth: 12,
+                                barMaxWidth: isMobile ? 16 : 12,
                                 data: counts
                             },
                             {
@@ -1838,7 +1860,7 @@
                                 type: 'line',
                                 smooth: true,
                                 symbol: 'none',
-                                lineStyle: { color: 'goldenrod', width: 3 },
+                                lineStyle: { color: 'goldenrod', width: isMobile ? 2 : 3 },
                                 data: smoothedScores
                             }
                         ]
