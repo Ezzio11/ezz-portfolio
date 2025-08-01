@@ -667,6 +667,36 @@
                     </p>
                 </div>
             </div>
+            
+            <!-- Where Minds Roamed -->
+            <div id="occupations" class="mb-20 fade-in">
+                <div class="flex items-center mb-12 px-4 md:px-8">
+                    <span class="font-garamond text-4xl text-oldgold mr-4">1.2</span>
+                    <h2 data-i18n="act1.occupations.title" class="font-garamond text-3xl md:text-4xl text-oxblood border-b border-oldgold/30 pb-2">
+                        Where Minds Roamed
+                    </h2>
+                </div>
+            
+                <div class="px-4 md:px-8"> 
+                    <p data-i18n="act1.occupations.para1" class="mb-6 text-lg">
+                        If genius had a passport in geography, it found its freedom in occupation. The chart below shows how polymaths expressed their restless curiosity—not through a single calling, but through many. This is more than a ranking of jobs; it is a map of intellectual motion. Writing, teaching, healing, governing—these were not destinations, but pathways.
+                    </p>
+            
+                    <div id="occupationTreemap" class="my-12 mx-auto" style="width:100%;max-width:900px;height:500px;"></div>
+            
+                    <p data-i18n="act1.occupations.para2" class="mb-6 text-lg">
+                        The most common role? Writer. But to write was rarely just to record. It was to distill philosophy, share discoveries, translate truths between domains. Close behind were university teachers, physicians, and politicians—professions that straddled theory and action, solitude and society. These weren't just jobs. They were platforms from which polymaths launched their ideas into the world.
+                    </p>
+            
+                    <p data-i18n="act1.occupations.para3" class="mb-6 text-lg text-deepbrown/80 max-w-2xl mx-auto">
+                        Engineers, naturalists, and translators make quiet appearances—reminding us that polymathy thrived in the margins as much as in the spotlight. The presence of poets and historians speaks to a deep humanism at the heart of the polymathic impulse: to understand not just how the world works, but how it feels, remembers, and changes.
+                    </p>
+            
+                    <p data-i18n="act1.occupations.para4" class="mb-6 text-lg text-deepbrown/80 max-w-2xl mx-auto">
+                        These occupations were never just labels. They were windows, tools, vessels. In an age before hyper-specialization, minds could roam—freely, wildly, brilliantly—through fields that today feel impossibly siloed. This chart is not a taxonomy. It’s a trace of how curiosity once moved: freely, across the terrain of human thought.
+                    </p>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -1838,7 +1868,96 @@
     
                     mapChart.setOption(mapOption);
                     window.addEventListener('resize', () => mapChart.resize());
-    
+
+                    // === Occupation Treemap ===
+                    const occupationCounts = {};
+                    raw.forEach(d => {
+                        if (d.occupations && d.occupations !== "Unknown") {
+                            // Match Python's parsing logic exactly:
+                            d.occupations.strip("[]").replace("'", "").split(', ').forEach(occupation => {
+                                const o = occupation.trim();
+                                if (o) {
+                                    occupationCounts[o] = (occupationCounts[o] || 0) + 1;
+                                }
+                            });
+                        }
+                    });
+                    
+                    // Get top 15 like Python does
+                    const occupationData = Object.entries(occupationCounts)
+                        .map(([name, value]) => ({ name, value }))
+                        .sort((a, b) => b.value - a.value)
+                        .slice(0, 15); // ← Only top 15
+                    
+                    // Dynamic color scaling (percentile-based)
+                    const values = occupationData.map(d => d.value);
+                    const maxVal = Math.max(...values);
+                    const minVal = Math.min(...values);
+                    occupationData.forEach(d => {
+                        const percentile = (d.value - minVal) / (maxVal - minVal);
+                        d.itemStyle = {
+                            color: percentile > 0.66 ? '#76323F' : 
+                                   percentile > 0.33 ? '#d5a021' : '#e6dcc4'
+                        };
+                    });
+                    
+                    const treemapDom = document.getElementById('occupationTreemap');
+                    const treemapChart = echarts.init(treemapDom);
+                    
+                    const treemapOption = {
+                        backgroundColor: '#f5f0e6',
+                        title: {
+                            text: 'Top 15 Occupations of Polymaths',
+                            left: 'center',
+                            textStyle: { 
+                                color: '#3A2D23',
+                                fontFamily: 'EB Garamond, serif' // Match other charts
+                            }
+                        },
+                        tooltip: {
+                            trigger: 'item',
+                            formatter: params => 
+                                `${params.name}<br/>Polymaths: ${params.value}`
+                        },
+                        series: [{
+                            type: 'treemap',
+                            data: occupationData,
+                            breadcrumb: { show: false },
+                            label: {
+                                show: true,
+                                fontSize: 12,
+                                formatter: params => {
+                                    // Truncate long labels
+                                    return params.name.length > 15 ? 
+                                        params.name.substring(0, 15) + '...' : 
+                                        params.name;
+                                }
+                            },
+                            upperLabel: {
+                                show: true,
+                                fontSize: 12
+                            },
+                            itemStyle: {
+                                borderColor: '#999',
+                                borderWidth: 1
+                            },
+                            emphasis: {
+                                itemStyle: {
+                                    borderColor: '#5A4636',
+                                    borderWidth: 2
+                                }
+                            },
+                            levels: [
+                                {
+                                    itemStyle: { borderColor: '#ddd' }
+                                }
+                            ]
+                        }]
+                    };
+                    
+                    treemapChart.setOption(treemapOption);
+                    window.addEventListener('resize', () => treemapChart.resize());
+                    
                     // === Bubble Scatter Chart ===
                     let scatterData = raw.map(d => {
                         const year = parseInt(d.birth_year);
