@@ -1872,21 +1872,28 @@
                     window.addEventListener('resize', () => myChart.resize());
     
                     // === World Map Heatmap ===
+                    const countryAliases = {
+                      'Czech Republic': 'Czech Rep.',
+                      'Bosnia and Herzegovina': 'Bosnia and Herz.',
+                      'Democratic Republic of the Congo': 'Dem. Rep. Congo'
+                    };
+                    
                     const countryCounts = {};
                     raw.forEach(d => {
-                        if (d.citizenship && d.citizenship !== "Unknown") {
-                            d.citizenship.split('/').forEach(country => {
-                                const c = country.trim();
-                                if (c) {
-                                    countryCounts[c] = (countryCounts[c] || 0) + 1;
-                                }
-                            });
-                        }
+                      if (d.citizenship && d.citizenship !== "Unknown") {
+                        d.citizenship.split('/').forEach(country => {
+                          const c = country.trim();
+                          const normalizedName = countryAliases[c] || c;
+                          if (normalizedName) {
+                            countryCounts[normalizedName] = (countryCounts[normalizedName] || 0) + 1;
+                          }
+                        });
+                      }
                     });
-    
+                    
                     const countryData = Object.entries(countryCounts)
-                        .map(([name, value]) => ({ name, value }))
-                        .sort((a,b) => b.value - a.value);
+                      .map(([name, value]) => ({ name, value }))
+                      .sort((a, b) => b.value - a.value);
     
                     const mapDom = document.getElementById('countryMap');
                     const mapChart = echarts.init(mapDom);
