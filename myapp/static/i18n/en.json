@@ -40,7 +40,7 @@
   
   "act1.fig1": "Fig. 1: Bubble Chart of Exceptional Polymaths (by Polymath Score and Number of Distinct Occupations)",
   "act1.fig2": "Fig. 2: The Rise and Fall of the Polymath (LOWESS Smoothed)",
-  "act1.fig3": "Fig. 3: Treemap of Top 15 Occupations among Polymaths"
+  "act1.fig3": "Fig. 3: Treemap of Top 15 Occupations among Polymaths",
 
   "act1.timeline.title": "The Golden Arc",
   "act1.timeline.1000": "Before the Renaissance, polymaths were rare but brilliant, their contributions peaking despite low numbers.",
@@ -60,7 +60,7 @@
   "act1.occupations.para1": "If genius had a passport in geography, it found its freedom in occupation. The chart below shows how polymaths expressed their restless curiosity—not through a single calling, but through many. This is more than a ranking of jobs; it is a map of intellectual motion. Writing, teaching, healing, governing—these were not destinations, but pathways.",
   "act1.occupations.para2": "The most common role? Writer. But to write was rarely just to record. It was to distill philosophy, share discoveries, translate truths between domains. Close behind were university teachers, physicians, and politicians—professions that straddled theory and action, solitude and society. These weren't just jobs. They were platforms from which polymaths launched their ideas into the world.",
   "act1.occupations.para3": "Engineers, naturalists, and translators make quiet appearances—reminding us that polymathy thrived in the margins as much as in the spotlight. The presence of poets and historians speaks to a deep humanism at the heart of the polymathic impulse: to understand not just how the world works, but how it feels, remembers, and changes.",
-  "act1.occupations.para4": "These occupations were never just labels. They were windows, tools, vessels. In an age before hyper-specialization, minds could roam—freely, wildly, brilliantly—through fields that today feel impossibly siloed. This chart is not a taxonomy. It’s a trace of how curiosity once moved: freely, across the terrain of human thought."
+  "act1.occupations.para4": "These occupations were never just labels. They were windows, tools, vessels. In an age before hyper-specialization, minds could roam—freely, wildly, brilliantly—through fields that today feel impossibly siloed. This chart is not a taxonomy. It’s a trace of how curiosity once moved: freely, across the terrain of human thought.",
 
   "act2.title": "Act 2: Why The Polymath Faded",
   "act2.para1": "Where did they go? Did they go out quietly? Did their light dim slowly until they stopped existing altogether? No. Their disappearance wasn't accidental. It was the result of a slow, deliberate structural change—from the education system to the job market.",
@@ -71,7 +71,7 @@
   "act2.egypt.title": "The Egyptian Case Study",
   "act2.egypt.para": "A suitable example would be the Egyptian education system. Kids spend their first 10 years of academic life studying various subjects—Arabic, English, Mathematics, Social Sciences (History and Geography), Sciences (Physics, Chemistry and Biology). Suddenly, at the age of 15, the student is asked to specialize in either humanities or science. A year later, those who choose science, have to choose between pure science and mathematics. This reveals a deeper flaw in how modern education is structured—mistaking early curiosity for confusion. The age of 15 is considered to be not only an age of curiosity—but also this is when they start asking bigger questions. Who am I? What matters? What is real?",
 
-  "act2.young.title": "Young Polymaths",
+  "act2.young.title": "15 Year-Olds That Changed Everything",
   "act2.young.pascal.title": "Blaise Pascal",
   "act2.young.pascal.desc": "French mathematician and physicist, started developing the foundation of projective geometry at 15.",
   "act2.young.shelley.title": "Mary Shelley",
