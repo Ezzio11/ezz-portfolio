@@ -301,14 +301,46 @@
             <a href="#cover" data-i18n="site.title" class="font-garamond text-2xl text-oxblood hover:text-oldgold transition-colors duration-300">
                 The Decline of The Polymath
             </a>
-            <div class="hidden md:flex space-x-8">
-                <a href="#prologue" data-i18n="nav.prologue" class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300">Prologue</a>
-                <a href="#polymath-hall" data-i18n="nav.hall_of_fame" class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300">Hall of Fame</a>
-                <a href="#act1" data-i18n="nav.act1" class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300">Act 1</a>
-                <a href="#act2" data-i18n="nav.act2" class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300">Act 2</a>
-                <a href="#act3" data-i18n="nav.act3" class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300">Act 3</a>
-                <a href="#act4" data-i18n="nav.act4" class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300">Act 4</a>
-                <a href="#epilogue" data-i18n="nav.epilogue" class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300">Epilogue</a>
+            <div class="hidden md:flex space-x-8 items-center">
+                <a href="{% url 'mstag' %}" 
+                   class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300 {% if request.resolver_match.url_name == 'mstag' %}text-oldgold font-semibold{% endif %}">
+                    ← MSTAG
+                </a>
+                <a href="#prologue" 
+                   data-i18n="nav.prologue" 
+                   class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300">
+                    Prologue
+                </a>
+                <a href="#polymath-hall" 
+                   data-i18n="nav.hall_of_fame" 
+                   class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300">
+                    Hall of Fame
+                </a>
+                <a href="#act1" 
+                   data-i18n="nav.act1" 
+                   class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300">
+                    Act 1
+                </a>
+                <a href="#act2" 
+                   data-i18n="nav.act2" 
+                   class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300">
+                    Act 2
+                </a>
+                <a href="#act3" 
+                   data-i18n="nav.act3" 
+                   class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300">
+                    Act 3
+                </a>
+                <a href="#act4" 
+                   data-i18n="nav.act4" 
+                   class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300">
+                    Act 4
+                </a>
+                <a href="#epilogue" 
+                   data-i18n="nav.epilogue" 
+                   class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300">
+                    Epilogue
+                </a>
             </div>
 
             <!-- Language Switcher -->
@@ -419,13 +451,13 @@
         <div class="max-w-7xl mx-auto fade-in">
             <div class="flex items-center mb-12">
                 <span class="font-garamond text-4xl text-oldgold mr-4">★</span>
-                <h2 class="font-garamond text-3xl md:text-4xl text-oxblood border-b border-oldgold/30 pb-2">
+                <h2 class="font-garamond text-3xl md:text-4xl text-oxblood border-b border-oldgold/30 pb-2" data-i18n="hall.title">
                     Hall of Fame: The Great Polymaths
                 </h2>
             </div>
     
             <div class="pl-6 mb-10">
-                <p class="mb-6 text-lg">
+                <p class="mb-6 text-lg" data-i18n="hall.subtitle">
                     Step into the gallery of extraordinary minds who wove knowledge across disciplines, creating tapestries of innovation that still inspire today.
                 </p>
             </div>
@@ -1303,23 +1335,30 @@
     <!-- Footer -->
     <footer class="bg-inkwell text-parchment/60 py-12 text-center">
         <div class="max-w-4xl mx-auto px-6">
+            <!-- Back to MSTAG link added here -->
+            <a href="{% url 'mstag' %}" 
+               class="inline-block mb-8 text-sm font-garamond text-parchment/70 hover:text-oldgold transition-colors duration-300">
+                ← Back to MSTAG
+            </a>
+            
             <h3 class="font-garamond text-xl text-oldgold mb-4" data-i18n="footer.title">
                 Further Exploration
             </h3>
             <div class="grid md:grid-cols-3 gap-4 mb-8">
-                <a href="#" class="text-sm text-parchment/70 hover:text-oldgold transition-colors" data-i18n="footer.link1">
+                <a href="https://apps.weber.edu/wsuimages/michaelwutz/6510.Trio/Rede-lecture-2-cultures.pdf" class="text-sm text-parchment/70 hover:text-oldgold transition-colors" data-i18n="footer.link1">
                     The Two Cultures by C.P. Snow
                 </a>
-                <a href="#" class="text-sm text-parchment/70 hover:text-oldgold transition-colors" data-i18n="footer.link2">
+                <a href="https://davidepstein.com/range/" class="text-sm text-parchment/70 hover:text-oldgold transition-colors" data-i18n="footer.link2">
                     Range by David Epstein
                 </a>
-                <a href="#" class="text-sm text-parchment/70 hover:text-oldgold transition-colors" data-i18n="footer.link3">
+                <a href="https://en.wikipedia.org/wiki/The_Polymath" class="text-sm text-parchment/70 hover:text-oldgold transition-colors" data-i18n="footer.link3">
                     The Polymath by Waqas Ahmed
                 </a>
             </div>
             <p class="text-sm" data-i18n="footer.credit">A visual inquiry by Ezz Eldin Ahmed</p>
             <p class="text-xs mt-2" data-i18n="footer.copyright">© 2025 | Crafted with ink and curiosity</p>
         </div>
+    </footer>
      
     <script>
         document.addEventListener('DOMContentLoaded', () => {
