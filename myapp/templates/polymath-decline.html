@@ -295,59 +295,55 @@
     </style>
 </head>
 <body class="bg-inkwell text-deepbrown font-montserrat leading-relaxed">
+    
     <!-- Navigation -->
     <nav class="fixed w-full bg-parchment/95 backdrop-blur-md z-50 shadow-md border-b border-deepbrown/20">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="#cover" data-i18n="site.title" class="font-garamond text-2xl text-oxblood hover:text-oldgold transition-colors duration-300">
-                The Decline of The Polymath
-            </a>
-            <div class="hidden md:flex space-x-8 items-center">
-                <a href="{% url 'mstag' %}" 
-                   class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300 {% if request.resolver_match.url_name == 'mstag' %}text-oldgold font-semibold{% endif %}">
-                    ← MSTAG
-                </a>
-                <a href="#prologue" 
-                   data-i18n="nav.prologue" 
-                   class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300">
-                    Prologue
-                </a>
-                <a href="#polymath-hall" 
-                   data-i18n="nav.hall_of_fame" 
-                   class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300">
-                    Hall of Fame
-                </a>
-                <a href="#act1" 
-                   data-i18n="nav.act1" 
-                   class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300">
-                    Act 1
-                </a>
-                <a href="#act2" 
-                   data-i18n="nav.act2" 
-                   class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300">
-                    Act 2
-                </a>
-                <a href="#act3" 
-                   data-i18n="nav.act3" 
-                   class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300">
-                    Act 3
-                </a>
-                <a href="#act4" 
-                   data-i18n="nav.act4" 
-                   class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300">
-                    Act 4
-                </a>
-                <a href="#epilogue" 
-                   data-i18n="nav.epilogue" 
-                   class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300">
-                    Epilogue
-                </a>
-            </div>
-
-            <!-- Language Switcher -->
-            <div class="flex items-center space-x-4">
-                <button id="lang-en" class="text-sm hover:text-oldgold">EN</button>
-                <button id="lang-ar" class="text-sm hover:text-oldgold">AR</button>
-            </div>
+        <a href="#cover" data-i18n="site.title"
+           class="font-garamond text-2xl text-oxblood hover:text-oldgold transition-colors duration-300">
+          The Decline of The Polymath
+        </a>
+        
+        <!-- Desktop menu -->
+        <div class="hidden md:flex space-x-8 items-center">
+          <a href="{% url 'mstag' %}"
+             class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300 {% if request.resolver_match.url_name == 'mstag' %}text-oldgold font-semibold{% endif %}">
+            ← MSTAG
+          </a>
+          <a href="#prologue" data-i18n="nav.prologue"
+             class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300">Prologue</a>
+          <a href="#polymath-hall" data-i18n="nav.hall_of_fame"
+             class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300">Hall of Fame</a>
+          <a href="#act1" data-i18n="nav.act1"
+             class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300">Act 1</a>
+          <a href="#act2" data-i18n="nav.act2"
+             class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300">Act 2</a>
+          <a href="#act3" data-i18n="nav.act3"
+             class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300">Act 3</a>
+          <a href="#act4" data-i18n="nav.act4"
+             class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300">Act 4</a>
+          <a href="#epilogue" data-i18n="nav.epilogue"
+             class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300">Epilogue</a>
+        </div>
+        
+        <!-- Mobile menu button -->
+        <div class="md:hidden flex items-center space-x-4">
+          <button id="menu-toggle" class="text-2xl text-oxblood focus:outline-none">☰</button>
+          <button id="lang-en" class="text-sm hover:text-oldgold">EN</button>
+          <button id="lang-ar" class="text-sm hover:text-oldgold">AR</button>
+        </div>
+        
+        <!-- Mobile dropdown -->
+        <div id="mobile-menu" class="hidden absolute top-full left-0 w-full bg-parchment/95 backdrop-blur-md border-t border-deepbrown/20 shadow-md md:hidden">
+          <div class="flex flex-col items-center py-4 space-y-4">
+            <a href="{% url 'mstag' %}" class="font-garamond text-deepbrown/80 hover:text-oldgold">← MSTAG</a>
+            <a href="#prologue" data-i18n="nav.prologue" class="font-garamond text-deepbrown/80 hover:text-oldgold">Prologue</a>
+            <a href="#polymath-hall" data-i18n="nav.hall_of_fame" class="font-garamond text-deepbrown/80 hover:text-oldgold">Hall of Fame</a>
+            <a href="#act1" data-i18n="nav.act1" class="font-garamond text-deepbrown/80 hover:text-oldgold">Act 1</a>
+            <a href="#act2" data-i18n="nav.act2" class="font-garamond text-deepbrown/80 hover:text-oldgold">Act 2</a>
+            <a href="#act3" data-i18n="nav.act3" class="font-garamond text-deepbrown/80 hover:text-oldgold">Act 3</a>
+            <a href="#act4" data-i18n="nav.act4" class="font-garamond text-deepbrown/80 hover:text-oldgold">Act 4</a>
+            <a href="#epilogue" data-i18n="nav.epilogue" class="font-garamond text-deepbrown/80 hover:text-oldgold">Epilogue</a>
+          </div>
         </div>
     </nav>
     
@@ -2189,6 +2185,9 @@
                     window.addEventListener('resize', () => bubbleChart.resize());
                 }
             });
+                    document.getElementById('menu-toggle').addEventListener('click', () => {
+                        document.getElementById('mobile-menu').classList.toggle('hidden');
+                    });
         });
     </script>
 </body>
