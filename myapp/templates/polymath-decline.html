@@ -469,9 +469,9 @@
                     </svg>
                 </button>
     
-                <div class="flex space-x-8 pb-8 overflow-x-auto scrollbar-hide polymath-scroller scroll-smooth">
+                <div class="flex space-x-8 pb-8 overflow-x-auto scrollbar-hide polymath-scroller scroll-smooth snap-x snap-mandatory">
                     {% for p in polymaths %}
-                    <button class="timeline-img-btn polymath-card flex-shrink-0 w-80 bg-white/90 p-6 rounded-lg shadow-lg border border-deepbrown/10"
+                    <button class="timeline-img-btn polymath-card flex-shrink-0 w-80 bg-white/90 p-6 rounded-lg shadow-lg border border-deepbrown/10 snap-start"
                         data-src="{{ p.image_url }}"
                         data-name-en="{{ p.name_en }}"
                         data-name-ar="{{ p.name_ar }}"
@@ -1580,25 +1580,29 @@
             
               if (!container) return;
             
-              // Arrow Navigation
-              const scrollAmount = 320; // Match your card width
+              // --- Calculate card width dynamically (card + gap) ---
+              const card = container.querySelector('.polymath-card');
+              const gap = 32; // space-x-8 = 2rem = 32px
+              const cardWidth = card ? card.offsetWidth + gap : 352;
+            
+              // --- Scroll helper ---
               const scrollTo = (direction) => {
                 const currentScroll = container.scrollLeft;
-                const newScroll = direction === 'left' 
-                  ? Math.max(0, currentScroll - scrollAmount)
-                  : currentScroll + scrollAmount;
-                
+                const newScroll = direction === 'left'
+                  ? Math.max(0, currentScroll - cardWidth)
+                  : currentScroll + cardWidth;
+            
                 container.scrollTo({
                   left: newScroll,
                   behavior: 'smooth'
                 });
               };
             
-              // Click Handlers
+              // --- Button click handlers ---
               leftBtn?.addEventListener('click', () => scrollTo('left'));
               rightBtn?.addEventListener('click', () => scrollTo('right'));
             
-              // Touch Gestures (Swipe)
+              // --- Swipe gestures ---
               let touchStartX = 0;
               let touchEndX = 0;
             
@@ -1612,7 +1616,7 @@
               }, { passive: true });
             
               const handleSwipe = () => {
-                const threshold = 50; // Minimum swipe distance
+                const threshold = 50; // min swipe distance
                 if (touchStartX - touchEndX > threshold) {
                   scrollTo('right'); // Swipe left
                 } else if (touchEndX - touchStartX > threshold) {
@@ -1620,13 +1624,13 @@
                 }
               };
             
-              // Keyboard Navigation (Optional)
+              // --- Keyboard navigation (optional) ---
               container.addEventListener('keydown', (e) => {
                 if (e.key === 'ArrowLeft') scrollTo('left');
                 if (e.key === 'ArrowRight') scrollTo('right');
               });
             
-              // Auto-scroll (Keep your existing logic)
+              // --- Auto-scroll ---
               let interval;
               const startAutoScroll = () => {
                 interval = setInterval(() => {
@@ -1635,16 +1639,29 @@
                 }, 5000);
               };
             
-              // Pause on interaction
               const pauseAutoScroll = () => clearInterval(interval);
-              
+            
               container.addEventListener('mouseenter', pauseAutoScroll);
               container.addEventListener('mouseleave', startAutoScroll);
               container.addEventListener('touchstart', pauseAutoScroll);
             
+              // --- Initialize ---
               startAutoScroll();
             }
-    
+            
+              // --- Center the first card on load ---
+              window.addEventListener('load', () => {
+                // Compute initial offset to center the content
+                const totalScroll = container.scrollWidth - container.clientWidth;
+                if (totalScroll > 0) {
+                  const center = totalScroll / 2;
+                  container.scrollTo({
+                    left: center,
+                    behavior: 'auto'
+                  });
+                }
+              });
+
             // ===== INITIALIZATION =====
             // Language switchers:
             function setupLanguageButton(id, lang) {
@@ -1715,48 +1732,6 @@
                     }
                 });
             });
-    
-            // Mobile menu toggle
-            const mobileMenuButton = document.querySelector('button.md\\:hidden');
-            if (mobileMenuButton) {
-                mobileMenuButton.addEventListener('click', () => {
-                    const mobileMenu = document.createElement('div');
-                    mobileMenu.className = 'fixed inset-0 bg-parchment/95 z-50 flex flex-col items-center justify-center space-y-6';
-    
-                    mobileMenu.innerHTML = `
-                        <button class="absolute top-6 right-6 text-deepbrown">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
-                        <a href="#prologue" data-i18n="nav.prologue" class="font-garamond text-2xl text-oxblood">Prologue</a>
-                        <a href="#polymath-hall" data-i18n="nav.hall_of_fame" class="font-garamond text-2xl text-oxblood">Hall of Fame</a>
-                        <a href="#act1" data-i18n="nav.act1" class="font-garamond text-2xl text-oxblood">Act 1</a>
-                        <a href="#act2" data-i18n="nav.act2" class="font-garamond text-2xl text-oxblood">Act 2</a>
-                        <a href="#act3" data-i18n="nav.act3" class="font-garamond text-2xl text-oxblood">Act 3</a>
-                        <a href="#act4" data-i18n="nav.act4" class="font-garamond text-2xl text-oxblood">Act 4</a>
-                        <a href="#epilogue" data-i18n="nav.epilogue" class="font-garamond text-2xl text-oxblood">Epilogue</a>
-                    `;
-                    document.body.appendChild(mobileMenu);
-    
-                    // Apply translations
-                    const currentLang = localStorage.getItem('lang') || 'en';
-                    fetch(`i18n/${currentLang}.json`)
-                        .then(r => r.json())
-                        .then(translations => {
-                            mobileMenu.querySelectorAll('[data-i18n]').forEach(el => {
-                                const key = el.getAttribute('data-i18n');
-                                if (translations[key]) el.textContent = translations[key];
-                            });
-                        });
-    
-                    // Close menu
-                    mobileMenu.querySelector('button').addEventListener('click', () => document.body.removeChild(mobileMenu));
-                    mobileMenu.querySelectorAll('a').forEach(link => {
-                        link.addEventListener('click', () => document.body.removeChild(mobileMenu));
-                    });
-                });
-            }
     
             // === ECharts Dual-Axis Chart ===
             Papa.parse("/static/data/polymaths_clean.csv", {
