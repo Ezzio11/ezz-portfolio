@@ -298,8 +298,8 @@
     
     <!-- Navigation -->
     <nav class="fixed w-full bg-parchment/95 backdrop-blur-md z-50 shadow-md border-b border-deepbrown/20">
-      <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-        
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-center md:justify-between items-center relative">
+
         <!-- Title -->
         <a href="#cover" data-i18n="site.title"
            class="font-garamond text-2xl text-oxblood hover:text-oldgold transition-colors duration-300">
@@ -319,7 +319,7 @@
         </div>
     
         <!-- Right side: Language (desktop) + Hamburger (mobile) -->
-        <div class="flex items-center space-x-4">
+        <div class="flex items-center space-x-4 absolute right-6 top-1/2 -translate-y-1/2">
           <!-- Language buttons always visible -->
           <button id="lang-en" class="text-sm hover:text-oldgold">EN</button>
           <button id="lang-ar" class="text-sm hover:text-oldgold">AR</button>
@@ -507,15 +507,18 @@
                     <footer data-i18n="hall.bottom.author" class="mt-2 text-base text-oxblood">— Albert Einstein</footer>
                 </div>
             </div>
-
+            
             <!-- Bubble Chart -->
             <div class="px-4 md:px-8 mb-12">
-                <div class="chart-container">
-                    <div id="polymathScatter" style="height: 100%;"></div>
+              <div class="w-full max-w-5xl mx-auto">
+                <div class="relative w-full" style="padding-top: 60%;">
+                  <!-- Aspect ratio: height = 60% of width -->
+                  <div id="polymathScatter" class="absolute inset-0"></div>
                 </div>
-                <div class="text-center mt-4 text-sm text-deepbrown/60 font-garamond" data-i18n="act1.fig1">
-                    Fig. 1: Polymath Scatterd by Polymath Score (Number of Distinct Occupations)
+                <div class="text-center mt-4 text-xs sm:text-sm text-deepbrown/60 font-garamond px-2" data-i18n="act1.fig1">
+                  Fig. 1: Polymaths scattered by Polymath Score (Number of Distinct Occupations)
                 </div>
+              </div>
             </div>
         </div>
     </section>
@@ -572,12 +575,15 @@
 
                 <!-- Time Series Chart -->
                 <div class="px-4 md:px-8 mb-12">
-                    <div class="chart-container">
-                        <div id="polymathTimeSeries" style="height: 100%;"></div>
+                  <div class="w-full max-w-5xl mx-auto">
+                    <div class="relative w-full" style="padding-top: 60%;">
+                      <!-- Aspect ratio: height is 60% of width -->
+                      <div id="polymathTimeSeries" class="absolute inset-0"></div>
                     </div>
-                    <div class="text-center mt-4 text-sm text-deepbrown/60 font-garamond" data-i18n="act1.fig2">
-                        Fig. 2: Evolution of Polymath Scores and Prevalence (Annual Averages and Counts)
+                    <div class="text-center mt-4 text-xs sm:text-sm text-deepbrown/60 font-garamond px-2" data-i18n="act1.fig2">
+                      Fig. 2: Evolution of Polymath Scores and Prevalence (Annual Averages and Counts)
                     </div>
+                  </div>
                 </div>
 
                 <!-- Timeline -->
@@ -688,10 +694,15 @@
                         The decline of polymathy isn't just told in centuries—it's told in nations. The bar chart below shows the top countries to have such beautiful minds. Germany leads the list with 368 recorded polymaths, followed by the United States (134) and the United Kingdom (224). France, Italy, and Spain round out the top six—unsurprising, given their historic roles in science, philosophy, and the arts.
                     </p>
 
-                    <div id="countryMap" class="my-12 mx-auto" style="width:100%;max-width:900px;height:500px;"></div>
-                    
-                    <div class="text-center mt-4 text-sm text-deepbrown/60 font-garamond" data-i18n="act1.fig3">
-                        Fig. 3: World map of polymath distribution
+                    <div class="px-4 md:px-8 my-12">
+                      <div class="w-full max-w-5xl mx-auto">
+                        <div class="relative w-full" style="padding-top: 70%;">
+                          <div id="countryMap" class="absolute inset-0"></div>
+                        </div>
+                        <div class="text-center mt-4 text-xs sm:text-sm text-deepbrown/60 font-garamond px-2" data-i18n="act1.figX">
+                            Fig. 3: World map of polymath distribution
+                        </div>
+                      </div>
                     </div>
 
                     <p data-i18n="act1.geography.para2" class="mb-6 text-lg text-deepbrown/80 max-w-2xl mx-auto">
@@ -718,12 +729,18 @@
                         If genius had a passport in geography, it found its freedom in occupation. The chart below shows how polymaths expressed their restless curiosity—not through a single calling, but through many. This is more than a ranking of jobs; it is a map of intellectual motion. Writing, teaching, healing, governing—these were not destinations, but pathways.
                     </p>
             
-                    <div id="occupationTreemap" class="my-12 mx-auto" style="width:100%;max-width:900px;height:500px;"></div>
-                    
-                    <div class="text-center mt-4 text-sm text-deepbrown/60 font-garamond" data-i18n="act1.fig4">
-                        Fig. 4: Tree map of the top 15 polymath occupations
+                    <div class="px-4 md:px-8 my-12">
+                      <div class="w-full max-w-5xl mx-auto">
+                        <div class="relative w-full" style="padding-top: 70%;">
+                          <!-- Aspect ratio: height = 70% of width -->
+                          <div id="occupationTreemap" class="absolute inset-0"></div>
+                        </div>
+                        <div class="text-center mt-4 text-xs sm:text-sm text-deepbrown/60 font-garamond px-2" data-i18n="act1.fig4">
+                          Fig. 4: Tree map of the top 15 polymath occupations
+                        </div>
+                      </div>
                     </div>
-            
+          
                     <p data-i18n="act1.occupations.para2" class="mb-6 text-lg">
                         The most common role? Writer. But to write was rarely just to record. It was to distill philosophy, share discoveries, translate truths between domains. Close behind were university teachers, physicians, and politicians—professions that straddled theory and action, solitude and society. These weren't just jobs. They were platforms from which polymaths launched their ideas into the world.
                     </p>
