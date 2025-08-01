@@ -59,6 +59,7 @@
                             <a href="{% url 'about' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}">About Ezz (me!)</a>
                             <a href="{% url 'projects' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'projects' %}active{% endif %}">Projects</a>
                             <a href="{% url 'mstag' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'mstag' %}active{% endif %}">MSTAG</a>
+                            <a href="{% url 'chatbot' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'chatbot' %}active{% endif %}">X.A.N.E</a>
                         </div>
                         <div class="d-flex hightech-link mt-1 justify-content-between">
                             <a href="https://www.linkedin.com/in/ezzeldinahmed11/" class="btn-light nav-fill btn btn-square rounded-circle me-2">
@@ -150,6 +151,35 @@
     <a href="#" class="btn btn-secondary btn-square rounded-circle back-to-top">
         <i class="fa fa-arrow-up text-white"></i>
     </a>
+
+    <!-- Floating Chatbot Bubble -->
+    {% csrf_token %}
+    <div id="chatbot-container" class="chatbot-container">
+        <div id="chatbot-bubble" class="chatbot-bubble" title="Chat with XANE">
+            <i class="fas fa-robot"></i>
+        </div>
+        <div id="chatbot-window" class="chatbot-window">
+            <div class="chatbot-header">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-robot me-2"></i>
+                    <h5 class="mb-0">XANE Assistant</h5>
+                </div>
+                <button id="chatbot-close" class="chatbot-close-btn" aria-label="Close chat">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="chatbot-messages" class="chatbot-messages">
+                <!-- Messages will be inserted here by JavaScript -->
+            </div>
+            <div class="chatbot-input-container">
+                <input type="text" id="chatbot-input" class="chatbot-input" 
+                    placeholder="Ask me anything..." aria-label="Type your message">
+                <button id="chatbot-send" class="chatbot-send-btn" aria-label="Send message">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
     
     <!-- JavaScript Libraries -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
