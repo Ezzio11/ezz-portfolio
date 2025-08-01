@@ -510,15 +510,12 @@
             
             <!-- Bubble Chart -->
             <div class="px-4 md:px-8 mb-12">
-              <div class="w-full max-w-5xl mx-auto">
-                <div class="relative w-full" style="padding-top: 60%;">
-                  <!-- Aspect ratio: height = 60% of width -->
-                  <div id="polymathScatter" class="absolute inset-0"></div>
+                <div class="chart-container">
+                    <div id="polymathScatter" style="height: 100%;"></div>
                 </div>
-                <div class="text-center mt-4 text-xs sm:text-sm text-deepbrown/60 font-garamond px-2" data-i18n="act1.fig1">
-                  Fig. 1: Polymaths scattered by Polymath Score (Number of Distinct Occupations)
+                <div class="text-center mt-4 text-sm text-deepbrown/60 font-garamond" data-i18n="act1.fig1">
+                    Fig. 1: Polymath Scatterd by Polymath Score (Number of Distinct Occupations)
                 </div>
-              </div>
             </div>
         </div>
     </section>
@@ -575,15 +572,12 @@
 
                 <!-- Time Series Chart -->
                 <div class="px-4 md:px-8 mb-12">
-                  <div class="w-full max-w-5xl mx-auto">
-                    <div class="relative w-full" style="padding-top: 60%;">
-                      <!-- Aspect ratio: height is 60% of width -->
-                      <div id="polymathTimeSeries" class="absolute inset-0"></div>
+                    <div class="chart-container">
+                        <div id="polymathTimeSeries" style="height: 100%;"></div>
                     </div>
-                    <div class="text-center mt-4 text-xs sm:text-sm text-deepbrown/60 font-garamond px-2" data-i18n="act1.fig2">
-                      Fig. 2: Evolution of Polymath Scores and Prevalence (Annual Averages and Counts)
+                    <div class="text-center mt-4 text-sm text-deepbrown/60 font-garamond" data-i18n="act1.fig2">
+                        Fig. 2: Evolution of Polymath Scores and Prevalence (Annual Averages and Counts)
                     </div>
-                  </div>
                 </div>
 
                 <!-- Timeline -->
@@ -694,15 +688,10 @@
                         The decline of polymathy isn't just told in centuries—it's told in nations. The bar chart below shows the top countries to have such beautiful minds. Germany leads the list with 368 recorded polymaths, followed by the United States (134) and the United Kingdom (224). France, Italy, and Spain round out the top six—unsurprising, given their historic roles in science, philosophy, and the arts.
                     </p>
 
-                    <div class="px-4 md:px-8 my-12">
-                      <div class="w-full max-w-5xl mx-auto">
-                        <div class="relative w-full" style="padding-top: 70%;">
-                          <div id="countryMap" class="absolute inset-0"></div>
-                        </div>
-                        <div class="text-center mt-4 text-xs sm:text-sm text-deepbrown/60 font-garamond px-2" data-i18n="act1.figX">
-                            Fig. 3: World map of polymath distribution
-                        </div>
-                      </div>
+                    <div id="countryMap" class="my-12 mx-auto" style="width:100%;max-width:900px;height:500px;"></div>
+                    
+                    <div class="text-center mt-4 text-xs sm:text-sm text-deepbrown/60 font-garamond px-2" data-i18n="act1.figX">
+                        Fig. 3: World map of polymath distribution
                     </div>
 
                     <p data-i18n="act1.geography.para2" class="mb-6 text-lg text-deepbrown/80 max-w-2xl mx-auto">
@@ -729,16 +718,10 @@
                         If genius had a passport in geography, it found its freedom in occupation. The chart below shows how polymaths expressed their restless curiosity—not through a single calling, but through many. This is more than a ranking of jobs; it is a map of intellectual motion. Writing, teaching, healing, governing—these were not destinations, but pathways.
                     </p>
             
-                    <div class="px-4 md:px-8 my-12">
-                      <div class="w-full max-w-5xl mx-auto">
-                        <div class="relative w-full" style="padding-top: 70%;">
-                          <!-- Aspect ratio: height = 70% of width -->
-                          <div id="occupationTreemap" class="absolute inset-0"></div>
-                        </div>
-                        <div class="text-center mt-4 text-xs sm:text-sm text-deepbrown/60 font-garamond px-2" data-i18n="act1.fig4">
-                          Fig. 4: Tree map of the top 15 polymath occupations
-                        </div>
-                      </div>
+                    <div id="occupationTreemap" class="my-12 mx-auto" style="width:100%;max-width:900px;height:500px;"></div>
+                    
+                    <div class="text-center mt-4 text-sm text-deepbrown/60 font-garamond" data-i18n="act1.fig4">
+                        Fig. 4: Tree map of the top 15 polymath occupations
                     </div>
           
                     <p data-i18n="act1.occupations.para2" class="mb-6 text-lg">
