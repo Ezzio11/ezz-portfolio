@@ -285,6 +285,13 @@
         .lightbox-nav svg {
           pointer-events: none;
         }
+        
+        #occupationTreemap {
+            transition: box-shadow 0.3s ease;
+        }
+        #occupationTreemap:hover {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        }
     </style>
 </head>
 <body class="bg-inkwell text-deepbrown font-montserrat leading-relaxed">
@@ -544,7 +551,7 @@
                         <div id="polymathTimeSeries" style="height: 100%;"></div>
                     </div>
                     <div class="text-center mt-4 text-sm text-deepbrown/60 font-garamond" data-i18n="act1.fig2">
-                        Fig. 2: Density of polymaths per million population (smoothed) from 1000 AD to present
+                        Fig. 2: Evolution of Polymath Scores and Prevalence (Annual Averages and Counts)
                     </div>
                 </div>
 
@@ -657,6 +664,10 @@
                     </p>
 
                     <div id="countryMap" class="my-12 mx-auto" style="width:100%;max-width:900px;height:500px;"></div>
+                    
+                    <div class="text-center mt-4 text-sm text-deepbrown/60 font-garamond" data-i18n="act1.fig2">
+                        Fig. 3: World map of polymath distribution
+                    </div>
 
                     <p data-i18n="act1.geography.para2" class="mb-6 text-lg text-deepbrown/80 max-w-2xl mx-auto">
                         Yet some entries, like the Czech Republic and Hungary, may surprise readers—small nations with deep academic legacies. What made these countries such rich soil for universal minds? Was it access to education, cross-disciplinary institutions, or moments of cultural flourishing? The answer, like the polymath, resists a single field of explanation.
@@ -683,6 +694,10 @@
                     </p>
             
                     <div id="occupationTreemap" class="my-12 mx-auto" style="width:100%;max-width:900px;height:500px;"></div>
+                    
+                    <div class="text-center mt-4 text-sm text-deepbrown/60 font-garamond" data-i18n="act1.fig2">
+                        Fig. 4: Tree map of the top 15 polymath occupations
+                    </div>
             
                     <p data-i18n="act1.occupations.para2" class="mb-6 text-lg">
                         The most common role? Writer. But to write was rarely just to record. It was to distill philosophy, share discoveries, translate truths between domains. Close behind were university teachers, physicians, and politicians—professions that straddled theory and action, solitude and society. These weren't just jobs. They were platforms from which polymaths launched their ideas into the world.
@@ -1869,94 +1884,150 @@
                     mapChart.setOption(mapOption);
                     window.addEventListener('resize', () => mapChart.resize());
 
-                    // === Occupation Treemap ===
-                    const occupationCounts = {};
-                    raw.forEach(d => {
-                        if (d.occupations && typeof d.occupations === 'string' && d.occupations !== "Unknown") {
-                            // Correct parsing logic:
-                            d.occupations.replace(/[\[\]']/g, "").split(', ').forEach(occupation => {
-                                const o = occupation.trim();
-                                if (o) {
-                                    occupationCounts[o] = (occupationCounts[o] || 0) + 1;
-                                }
-                            });
-                        }
-                    });
+                     // === Enhanced Occupation Treemap ===
+                    const occupationIcons = {
+                        'writer': '✍️', 
+                        'university teacher': '🎓',
+                        'physician': '🩺',
+                        'politician': '🏛️',
+                        'philosopher': '🧠',
+                        'mathematician': '🧮',
+                        'poet': '📜',
+                        'botanist': '🌿',
+                        'historian': '📜',
+                        'engineer': '⚙️',
+                        'teacher': '👨‍🏫',
+                        'physicist': '⚛️',
+                        'astronomer': '🔭',
+                        'naturalist': '🦋',
+                        'translator': '🗣️'
+                    };
                     
-                    // Get top 15 like Python does
+                    // Process data with icons
                     const occupationData = Object.entries(occupationCounts)
-                        .map(([name, value]) => ({ name, value }))
+                        .map(([name, value]) => ({ 
+                            name, 
+                            value,
+                            icon: occupationIcons[name] || '✨',
+                            tooltip: `${occupationIcons[name] || ''} ${name}<br/><b>${value}</b> polymaths`
+                        }))
                         .sort((a, b) => b.value - a.value)
-                        .slice(0, 15); // ← Only top 15
+                        .slice(0, 15);
                     
-                    // Dynamic color scaling (percentile-based)
-                    const values = occupationData.map(d => d.value);
-                    const maxVal = Math.max(...values);
-                    const minVal = Math.min(...values);
+                    // Enhanced color scale
                     occupationData.forEach(d => {
                         const percentile = (d.value - minVal) / (maxVal - minVal);
                         d.itemStyle = {
-                            color: percentile > 0.66 ? '#76323F' : 
-                                   percentile > 0.33 ? '#d5a021' : '#e6dcc4'
+                            color: percentile > 0.7 ? '#5E3023' : 
+                                   percentile > 0.4 ? '#895737' : 
+                                   '#B88B4A',
+                            borderColor: '#3A2D23',
+                            borderWidth: 1,
+                            shadowBlur: 8,
+                            shadowColor: 'rgba(0,0,0,0.1)'
                         };
                     });
                     
-                    const treemapDom = document.getElementById('occupationTreemap');
-                    const treemapChart = echarts.init(treemapDom);
-                    
                     const treemapOption = {
-                        backgroundColor: '#f5f0e6',
+                        backgroundColor: 'transparent',
                         title: {
-                            text: 'Top 15 Occupations of Polymaths',
+                            text: 'Where Minds Roamed',
                             left: 'center',
-                            textStyle: { 
+                            textStyle: {
+                                fontFamily: 'EB Garamond, serif',
+                                fontSize: 22,
                                 color: '#3A2D23',
-                                fontFamily: 'EB Garamond, serif' // Match other charts
+                                fontWeight: 'normal'
                             }
                         },
                         tooltip: {
                             trigger: 'item',
-                            formatter: params => 
-                                `${params.name}<br/>Polymaths: ${params.value}`
+                            backgroundColor: '#F5F0E6',
+                            borderColor: '#D5A021',
+                            borderWidth: 2,
+                            textStyle: {
+                                color: '#3A2D23',
+                                fontFamily: 'EB Garamond, serif',
+                                fontSize: 14
+                            },
+                            formatter: params => params.data.tooltip
                         },
                         series: [{
                             type: 'treemap',
                             data: occupationData,
                             breadcrumb: { show: false },
+                            roam: false,
+                            nodeClick: false,
                             label: {
                                 show: true,
-                                fontSize: 12,
+                                fontFamily: 'EB Garamond, serif',
+                                fontSize: 14,
+                                color: '#F5F0E6',
+                                rich: {
+                                    icon: {
+                                        fontSize: 18,
+                                        padding: [0, 5, 0, 0]
+                                    }
+                                },
                                 formatter: params => {
-                                    // Truncate long labels
-                                    return params.name.length > 15 ? 
-                                        params.name.substring(0, 15) + '...' : 
-                                        params.name;
+                                    const shortName = params.name.length > 12 ? 
+                                        params.name.substring(0, 10) + '…' : params.name;
+                                    return `{icon|${params.data.icon}} ${shortName}`;
                                 }
                             },
                             upperLabel: {
                                 show: true,
-                                fontSize: 12
+                                fontFamily: 'EB Garamond, serif',
+                                fontSize: 11,
+                                color: '#3A2D23',
+                                formatter: params => params.value
                             },
                             itemStyle: {
-                                borderColor: '#999',
+                                borderColor: '#D5A021',
                                 borderWidth: 1
                             },
                             emphasis: {
+                                label: {
+                                    show: true,
+                                    color: '#3A2D23'
+                                },
                                 itemStyle: {
-                                    borderColor: '#5A4636',
+                                    shadowBlur: 12,
+                                    shadowOffsetY: 4,
                                     borderWidth: 2
                                 }
                             },
-                            levels: [
-                                {
-                                    itemStyle: { borderColor: '#ddd' }
+                            levels: [{
+                                itemStyle: {
+                                    borderColor: '#3A2D23',
+                                    gapWidth: 1
                                 }
-                            ]
-                        }]
+                            }],
+                            visualMap: {
+                                show: false,
+                                min: minVal,
+                                max: maxVal,
+                                inRange: {
+                                    colorAlpha: [0.7, 1]
+                                }
+                            }
+                        }],
+                        animationDuration: 1200,
+                        animationEasing: 'quarticOut'
                     };
                     
                     treemapChart.setOption(treemapOption);
-                    window.addEventListener('resize', () => treemapChart.resize());
+                    
+                    // Add parchment texture via CSS
+                    const style = document.createElement('style');
+                    style.textContent = `
+                        #occupationTreemap {
+                            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" opacity="0.03"><path d="M0 0h100v100H0z" fill="none"/><path d="M20 20l60 60M80 20l-60 60" stroke="%233A2D23" stroke-width="0.5"/></svg>');
+                            border: 1px solid #D5A021;
+                            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+                        }
+                    `;
+                    document.head.appendChild(style);
                     
                     // === Bubble Scatter Chart ===
                     let scatterData = raw.map(d => {
