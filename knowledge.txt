@@ -1,124 +1,107 @@
+[PERSONALITY]
+Tone: Friendly but professional.
+Style: Concise and to the point, usually 1–2 sentences. Provide detailed explanations only when explicitly requested.
+Fallback: If unsure or out of scope, respond with "I don't have that information."
+
 [ABOUT]
 Full Name: Ezz Eldin Ahmed
 Title: Data Scientist and Statistical Modeler
 Location: Giza, Egypt
-Contact: 
-Phone: +20 01226566818
-Email: ezzeldinahmad96@gmail.com
-LinkedIn: linkedin.com/in/ezzeldinahmed11
-GitHub: github.com/Ezzio11
-WhatsApp: api.whatsapp.com/send?phone=01226566818
+Ezz Eldin Ahmed is a data scientist and statistical modeler from Giza, Egypt. 
+He is passionate about uncovering insights from data, building machine learning solutions, 
+and applying statistical methods to solve real-world problems. 
+He enjoys working at the intersection of statistics, programming, and interdisciplinary research.
+Contact:
+  - Email: ezzeldinahmad96@gmail.com
+  - Phone: +20 01226566818
+  - LinkedIn: linkedin.com/in/ezzeldinahmed11
+  - GitHub: github.com/Ezzio11
+  - WhatsApp: api.whatsapp.com/send?phone=01226566818
 
 [SKILLS]
-Statistical Data Analysis:
-- Python (Pandas, NumPy), R, Excel
-- End-to-end regression and forecasting tools
-
-Machine Learning:
-- Supervised and unsupervised learning
-- Scikit-learn, XGBoost, SHAP interpretation
-- Time series forecasting
-
-Web Development:
-- Full-stack with Python (Django, Flask)
-- Streamlit dashboards
-- Supabase backend
-
-Automation and Programming:
-- Python scripting
-- Data pipeline construction
-- Custom tool development
-
-Leadership:
-- Scholarship initiative leadership
-- Research center co-founder
-- Team coordination and management
+Ezz’s core skills include:
+- Statistical data analysis using Python, R, and Excel. Experienced in regression, forecasting, and modeling.
+- Machine learning techniques including supervised and unsupervised learning with scikit-learn, XGBoost, and SHAP for explainability.
+- Time series forecasting and econometric modeling.
+- Web development with Django, Flask, Streamlit, and Supabase for building interactive dashboards and full-stack solutions.
+- Automation using Python scripting and custom tool-building to streamline workflows and data pipelines.
+- Leadership and teamwork: co-founding research centers, coordinating teams, and leading scholarship initiatives.
 
 [PROJECTS]
-XANE Chatbot:
-AI assistant for portfolio interaction
-Features:
-- OpenRouter API integration
-- Multi-format file processing including text, PDF, and images
-- Flux and Turbo image generation
-- Supabase storage backend
-Tech stack: Python, Streamlit, Supabase
+XANE Chatbot
+A custom-built AI assistant integrated into Ezz’s portfolio website. 
+The chatbot answers questions about Ezz’s background, skills, projects, and research. 
+It uses OpenRouter as the main LLM API and Pollinations as a fallback to ensure reliability. 
+Key features include:
+  - Draggable floating chat bubble for an interactive UI.
+  - Ability to read from a knowledge base to respond with accurate, context-aware answers.
+  - Support for handling text, PDFs, and image uploads.
+  - Image generation powered by Flux and Turbo models.
+  - Supabase backend for file and chat storage.
+Purpose: To create a more engaging portfolio that visitors can explore conversationally.
 
-Statistical Modeling Toolkit:
-Three specialized modules:
-1. Linear Regression
-2. Logistic Regression
-3. Time Series Analysis
-Features:
-- Automated diagnostics including multicollinearity and normality checks
-- Interactive Plotly visualizations
-- Detailed statistical explanations
-Tech stack: Python, Statsmodels, Streamlit
+Statistical Modeling Toolkit
+A Streamlit-based toolkit designed to automate statistical modeling tasks. 
+It includes three main modules:
+  1. Linear Regression (with diagnostics like multicollinearity checks and residual plots).
+  2. Logistic Regression (with confusion matrices, ROC curves, and variable importance charts).
+  3. Time Series Analysis (stationarity tests, forecasting models, and confidence intervals).
+Highlights:
+  - Automatically runs diagnostics such as normality tests and multicollinearity detection.
+  - Generates interactive visualizations with Plotly.
+  - Provides detailed plain-language explanations of statistical results, making them accessible to non-experts.
+Tech Stack: Python, Statsmodels, scikit-learn, and Plotly.
 
-Academic Research:
-1. Fixed Effects Panel Data Analysis of Spanish Dairy Farms
-- Analyzed 247 farms with 1482 observations
-- Key Findings: Cows 0.66 percent, Feed 0.38 percent as significant drivers
-- Tools: R, Panel Data Techniques
+Spanish Dairy Farms Panel Data Research
+This academic research analyzed data from 247 Spanish dairy farms with 1,482 observations over time. 
+Using panel data econometric models, Ezz identified that milk output was strongly influenced by two key factors:
+  - Number of cows: 0.66% impact.
+  - Feed cost: 0.38% impact.
+The purpose of this research was to evaluate resource efficiency and productivity factors within the dairy farming industry.
 
-2. Time Series Analysis of VIX
-- AR(I) and cubic models with 6.67 percent MAPE
-- Forecast range: 19.3 to 28.65 through 2034
+VIX Time Series Forecasting
+This project involved modeling the Volatility Index (VIX), a measure of stock market volatility. 
+Ezz used autoregressive models (AR(I)) combined with cubic terms to forecast future volatility values.
+Performance:
+  - Achieved 6.67% MAPE (mean absolute percentage error).
+  - Forecasted VIX values ranging from 19.3 to 28.65 extending to the year 2034.
+Purpose: To understand market volatility trends and produce accurate predictive insights.
 
-3. Blood Pressure Modeling
-- Key predictors: Age, BSA, Pulse with 90.1 percent adjusted R squared
+Blood Pressure Modeling
+A statistical research project focused on understanding factors that influence blood pressure. 
+The analysis revealed three major predictors:
+  - Age
+  - Body Surface Area (BSA)
+  - Pulse
+The final regression model achieved an adjusted R² of 90.1%.
+Purpose: To improve insights into cardiovascular health through statistical modeling.
 
 [MSTAG]
-Concept:
-Platform for interdisciplinary projects
-Philosophy: Where passion beats polish
-Focus areas: Intellectual exploration, creative experimentation, unconventional research
-
-Featured Publications:
-The Decline of the Polymath by Ezz Eldin Ahmed
-Data-driven exploration of specialization versus universal knowledge
-
-المثقف المؤسس في الرواية العربية المعاصرة
-The Founding Intellectual in Contemporary Arabic Literature by Ali Ashraf
-Analysis of Makram Mikhail in Ahmed Khaled Tawfik's Shaaeb
-Key Concepts: Gramsci's organic intellectual, Said's critical intellectual, political imagination
-
-عوائق التواصل وتأثيرها في بناء العلاقات الدولية
-Communication Barriers in International Relations by Abdullah Hossam
-Comprehensive analysis of:
-- Linguistic barriers such as polysemy and translation issues
-- Psychological barriers such as cognitive biases
-- Technical barriers such as digital divide and AI limitations
-Historical evolution from the 19th century to the present
+MSTAG is a collaborative platform co-founded by Ezz to promote interdisciplinary projects. 
+Its guiding philosophy is "Passion over polish," encouraging experimentation and creative research without the pressure of perfection.
+Featured works on MSTAG include:
+- "The Decline of the Polymath" by Ezz Eldin Ahmed, which explores the loss of generalist thinkers in a specialized modern world.
+- "المثقف المؤسس في الرواية العربية" by Ali Ashraf, analyzing intellectual figures in Arabic literature.
+- "عوائق التواصل في العلاقات الدولية" by Abdullah Hossam, examining communication barriers in international relations.
 
 [TESTIMONIALS]
-Abdulrahman Mostafa Kamel, Statistician:
-Ezz combines persistence, kindness and hard work despite questionable movie tastes.
-
-Amr Walid, Economist:
-One of the most diligent people I know - always the first to help.
-
-Ali Ashraf, Political Researcher:
-Genuine, clear and dedicated in both work and friendship.
-
-Mohamed Elsamahy, Statistician:
-An outstanding team player with passion for continuous learning.
+Testimonials about Ezz:
+- "Persistent, kind, hardworking." — Abdulrahman Kamel
+- "Always first to help." — Amr Walid
+- "Clear and dedicated." — Ali Ashraf
+- "Outstanding team player." — Mohamed Elsamahy
 
 [RESEARCH PUBLICATIONS]
-Sampling Techniques in Big Data
-Comparative analysis with IoT and social media case studies
-
-Social Media Impact Study
-Twelve-variable analysis across mental health, education and politics
+Notable research publications include:
+- "Sampling Techniques in Big Data" — a comparative analysis of methods, including case studies in IoT and social media data.
+- "Social Media Impact Study" — a multivariate study exploring the effects of social media on mental health, education, and political engagement.
 
 [COLLABORATION]
-Available for:
-- Data science consulting
-- Statistical modeling projects
-- Interdisciplinary research
-- MSTAG contributions
-
-Why Collaborate:
-- Rigorous analytical approach
-- Cross-domain expertise in statistics, technology and social science
-- Focus on actionable insights
+Ezz is available for:
+- Data science consulting and statistical modeling.
+- Interdisciplinary research collaborations.
+- Contributions to MSTAG projects.
+Why collaborate:
+- Deep expertise in data science and statistical methods.
+- Cross-domain knowledge combining statistics, machine learning, and social sciences.
+- Focused on producing actionable, evidence-based insights.
