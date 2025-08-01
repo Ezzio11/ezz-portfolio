@@ -305,45 +305,50 @@
            class="font-garamond text-2xl text-oxblood hover:text-oldgold transition-colors duration-300">
           The Decline of The Polymath
         </a>
-    
+        
         <!-- Desktop menu -->
         <div class="hidden md:flex space-x-8 items-center">
-          <a href="{% url 'mstag' %}" class="text-sm font-garamond ...">← MSTAG</a>
-          <a href="#prologue" data-i18n="nav.prologue" class="text-sm font-garamond ...">Prologue</a>
-          <a href="#polymath-hall" data-i18n="nav.hall_of_fame" class="text-sm font-garamond ...">Hall of Fame</a>
-          <a href="#act1" data-i18n="nav.act1" class="text-sm font-garamond ...">Act 1</a>
-          <a href="#act2" data-i18n="nav.act2" class="text-sm font-garamond ...">Act 2</a>
-          <a href="#act3" data-i18n="nav.act3" class="text-sm font-garamond ...">Act 3</a>
-          <a href="#act4" data-i18n="nav.act4" class="text-sm font-garamond ...">Act 4</a>
-          <a href="#epilogue" data-i18n="nav.epilogue" class="text-sm font-garamond ...">Epilogue</a>
+          <a href="{% url 'mstag' %}"
+             class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300 {% if request.resolver_match.url_name == 'mstag' %}text-oldgold font-semibold{% endif %}">
+            ← MSTAG
+          </a>
+          <a href="#prologue" data-i18n="nav.prologue"
+             class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300">Prologue</a>
+          <a href="#polymath-hall" data-i18n="nav.hall_of_fame"
+             class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300">Hall of Fame</a>
+          <a href="#act1" data-i18n="nav.act1"
+             class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300">Act 1</a>
+          <a href="#act2" data-i18n="nav.act2"
+             class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300">Act 2</a>
+          <a href="#act3" data-i18n="nav.act3"
+             class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300">Act 3</a>
+          <a href="#act4" data-i18n="nav.act4"
+             class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300">Act 4</a>
+          <a href="#epilogue" data-i18n="nav.epilogue"
+             class="text-sm font-garamond text-deepbrown/80 hover:text-oldgold transition-colors duration-300">Epilogue</a>
         </div>
-    
-        <!-- Right side: Language (desktop) + Hamburger (mobile) -->
-        <div class="flex items-center space-x-4">
-          <!-- Language buttons always visible -->
+        
+        <!-- Mobile menu button -->
+        <div class="md:hidden flex items-center space-x-4">
+          <button id="menu-toggle" class="text-2xl text-oxblood focus:outline-none">☰</button>
           <button id="lang-en" class="text-sm hover:text-oldgold">EN</button>
           <button id="lang-ar" class="text-sm hover:text-oldgold">AR</button>
-    
-          <!-- Hamburger only on mobile -->
-          <button id="menu-toggle" class="text-2xl text-oxblood focus:outline-none md:hidden">☰</button>
         </div>
-      </div>
-    
-      <!-- Mobile dropdown -->
-      <div id="mobile-menu" class="hidden absolute top-full left-0 w-full bg-parchment/95 backdrop-blur-md border-t border-deepbrown/20 shadow-md md:hidden">
-        <div class="flex flex-col items-center py-4 space-y-4">
-          <a href="{% url 'mstag' %}" class="font-garamond text-deepbrown/80 hover:text-oldgold">← MSTAG</a>
-          <a href="#prologue" data-i18n="nav.prologue" class="font-garamond text-deepbrown/80 hover:text-oldgold">Prologue</a>
-          <a href="#polymath-hall" data-i18n="nav.hall_of_fame" class="font-garamond text-deepbrown/80 hover:text-oldgold">Hall of Fame</a>
-          <a href="#act1" data-i18n="nav.act1" class="font-garamond text-deepbrown/80 hover:text-oldgold">Act 1</a>
-          <a href="#act2" data-i18n="nav.act2" class="font-garamond text-deepbrown/80 hover:text-oldgold">Act 2</a>
-          <a href="#act3" data-i18n="nav.act3" class="font-garamond text-deepbrown/80 hover:text-oldgold">Act 3</a>
-          <a href="#act4" data-i18n="nav.act4" class="font-garamond text-deepbrown/80 hover:text-oldgold">Act 4</a>
-          <a href="#epilogue" data-i18n="nav.epilogue" class="font-garamond text-deepbrown/80 hover:text-oldgold">Epilogue</a>
+        
+        <!-- Mobile dropdown -->
+        <div id="mobile-menu" class="hidden absolute top-full left-0 w-full bg-parchment/95 backdrop-blur-md border-t border-deepbrown/20 shadow-md md:hidden">
+          <div class="flex flex-col items-center py-4 space-y-4">
+            <a href="{% url 'mstag' %}" class="font-garamond text-deepbrown/80 hover:text-oldgold">← MSTAG</a>
+            <a href="#prologue" data-i18n="nav.prologue" class="font-garamond text-deepbrown/80 hover:text-oldgold">Prologue</a>
+            <a href="#polymath-hall" data-i18n="nav.hall_of_fame" class="font-garamond text-deepbrown/80 hover:text-oldgold">Hall of Fame</a>
+            <a href="#act1" data-i18n="nav.act1" class="font-garamond text-deepbrown/80 hover:text-oldgold">Act 1</a>
+            <a href="#act2" data-i18n="nav.act2" class="font-garamond text-deepbrown/80 hover:text-oldgold">Act 2</a>
+            <a href="#act3" data-i18n="nav.act3" class="font-garamond text-deepbrown/80 hover:text-oldgold">Act 3</a>
+            <a href="#act4" data-i18n="nav.act4" class="font-garamond text-deepbrown/80 hover:text-oldgold">Act 4</a>
+            <a href="#epilogue" data-i18n="nav.epilogue" class="font-garamond text-deepbrown/80 hover:text-oldgold">Epilogue</a>
+          </div>
         </div>
-      </div>
     </nav>
-
     
     <!-- Cover Section -->
     <section id="cover" class="min-h-screen bg-parchment bg-parchment-texture flex flex-col items-center justify-center p-8 relative overflow-hidden pt-20">
@@ -2095,25 +2100,27 @@
                     `;
                     document.head.appendChild(style);
                     
-                    // === Bubble Scatter Chart ===
+                    // === Bubble Scatter Chart (Mobile-Optimized) ===
                     let scatterData = raw.map(d => {
                         const year = parseInt(d.birth_year);
                         const score = parseFloat(d.polymath_score_mapped);
                         return [year, score, d.name];
                     }).filter(item => !isNaN(item[0]) && !isNaN(item[1]));
-    
+                    
                     scatterData.sort((a, b) => b[1] - a[1]);
-    
+                    
                     const yearsAll = scatterData.map(d => d[0]);
                     const scoresAll = scatterData.map(d => d[1]);
                     const minYear = Math.min(...yearsAll);
                     const maxYear = Math.max(...yearsAll);
                     const minScore = Math.min(...scoresAll);
                     const maxScore = Math.max(...scoresAll);
-    
+                    
                     const bubbleDom = document.getElementById('polymathScatter');
                     const bubbleChart = echarts.init(bubbleDom);
-    
+                    
+                    const isMobile = window.innerWidth < 768;
+                    
                     const bubbleOption = {
                         backgroundColor: '#f5f0e6',
                         title: {
@@ -2122,7 +2129,7 @@
                             textStyle: {
                                 fontFamily: 'EB Garamond, serif',
                                 color: '#3A2D23',
-                                fontSize: 18
+                                fontSize: isMobile ? 14 : 18
                             }
                         },
                         tooltip: {
@@ -2136,13 +2143,25 @@
                                 `;
                             }
                         },
+                        grid: {
+                            top: isMobile ? 60 : 80,
+                            right: isMobile ? 10 : 20,
+                            bottom: isMobile ? 40 : 60,
+                            left: isMobile ? 50 : 70
+                        },
                         xAxis: {
                             type: 'value',
                             name: 'Birth Year',
                             min: minYear - 10,
                             max: maxYear + 10,
-                            nameTextStyle: { fontFamily: 'EB Garamond, serif' },
-                            axisLabel: { color: '#3A2D23' },
+                            nameTextStyle: { 
+                                fontFamily: 'EB Garamond, serif',
+                                fontSize: isMobile ? 10 : 12
+                            },
+                            axisLabel: { 
+                                color: '#3A2D23',
+                                fontSize: isMobile ? 8 : 10
+                            },
                             axisLine: { lineStyle: { color: '#3A2D23' } },
                             splitLine: { lineStyle: { color: 'rgba(0,0,0,0.05)' } }
                         },
@@ -2151,7 +2170,14 @@
                             name: 'Polymath Score',
                             min: Math.max(0, minScore - 1),
                             max: maxScore + 1,
-                            axisLabel: { color: '#3A2D23' },
+                            nameTextStyle: {
+                                fontFamily: 'EB Garamond, serif',
+                                fontSize: isMobile ? 10 : 12
+                            },
+                            axisLabel: { 
+                                color: '#3A2D23',
+                                fontSize: isMobile ? 8 : 10
+                            },
                             axisLine: { lineStyle: { color: '#3A2D23' } },
                             splitLine: { lineStyle: { color: 'rgba(0,0,0,0.05)' } }
                         },
@@ -2160,8 +2186,8 @@
                                 name: 'Polymaths',
                                 type: 'scatter',
                                 symbolSize: function (data) {
-                                    const minSize = 12;
-                                    const maxSize = 70;
+                                    const minSize = isMobile ? 8 : 12;
+                                    const maxSize = isMobile ? 40 : 70;
                                     const score = data[1];
                                     const normalized = (score - minScore) / (maxScore - minScore || 1);
                                     return minSize + normalized * (maxSize - minSize);
@@ -2174,15 +2200,42 @@
                                 emphasis: {
                                     itemStyle: { color: 'rgba(34, 139, 140, 0.9)' }
                                 },
-                                data: scatterData
+                                data: scatterData,
+                                label: {
+                                    show: !isMobile,
+                                    formatter: '{b}',
+                                    position: 'top',
+                                    fontSize: 9
+                                }
                             }
-                        ]
+                        ],
+                        toolbox: {
+                            show: isMobile,
+                            feature: {
+                                dataZoom: {
+                                    yAxisIndex: 'none'
+                                },
+                                restore: {},
+                                saveAsImage: {}
+                            }
+                        }
                     };
-    
+                    
                     bubbleChart.setOption(bubbleOption);
-                    window.addEventListener('resize', () => bubbleChart.resize());
-                }
-            });
+                    
+                    // Responsive handling with debounce
+                    let resizeTimer;
+                    window.addEventListener('resize', () => {
+                        clearTimeout(resizeTimer);
+                        resizeTimer = setTimeout(() => {
+                            bubbleChart.resize();
+                            // Re-apply mobile settings if needed
+                            if ((window.innerWidth < 768) !== isMobile) {
+                                location.reload(); // Simple solution for demo
+                                // For production: Update options dynamically instead of reload
+                            }
+                        }, 200);
+                    });
                     document.getElementById('menu-toggle').addEventListener('click', () => {
                         document.getElementById('mobile-menu').classList.toggle('hidden');
                     });
