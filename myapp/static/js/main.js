@@ -8,8 +8,294 @@
         setupBackToTop();
         setupTestimonialCarousel();
         setupContactForm();
-        setupReadMore(); // New function added here
+        setupReadMore();
+        setupChatbot();
+        setupChatBubble(); // New function for chat bubble
     });
+
+    function setupChatBubble() {
+        const bubble = $('#chatbot-bubble');
+        let isDragging = false;
+        let offsetX = 0, offsetY = 0;
+        let lastX = 0, lastY = 0;
+        let velocityX = 0, velocityY = 0;
+        const dragThreshold = 5;
+        const friction = 0.9;
+
+        // Handle both mouse and touch events
+        bubble.on('mousedown touchstart', startDrag);
+
+        function startDrag(e) {
+            e.preventDefault();
+            const clientX = e.clientX || e.originalEvent.touches[0].clientX;
+            const clientY = e.clientY || e.originalEvent.touches[0].clientY;
+            
+            const rect = bubble[0].getBoundingClientRect();
+            offsetX = clientX - rect.left;
+            offsetY = clientY - rect.top;
+            
+            isDragging = true;
+            bubble.addClass('dragging');
+            
+            lastX = clientX;
+            lastY = clientY;
+            
+            document.body.style.userSelect = 'none';
+            
+            // Attach move and end events
+            $(document)
+                .on('mousemove.chatbubble touchmove.chatbubble', dragMove)
+                .on('mouseup.chatbubble touchend.chatbubble', endDrag);
+        }
+
+        function dragMove(e) {
+            if (!isDragging) return;
+            e.preventDefault();
+            
+            const clientX = e.clientX || e.originalEvent.touches[0].clientX;
+            const clientY = e.clientY || e.originalEvent.touches[0].clientY;
+            
+            velocityX = clientX - lastX;
+            velocityY = clientY - lastY;
+            lastX = clientX;
+            lastY = clientY;
+            
+            bubble.css({
+                'left': (clientX - offsetX) + 'px',
+                'top': (clientY - offsetY) + 'px',
+                'right': 'auto',
+                'bottom': 'auto'
+            });
+        }
+
+        function endDrag(e) {
+            if (!isDragging) return;
+            isDragging = false;
+            bubble.removeClass('dragging');
+            document.body.style.userSelect = '';
+            
+            if (Math.abs(velocityX) > 2 || Math.abs(velocityY) > 2) {
+                applyMomentum();
+            } else {
+                checkBoundaries();
+            }
+            
+            // Don't remove the document listeners here
+            // They'll be cleaned up when new drag starts
+        }
+
+        function applyMomentum() {
+            let currentX = parseInt(bubble.css('left')) || 0;
+            let currentY = parseInt(bubble.css('top')) || 0;
+            
+            const animateMomentum = () => {
+                velocityX *= friction;
+                velocityY *= friction;
+                
+                currentX += velocityX;
+                currentY += velocityY;
+                
+                bubble.css({
+                    'left': currentX + 'px',
+                    'top': currentY + 'px'
+                });
+                
+                if (Math.abs(velocityX) > 0.5 || Math.abs(velocityY) > 0.5) {
+                    requestAnimationFrame(animateMomentum);
+                } else {
+                    checkBoundaries();
+                }
+            };
+            
+            requestAnimationFrame(animateMomentum);
+        }
+
+        function checkBoundaries() {
+            const rect = bubble[0].getBoundingClientRect();
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            
+            let newLeft = parseInt(bubble.css('left')) || 0;
+            let newTop = parseInt(bubble.css('top')) || 0;
+            
+            if (newLeft < 0) newLeft = 0;
+            if (newLeft + rect.width > windowWidth) newLeft = windowWidth - rect.width;
+            if (newTop < 0) newTop = 0;
+            if (newTop + rect.height > windowHeight) newTop = windowHeight - rect.height;
+            
+            const snapThreshold = 20;
+            if (newLeft < snapThreshold) newLeft = 0;
+            if (windowWidth - (newLeft + rect.width) < snapThreshold) newLeft = windowWidth - rect.width;
+            if (newTop < snapThreshold) newTop = 0;
+            if (windowHeight - (newTop + rect.height) < snapThreshold) newTop = windowHeight - rect.height;
+            
+            bubble.animate({
+                'left': newLeft + 'px',
+                'top': newTop + 'px'
+            }, 200, 'easeOutQuad');
+        }
+
+        // Handle click separately
+        bubble.on('click', function(e) {
+            if (bubble.hasClass('dragging')) {
+                e.stopImmediatePropagation();
+                bubble.removeClass('dragging');
+                return false;
+            }
+        });
+    }
+
+    function setupChatbot() {
+        // DOM elements
+        const bubble = $('#chatbot-bubble');
+        const window = $('#chatbot-window');
+        const closeBtn = $('#chatbot-close');
+        const sendBtn = $('#chatbot-send');
+        const input = $('#chatbot-input');
+        const messagesContainer = $('#chatbot-messages');
+        
+        // Toggle chat window
+        bubble.on('click', function() {
+            window.toggle();
+            if (window.is(':visible')) {
+                input.focus();
+            }
+        });
+        
+        // Close chat window
+        closeBtn.on('click', function(e) {
+            e.stopPropagation();
+            window.hide();
+        });
+        
+        // Send message on button click
+        sendBtn.on('click', sendMessage);
+        
+        // Send message on Enter key
+        input.on('keypress', function(e) {
+            if (e.which === 13) { // Enter key
+                sendMessage();
+            }
+        });
+        
+        // Load chat history from localStorage
+        loadChatHistory();
+        
+        // Add welcome message if first interaction
+        if (!localStorage.getItem('chatbotFirstInteraction')) {
+            addBotMessage("Hello! I'm XANE, your AI assistant. How can I help you today?");
+            localStorage.setItem('chatbotFirstInteraction', 'true');
+        }
+        
+        function sendMessage() {
+            const message = $('#chatbot-input').val().trim();
+            if (!message) return;
+
+            // Add user message
+            addUserMessage(message);
+            $('#chatbot-input').val('');
+            
+            // Show typing indicator
+            const typingIndicator = $(`
+                <div class="message bot-message typing-indicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            `);
+            $('#chatbot-messages').append(typingIndicator);
+            $('#chatbot-messages').scrollTop($('#chatbot-messages')[0].scrollHeight);
+
+            // Get CSRF token
+            const csrfToken = $('[name=csrfmiddlewaretoken]').val();
+            
+            // Make the AJAX request
+            $.ajax({
+                type: 'POST',
+                url: '/chatbot/',
+                data: {
+                    message: message,
+                    csrfmiddlewaretoken: csrfToken
+                },
+                dataType: 'json',
+                success: function(data) {
+                    typingIndicator.remove();
+                    if (data && data.response) {
+                        addBotMessage(data.response);
+                    } else {
+                        addBotMessage("Sorry, I didn't get a proper response.");
+                    }
+                },
+                error: function(xhr, status, error) {
+                    typingIndicator.remove();
+                    let errorMsg = "Sorry, I'm having trouble responding right now.";
+                    try {
+                        if (xhr.responseJSON && xhr.responseJSON.response) {
+                            errorMsg = xhr.responseJSON.response;
+                        }
+                    } catch (e) {
+                        console.error('Error parsing response:', e);
+                    }
+                    addBotMessage(errorMsg);
+                    console.error('Chatbot error:', status, error);
+                }
+            });
+        }
+        
+        function addUserMessage(message) {
+            const messageElement = $(`
+                <div class="message user-message">
+                    ${message}
+                    <div class="message-time">${getCurrentTime()}</div>
+                </div>
+            `);
+            messagesContainer.append(messageElement);
+            messagesContainer.scrollTop(messagesContainer[0].scrollHeight);
+        }
+        
+        function addBotMessage(message) {
+            const messageElement = $(`
+                <div class="message bot-message">
+                    ${message}
+                    <div class="message-time">${getCurrentTime()}</div>
+                </div>
+            `);
+            messagesContainer.append(messageElement);
+            messagesContainer.scrollTop(messagesContainer[0].scrollHeight);
+        }
+        
+        function getCurrentTime() {
+            const now = new Date();
+            return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+        
+        function saveChatHistory() {
+            const messages = [];
+            messagesContainer.find('.message').each(function() {
+                const isUser = $(this).hasClass('user-message');
+                messages.push({
+                    type: isUser ? 'user' : 'bot',
+                    content: $(this).clone().find('.message-time').remove().end().text().trim(),
+                    time: $(this).find('.message-time').text()
+                });
+            });
+            localStorage.setItem('chatbotHistory', JSON.stringify(messages));
+        }
+        
+        function loadChatHistory() {
+            const history = localStorage.getItem('chatbotHistory');
+            if (history) {
+                const messages = JSON.parse(history);
+                messages.forEach(msg => {
+                    if (msg.type === 'user') {
+                        addUserMessage(msg.content);
+                    } else {
+                        addBotMessage(msg.content);
+                    }
+                });
+            }
+        }
+    }
 
     // Animus Background Initialization
     function initAnimusBackground() {
