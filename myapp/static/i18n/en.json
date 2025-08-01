@@ -39,8 +39,9 @@
   "act1.para6": "Today, Snow's warning feels prophetic. Not only do we see this divide in our academic systems and online discourse—it's visible in the data.",
   
   "act1.fig1": "Fig. 1: Bubble Chart of Exceptional Polymaths (by Polymath Score and Number of Distinct Occupations)",
-  "act1.fig2": "Fig. 2: The Rise and Fall of the Polymath (LOWESS Smoothed)",
-  "act1.fig3": "Fig. 3: Treemap of Top 15 Occupations among Polymaths",
+  "act1.fig2": "Fig. 2: Evolution of Polymath Scores and Prevalence (Annual Averages and Counts)",
+  "act1.fig3": "Fig. 3: World Map of Polymath Distribution",
+  "act1.fig4": "Fig. 4: Tree Map of The Top 15 Polymath Occupations",
 
   "act1.timeline.title": "The Golden Arc",
   "act1.timeline.1000": "Before the Renaissance, polymaths were rare but brilliant, their contributions peaking despite low numbers.",
@@ -93,7 +94,7 @@
   "act3.fox.desc": "The current system has successfully created a generation of hedgehogs—hyper-specialists who excel at one thing with remarkable efficiency, but lack the broad vision of polymathic foxes. Polymaths connect seemingly unrelated fields—as illustrated by the Fermat Last Theorem example—which grants them the ability to creatively solve problems that otherwise would've been considered an impossibility.",
   "act3.hedgehog.title": "The Hedgehog (Specialist)",
   "act3.hedgehog.desc": "Excels in one domain with deep expertise but often lacks perspective outside their specialty. The hedgehog's strength is focus.",
-  "act3.para1": "Deep overruled breadth. No longer do we have the type of people with knowledge that spans multiple distinct, unrelated fields. The cost? Nobody looks sideways anymore.",
+  "act3.para1": "Depth overruled breadth. No longer do we have the type of people with knowledge that spans multiple distinct, unrelated fields. The cost? Nobody looks sideways anymore.",
 
   "act3.consequences.title": "The Consequences",
   "act3.consequences.slow.title": "Slower Progress",
@@ -116,9 +117,9 @@
   "act4.modern.jaron.name": "Jaron Lanier",
   "act4.modern.jaron.fields": "Computer Scientist • Composer • Author",
   "act4.modern.jaron.desc": "Pioneered virtual reality while simultaneously composing classical music and writing influential critiques of the digital age.",
-  "act4.modern.zewail.name": "Ahmed Zewail",
-  "act4.modern.zewail.fields": "Chemist • Author • Public Intellectual",
-  "act4.modern.zewail.desc": "Won the Nobel Prize in Chemistry for his pioneering work in femtochemistry, while also writing books on science, society, and Arab identity, and serving as a science advisor and cultural bridge between East and West.",
+  "act4.modern.rushdi.name": "Rushdi Said",
+  "act4.modern.rushdi.fields": "Geologist • Author • Public Intellectual",
+  "act4.modern.rushdi.desc": "An eminent Egyptian-American geologist, educator, and policymaker. As head of Egypt’s national mining organization, he spearheaded geological research and mineral development. He authored influential works on Egypt’s geology, water resources and national development, and later became an insightful commentator on science and politics in Egypt.",
   "act4.ai.title": "AI as an Enabler",
   "act4.ai.para1": "Another supplementary method would be \"open access education.\" Instead of relying entirely on the educational system—independence should be encouraged. We live in an age where knowledge is as accessible as the air we breathe. YouTube videos, PDF books, scientific articles and podcasts—this as the era of access.",
   "act4.ai.para2": "Rather than asking ChatGPT to generate a Python script that implements a machine learning algorithm—ask it to explain in thorough details, what machine learning is. What the algorithms are. What's XGB? Catboost? LightGBM? Neural networks? LLMs can explain each concept with absolute ease—in whichever way the user would like. Explain like I'm 5? Explain like it's a Harry Potter movie? Explain like machine learning is my long lost relative? All of this could be done.",
