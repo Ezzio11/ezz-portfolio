@@ -297,7 +297,7 @@
 <body class="bg-inkwell text-deepbrown font-montserrat leading-relaxed">
     
     <!-- Navigation -->
-    <nav class="fixed w-full bg-parchment/95 backdrop-blur-md z-50 shadow-md border-b border-deepbrown/20">
+    <nav class="fixed w-full bg-parchment z-50 shadow-md border-b border-deepbrown/20">
       <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
         
         <!-- Title -->
@@ -509,13 +509,13 @@
             </div>
 
             <!-- Bubble Chart -->
-            <div class="px-4 md:px-8 mb-12">
-                <div class="chart-container">
-                    <div id="polymathScatter" style="height: 100%;"></div>
-                </div>
-                <div class="text-center mt-4 text-sm text-deepbrown/60 font-garamond" data-i18n="act1.fig1">
-                    Fig. 1: Polymath Scatterd by Polymath Score (Number of Distinct Occupations)
-                </div>
+            <div class="px-2 sm:px-4 md:px-8 mb-12">
+              <div class="w-full md:max-w-5xl md:mx-auto" style="height: 400px;">
+                <div id="polymathScatter" class="w-full h-full"></div>
+              </div>
+              <div class="text-center mt-4 text-xs sm:text-sm text-deepbrown/60 font-garamond px-2" data-i18n="act1.fig1">
+                Fig. 1: Polymaths scattered by Polymath Score (Number of Distinct Occupations)
+              </div>
             </div>
         </div>
     </section>
