@@ -1872,9 +1872,9 @@
                     // === Occupation Treemap ===
                     const occupationCounts = {};
                     raw.forEach(d => {
-                        if (d.occupations && d.occupations !== "Unknown") {
-                            // Match Python's parsing logic exactly:
-                            d.occupations.strip("[]").replace("'", "").split(', ').forEach(occupation => {
+                        if (d.occupations && typeof d.occupations === 'string' && d.occupations !== "Unknown") {
+                            // Correct parsing logic:
+                            d.occupations.replace(/[\[\]']/g, "").split(', ').forEach(occupation => {
                                 const o = occupation.trim();
                                 if (o) {
                                     occupationCounts[o] = (occupationCounts[o] || 0) + 1;
