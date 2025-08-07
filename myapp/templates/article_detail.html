@@ -1,8 +1,35 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block title %}{{ article.title|default:"MSTAG Article" }} | MSTAG{% endblock %}
+
 {% block extra_head %}
-<link rel="stylesheet" href="{% static 'css/article_detail.css' %}">
+    <!-- SEO Meta Tags -->
+    <meta name="title" content="{{ article.title }} | MSTAG">
+    <meta name="description" content="{{ article.description }}">
+    <meta name="keywords" content="Ezz Eldin Ahmed, Data Science, Streamlit, Django, Python Developer, Automation, Machine Learning, Statistics, Statistical Modeling">
+    <meta name="author" content="{{ article.author|default:'Ezz Eldin Ahmed' }}">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:title" content="{{ article.title }} | MSTAG">
+    <meta property="og:description" content="{{ article.description }}">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:image" content="{% if article.image %}{{ article.image }}{% else %}https://ezzio.vercel.app/default-og.png{% endif %}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="MSTAG">
+    <meta property="article:published_time" content="{{ article.date_published|date:'c' }}">
+    <meta property="article:author" content="{{ article.author|default:'Ezz Eldin Ahmed' }}">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ article.title }} | MSTAG">
+    <meta name="twitter:description" content="{{ article.description }}">
+    <meta name="twitter:image" content="{% if article.image %}{{ article.image }}{% else %}https://ezzio.vercel.app/default-og.png{% endif %}">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'css/article_detail.css' %}">
 {% endblock %}
 
 {% block content %}
