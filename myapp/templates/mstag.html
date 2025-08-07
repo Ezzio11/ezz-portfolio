@@ -9,20 +9,24 @@
     <meta name="description" content="Custom tools and data-driven projects by Ezz Eldin Ahmed — a statistics major passionate about automation, machine learning, and full-stack development.">
     <meta name="keywords" content="Ezz Eldin Ahmed, Data Science, Streamlit, Django, Python Developer, Automation, Machine Learning, Statistics, Statistical Modeling">
     <meta name="author" content="Ezz Eldin Ahmed">
-
+    
     <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://ezzio.vercel.app/">
-    <meta property="og:title" content="Ezz Eldin Ahmed | MSTAG">
-    <meta property="og:description" content="Explore real-world projects, custom-built tools, and end-to-end data apps built by Ezz Eldin Ahmed.">
-    <meta property="og:image" content="https://ezzio.vercel.app/static/img/preview.png">
-
-    <!-- Twitter -->
+    <meta property="og:title" content="{{ article.title }}">
+    <meta property="og:description" content="{{ article.description }}">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:image" content="{{ article.image|default:'https://ezzio.vercel.app/default-og.png' }}">
+    <meta property="og:site_name" content="ezzio.vercel.app">
+    <meta property="article:published_time" content="{{ article.date_published|date:'c' }}">
+    <meta property="article:author" content="{{ article.author }}">
+    
+    <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="https://ezzio.vercel.app/">
-    <meta name="twitter:title" content="Ezz Eldin Ahmed | MSTAG">
-    <meta name="twitter:description" content="Custom tools and data-driven projects by Ezz Eldin Ahmed — a statistics major passionate about automation, machine learning, and full-stack development.">
-    <meta name="twitter:image" content="https://ezzio.vercel.app/static/img/preview.png">
+    <meta name="twitter:title" content="{{ article.title }}">
+    <meta name="twitter:description" content="{{ article.description }}">
+    <meta name="twitter:image" content="{{ article.image|default:'https://ezzio.vercel.app/default-og.png' }}">
+
+
 {% endblock %}
 
 {% block content %}
