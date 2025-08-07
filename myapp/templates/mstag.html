@@ -4,6 +4,8 @@
 {% block title %}{{ article.title }} | MSTAG{% endblock %}
 
 {% block extra_head %}
+    <title>{{ article.title }} | MSTAG</title>
+
     <!-- SEO Meta Tags -->
     <meta name="title" content="{{ article.title }} | MSTAG">
     <meta name="description" content="{{ article.description }}">
@@ -11,7 +13,7 @@
     <meta name="author" content="{{ article.author|default:'Ezz Eldin Ahmed' }}">
 
     <!-- Open Graph / Facebook -->
-    <meta property="og:title" content="{{ article.title }}">
+    <meta property="og:title" content="{{ article.title }} | MSTAG">
     <meta property="og:description" content="{{ article.description }}">
     <meta property="og:type" content="article">
     <meta property="og:url" content="{{ request.build_absolute_uri }}">
@@ -22,7 +24,7 @@
 
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{ article.title }}">
+    <meta name="twitter:title" content="{{ article.title }} | MSTAG">
     <meta name="twitter:description" content="{{ article.description }}">
     <meta name="twitter:image" content="{{ article.image.url|default:'https://ezzio.vercel.app/default-og.png' }}">
 {% endblock %}
