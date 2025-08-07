@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ article.title }} | MSTAG{% endblock %}
+{% block title %}{{ article.title|default:"MSTAG Article" }} | MSTAG{% endblock %}
 
 {% block extra_head %}
     <!-- SEO Meta Tags -->
