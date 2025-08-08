@@ -396,12 +396,13 @@
 
             // Sound toggle functionality
             const soundToggle = document.getElementById('soundToggle');
-            let audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-ambient-study-loop-258.mp3');
+            let audio = new Audio("{% static 'audio/library-ambience.m4a' %}");
             audio.loop = true;
+            audio.volume = 0.3;
             
             soundToggle.addEventListener('click', function() {
                 if (audio.paused) {
-                    audio.play();
+                    audio.play().catch(e => console.log("Audio play failed:", e));
                     soundToggle.innerHTML = `
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-oldgold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clip-rule="evenodd" />
