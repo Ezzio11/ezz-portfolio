@@ -153,7 +153,7 @@
     </nav>
 
     <!-- Main Content -->
-    <main class="min-h-screen pl-0 md:pl-8 md:pr-80 transition-all duration-300">
+    <main class="min-h-screen px-0 md:pr-80 w-full">
     <!-- Article Header section: Image Behind Title -->
     {% if article.image %}
     <section class="relative h-[65vh] min-h-[500px] flex items-center justify-center text-center overflow-hidden">
@@ -255,7 +255,7 @@
     </section>
 
         <!-- Article Content -->
-        <section class="py-12 px-4">
+        <section class="py-12 px-4 w-full max-w-4xl mx-auto">
             <div class="max-w-4xl mx-auto">
 
                 <!-- PDF Viewer -->
@@ -344,7 +344,7 @@
         </section>
 
         <!-- Footer -->
-        <footer class="bg-black/50 py-12 text-center border-t border-sepia/10">
+        <footer class="bg-black/50 py-12 text-center border-t border-sepia/10 w-full">
             <div class="max-w-4xl mx-auto px-6">
                 <h3 href="{% url 'mstag' %}" class="font-dm text-2xl text-goldaccent mb-6 arabic">M.S.T.A.G.</h3>
                 <p class="text-parchment/70 mb-6">A digital haven for polymaths, misfits, and curious minds</p>
