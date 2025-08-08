@@ -989,3 +989,14 @@ body.dark-mode .services-item:hover .services-content-icon a {
 .chatbot-bubble:active {
     cursor: grabbing;
 }
+
+/* Makes SVG color match my theme */
+.emam-icon {
+    filter: brightness(0) saturate(100%) invert(40%) sepia(90%) saturate(2000%) hue-rotate(200deg) brightness(90%) contrast(90%);
+    transition: filter 0.3s ease;
+}
+
+/* Hover effect matching the other icons */
+.btn-light:hover .emam-icon {
+    filter: brightness(0) saturate(100%) invert(20%) sepia(90%) saturate(2000%) hue-rotate(200deg) brightness(80%) contrast(90%);
+}
