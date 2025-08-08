@@ -190,17 +190,12 @@
 
     <!-- Ambient Sound Toggle -->
     <div class="library-sounds flex items-center gap-3 bg-black/50 rounded-full px-4 py-2 border border-oldgold/30">
-        <!-- Play/Pause Button -->
         <button id="soundToggle" class="p-2 hover:bg-oldgold/10 rounded-full transition">
             <svg id="playIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-oldgold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M12 6a7.975 7.975 0 015.657 2.343m0 0a7.975 7.975 0 010 11.314m-11.314 0a7.975 7.975 0 010-11.314m0 0a7.975 7.975 0 015.657-2.343" />
             </svg>
         </button>
-    
-        <!-- Volume Slider -->
-        <input type="range" id="volumeControl" min="0" max="1" step="0.1" value="0.3" 
-               class="w-20 accent-oldgold/80 hover:accent-oldgold">
-    
+        <input type="range" id="volumeControl" min="0" max="1" step="0.1" value="0.3" class="w-20 accent-oldgold/80 hover:accent-oldgold">
     </div>
 
     <!-- Hero Section with Candlelight Effect -->
@@ -420,17 +415,18 @@
             //  Audio Player Setup
             const soundToggle = document.getElementById('soundToggle');
             const volumeControl = document.getElementById('volumeControl');
-            const trackSelect = document.getElementById('trackSelect');
             const playIcon = document.getElementById('playIcon');
             
-            let audio = new Audio("{% static 'audio/' %}" + trackSelect.value);
+            // Initialize with direct path to your audio file
+            let audio = new Audio("{% static 'audio/library-ambience.m4a' %}");
             audio.loop = true;
             audio.volume = volumeControl.value;
             
-            // Debugging logs
-            console.log("Initial audio source:", audio.src);
+            // Debugging
+            console.log("Audio source:", audio.src);
             audio.addEventListener('error', (e) => {
                 console.error("Audio error:", e);
+                alert("Failed to load audio. Please check console for details.");
             });
             
             // Play/Pause Toggle
@@ -439,60 +435,42 @@
                     if (audio.paused) {
                         await audio.play();
                         playIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clip-rule="evenodd" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14a2 2 0 100-4 2 2 0 000 4z" />`;
-                        console.log("Audio playback started");
                     } else {
                         audio.pause();
                         playIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M12 6a7.975 7.975 0 015.657 2.343m0 0a7.975 7.975 0 010 11.314m-11.314 0a7.975 7.975 0 010-11.314m0 0a7.975 7.975 0 015.657-2.343" />`;
-                        console.log("Audio paused");
                     }
                 } catch (error) {
                     console.error("Playback error:", error);
-                    alert("Audio couldn't play. Please interact with the page first.");
+                    alert("Please interact with the page first (click anywhere) then try the audio again.");
                 }
             });
             
             // Volume Control
             volumeControl.addEventListener('input', () => {
                 audio.volume = volumeControl.value;
-                console.log("Volume set to:", audio.volume);
             });
             
-            // Track Selection
-            trackSelect.addEventListener('change', () => {
-                const wasPlaying = !audio.paused;
-                audio.pause();
-                audio = new Audio("{% static 'audio/' %}" + trackSelect.value);
-                audio.loop = true;
-                audio.volume = volumeControl.value;
-                console.log("Switched to track:", audio.src);
-                
-                if (wasPlaying) {
-                    audio.play().catch(e => console.log("Autoplay after track change blocked:", e));
-                }
-            });
-            
-            // Keyboard Shortcuts
+            // Keyboard Shortcuts (optional)
             document.addEventListener('keydown', (e) => {
                 if (e.code === 'Space') {
                     e.preventDefault();
                     soundToggle.click();
-                } else if (e.code === 'ArrowUp') {
-                    volumeControl.value = Math.min(1, Number(volumeControl.value) + 0.1);
-                    volumeControl.dispatchEvent(new Event('input'));
-                } else if (e.code === 'ArrowDown') {
-                    volumeControl.value = Math.max(0, Number(volumeControl.value) - 0.1);
-                    volumeControl.dispatchEvent(new Event('input'));
                 }
             });
             
-            // Initialize (for autoplay policies)
-            document.addEventListener('click', () => {
+            // Handle autoplay policies
+            document.addEventListener('click', initializeAudio, { once: true });
+            
+            function initializeAudio() {
+                // Try to unlock audio context
                 audio.play().then(() => {
                     audio.pause();
                     audio.currentTime = 0;
                     console.log("Audio context unlocked");
-                }).catch(e => console.log("Initial unlock attempt:", e));
-            }, { once: true });
+                }).catch(e => {
+                    console.log("Initial unlock attempt failed (normal for some browsers):", e);
+                });
+            }
         });
     </script>
 </body>
