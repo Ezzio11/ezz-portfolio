@@ -94,12 +94,13 @@
 
     <!-- Enhanced Mobile Menu Button -->
     <button id="mobileMenuButton" 
-            class="md:hidden fixed top-6 left-6 z-50 group p-2 rounded-full bg-deepcharcoal border border-goldaccent/30 hover:bg-goldaccent/10 transition-all"
+            class="md:hidden fixed top-6 right-6 z-50 group p-2 rounded-full bg-deepcharcoal border border-goldaccent/30 hover:bg-goldaccent/10 transition-all"
             aria-label="Toggle navigation menu">
-        <div class="relative w-6 h-6">
-            <span class="absolute block w-6 h-0.5 bg-goldaccent top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform transition-all duration-300 group-[.sidebar-open]:rotate-45 group-[.sidebar-open]:translate-y-0"></span>
-            <span class="absolute block w-6 h-0.5 bg-goldaccent top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform transition-all duration-300 group-[.sidebar-open]:opacity-0"></span>
-            <span class="absolute block w-6 h-0.5 bg-goldaccent top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform transition-all duration-300 group-[.sidebar-open]:-rotate-45 group-[.sidebar-open]:translate-y-0"></span>
+        <!-- Hamburger Icon -->
+        <div class="relative w-6 h-6 flex flex-col justify-between">
+            <span class="block w-6 h-0.5 bg-goldaccent transform transition duration-300 origin-left group-[.sidebar-open]:rotate-45 group-[.sidebar-open]:w-7"></span>
+            <span class="block w-6 h-0.5 bg-goldaccent transition duration-300 group-[.sidebar-open]:opacity-0"></span>
+            <span class="block w-6 h-0.5 bg-goldaccent transform transition duration-300 origin-left group-[.sidebar-open]:-rotate-45 group-[.sidebar-open]:w-7"></span>
         </div>
     </button>
 
@@ -346,7 +347,7 @@
         <!-- Footer -->
         <footer class="bg-black/50 py-12 text-center border-t border-sepia/10 w-full">
             <div class="max-w-4xl mx-auto px-6">
-                <h3 href="{% url 'mstag' %}" class="font-dm text-2xl text-goldaccent mb-6 arabic">M.S.T.A.G.</h3>
+                <h3 href="{% url 'mstag' %}" class="font-dm text-2xl text-goldaccent mb-6 arabic">M.S.T.A.G</h3>
                 <p class="text-parchment/70 mb-6">A digital haven for polymaths, misfits, and curious minds</p>
                 <div class="flex justify-center space-x-6 mb-8">
                     <a href="#" class="text-parchment/50 hover:text-goldaccent transition">
