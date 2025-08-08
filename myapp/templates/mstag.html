@@ -1,193 +1,420 @@
-{% extends 'base.html' %}
-{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MSTAG | Dark Academia Collection</title>
+    
+    <!-- Django Template Tags -->
+    {% load static %}
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'garamond': ['EB Garamond', 'serif'],
+                        'lora': ['Lora', 'serif'],
+                    },
+                    colors: {
+                        parchment: '#f5f0e6',
+                        oxblood: '#76323F',
+                        oldgold: '#D5A021',
+                        deepbrown: '#3A2D23',
+                        archivebg: '#1b1a1f',
+                        leather: '#2a241e',
+                    },
+                    backgroundImage: {
+                        'parchment-texture': "url('https://www.transparenttextures.com/patterns/rice-paper.png')",
+                        'leather-texture': "url('https://www.transparenttextures.com/patterns/black-paper.png')",
+                        'wood-texture': "url('https://images.unsplash.com/photo-1535905496755-26ae35d0ae54?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
+                        'vignette': "radial-gradient(ellipse at center, rgba(0,0,0,0) 60%, rgba(0,0,0,0.7) 100%)",
+                        'candlelight': "radial-gradient(ellipse at center, rgba(213, 160, 33, 0.15) 0%, rgba(213, 160, 33, 0.03) 50%, rgba(27, 26, 31, 0.8) 100%)",
+                    },
+                    animation: {
+                        'flicker': 'flicker 8s infinite alternate',
+                        'float': 'float 6s ease-in-out infinite',
+                        'dust-float': 'dust-float 10s linear infinite',
+                    },
+                    keyframes: {
+                        flicker: {
+                            '0%, 100%': { opacity: '1' },
+                            '25%': { opacity: '0.95' },
+                            '50%': { opacity: '0.85' },
+                            '75%': { opacity: '0.9' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        'dust-float': {
+                            '0%': { transform: 'translateY(0) translateX(0)', opacity: '0' },
+                            '10%': { opacity: '0.5' },
+                            '90%': { opacity: '0.5' },
+                            '100%': { transform: 'translateY(-100px) translateX(20px)', opacity: '0' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23D5A021" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/><path fill="%23D5A021" d="M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"/></svg>'), auto;
+        }
+        
+        .text-shadow {
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+        
+        .candlelight-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center, rgba(213, 160, 33, 0.15) 0%, rgba(213, 160, 33, 0.03) 50%, rgba(27, 26, 31, 0.8) 100%);
+            pointer-events: none;
+            animation: flicker 8s infinite alternate;
+        }
+        
+        .vignette-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center, rgba(0,0,0,0) 60%, rgba(0,0,0,0.7) 100%);
+            pointer-events: none;
+        }
+        
+        .card-hover {
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .card-hover:hover::after {
+            opacity: 0.8;
+        }
+        
+        .card-hover::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at var(--x) var(--y), rgba(213, 160, 33, 0.15), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .paper-card {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23f5f0e6" opacity="0.9"/><path d="M0 0 L100 0 L100 5 L0 10 Z" fill="%23ffffff" opacity="0.2"/><path d="M0 95 L100 100 L100 100 L0 95 Z" fill="%233a2d23" opacity="0.05"/></svg>');
+        }
+        
+        .book-card {
+            background: linear-gradient(145deg, #3a2d23 0%, #2a241e 100%);
+            border-left: 12px solid #1b1a1f;
+        }
+        
+        .folder-card {
+            background: linear-gradient(135deg, #f5f0e6 0%, #e0d8c5 100%);
+            border-top: 8px solid #76323F;
+        }
+        
+        .dust-particle {
+            position: absolute;
+            background-color: rgba(213, 160, 33, 0.6);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: dust-float 10s linear infinite;
+        }
+        
+        .library-sounds {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 50;
+        }
+    </style>
+</head>
+<body class="bg-archivebg text-parchment font-lora overflow-x-hidden">
 
-{% block title %}{{ article.title|default:"MSTAG Article" }} | MSTAG{% endblock %}
-
-{% block extra_head %}
-    <!-- SEO Meta Tags -->
-    <meta name="title" content="{{ article.title }} | MSTAG">
-    <meta name="description" content="{{ article.description }}">
-    <meta name="keywords" content="Ezz Eldin Ahmed, Data Science, Streamlit, Django, Python Developer, Automation, Machine Learning, Statistics, Statistical Modeling">
-    <meta name="author" content="{{ article.author|default:'Ezz Eldin Ahmed' }}">
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:title" content="{{ article.title }} | MSTAG">
-    <meta property="og:description" content="{{ article.description }}">
-    <meta property="og:type" content="article">
-    <meta property="og:url" content="{{ request.build_absolute_uri }}">
-    <meta property="og:image" content="{% if article.image.url %}{{ request.scheme }}://{{ request.get_host }}{{ article.image.url }}{% else %}https://ezzio.vercel.app/default-og.png{% endif %}">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:site_name" content="MSTAG">
-    <meta property="article:published_time" content="{{ article.date_published|date:'c' }}">
-    <meta property="article:author" content="{{ article.author|default:'Ezz Eldin Ahmed' }}">
-
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{ article.title }} | MSTAG">
-    <meta name="twitter:description" content="{{ article.description }}">
-    <meta name="twitter:image" content="{% if article.image.url %}{{ request.scheme }}://{{ request.get_host }}{{ article.image.url }}{% else %}https://ezzio.vercel.app/default-og.png{% endif %}">
-{% endblock %}
-
-{% block content %}
-<!-- Page Header Start --> 
-<div class="container-fluid py-5 my-5">
-    <div class="container text-center py-5">
-        <h1 class="display-4 mb-4">M.S.T.A.G.</h1>
-        <a 
-            class="mstag-toggle d-block mt-2" 
-            data-bs-toggle="collapse" 
-            href="#mstag-info" 
-            role="button" 
-            aria-expanded="false" 
-            aria-controls="mstag-info"
-        >
-            <small><i class="fas fa-info-circle me-1"></i> What’s MSTAG?</small>
-        </a>
-        <div class="collapse mt-3" id="mstag-info">
-            <div class="alert alert-light border rounded shadow-sm text-start">
-                <p class="mb-0">
-                    <strong>MSTAG</strong> is an invitation. <br><br>
-                    Not to a brand. Not to a movement.  
-                    But to a space that honors one thing: <strong>interesting work</strong>.
-                    <br><br>
-                    Essays, games, tools, experiments, football, politics, tech, or something stranger.  
-                    If it sparks curiosity, if it refuses to sit still, if it <em>matters</em> to the one who made it —  
-                    it belongs here.
-                    <br><br>
-                    This is where half-finished ideas find oxygen.  
-                    Where passion beats polish.  
-                    Where you build something wild, and we say, <em>“Yes, show us.”</em>
-                    <br><br>
-                    <strong>MSTAG</strong> is for those who think too much, feel too deeply, and make without permission.  
-                    And it’s only just getting started.
-                </p>
+    <!-- Minimal Navigation Bar -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-leather/90 backdrop-blur-sm border-b border-oldgold/20">
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <a href="{% url 'home' %}" class="font-garamond text-xl text-oldgold hover:text-parchment transition-colors">
+                &larr; Return to Main Site
+            </a>
+            <div class="flex space-x-4">
+                <a href="{% url 'projects' %}" class="font-lora text-sm text-parchment/80 hover:text-oldgold transition-colors">Projects</a>
+                <a href="{% url 'chatbot' %}" class="font-lora text-sm text-parchment/80 hover:text-oldgold transition-colors">X.A.N.E</a>
             </div>
         </div>
-        <p class="fs-5y">Articles and projects from brilliant minds that refuse to stay still.</p>
+    </nav>
+
+    <!-- Ambient Sound Toggle -->
+    <div class="library-sounds">
+        <button id="soundToggle" class="p-2 bg-black/30 rounded-full border border-oldgold/30 hover:bg-oldgold/10 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-oldgold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M12 6a7.975 7.975 0 015.657 2.343m0 0a7.975 7.975 0 010 11.314m-11.314 0a7.975 7.975 0 010-11.314m0 0a7.975 7.975 0 015.657-2.343" />
+            </svg>
+        </button>
     </div>
-</div>
-<!-- Page Header End -->
 
-<!-- Blog Start -->
-<div class="container py-4">
-    <div class="row g-4 justify-content-center">
+    <!-- Hero Section with Candlelight Effect -->
+    <section class="relative min-h-screen flex items-center justify-center bg-leather bg-wood-texture bg-cover bg-center overflow-hidden">
+        <!-- Dark overlay -->
+        <div class="absolute inset-0 bg-black/40"></div>
+        
+        <!-- Vignette effect -->
+        <div class="vignette-overlay"></div>
+        
+        <!-- Candlelight flicker effect -->
+        <div class="candlelight-overlay"></div>
+        
+        <!-- Dust particles -->
+        <div id="dustContainer"></div>
+        
+        <!-- Content -->
+        <div class="relative z-10 text-center px-6 max-w-4xl">
+            <h1 class="font-garamond text-5xl md:text-7xl mb-6 text-oldgold text-shadow">M.S.T.A.G.</h1>
+            <div class="border-t border-b border-oldgold/30 py-6 my-8 relative">
+                <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/soft-wallpaper.png')] opacity-10"></div>
+                <blockquote class="text-xl md:text-2xl italic text-parchment/90 font-garamond relative z-10">
+                    "In the pursuit of everything, we lost the will to hold it all."
+                </blockquote>
+            </div>
+            <p class="text-parchment/80 max-w-2xl mx-auto mb-10 font-lora">
+                A collection of forbidden knowledge, recovered documents, and lost sciences deemed too dangerous for common study.
+            </p>
+            <button onclick="document.getElementById('archive').scrollIntoView({ behavior: 'smooth' })" 
+                    class="mt-6 px-8 py-3 bg-transparent border border-oldgold text-oldgold font-garamond tracking-wider hover:bg-oldgold/10 transition-all duration-500 animate-float">
+                Enter the Archive
+            </button>
+        </div>
+        
+        <!-- Scroll indicator -->
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-oldgold/60 animate-float" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+            </svg>
+        </div>
+    </section>
 
-        <!-- Dynamic cards from database - Polymath first -->
-        {% for article in articles %}
-        <div class="col-sm-6 col-lg-4 col-xl-3 d-flex">
-            <div class="blog-item bg-light rounded shadow-sm w-100 d-flex flex-column transition hover-shadow overflow-hidden">
-                
-                <!-- Article Image -->
-                <div class="position-relative">
-                    <img src="{{ article.image|default:'/static/img/polymath-cover.jpg' }}" 
-                         loading="{% if forloop.counter <= 2 %}eager{% else %}lazy{% endif %}" 
-                         class="img-fluid w-100 rounded-top" 
-                         style="height: 180px; object-fit: cover;" 
-                         alt="{{ article.title|default:'The Decline of the Polymath' }}">
-
-                    <!-- Topic -->
-                    <span class="position-absolute top-0 start-0 m-2 px-2 py-1 bg-primary text-white rounded small">
-                        {{ article.topic|default:"Intellectual History"|title }}
-                    </span>
+    <!-- Archive Section -->
+    <section id="archive" class="py-20 px-6 bg-leather bg-leather-texture bg-cover bg-fixed">
+        <div class="max-w-6xl mx-auto">
+            <!-- Section Header -->
+            <div class="text-center mb-16">
+                <h2 class="font-garamond text-4xl md:text-6xl text-oldgold mb-4 text-shadow">The Archive</h2>
+                <p class="text-parchment/80 max-w-2xl mx-auto">A collection of recovered papers from brilliant minds that refuse to stay still.</p>
+            </div>
+            
+            <!-- Cards Grid -->
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {% for article in articles %}
+                <a href="{% url 'article_detail' slug=article.slug %}" 
+                class="card-hover {% if article.card_style == 'paper' %}paper-card bg-parchment{% elif article.card_style == 'book' %}book-card{% else %}folder-card{% endif %} p-6 relative overflow-hidden shadow-lg group transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
                     
-                    <!-- Date -->
-                    <span class="position-absolute top-0 end-0 m-2 px-2 py-1 bg-dark text-white rounded small">
-                        {% if article.date_published %}
-                            {{ article.date_published|date:"d M" }}
-                        {% endif %}
-                    </span>
-                </div>
-
-                <!-- Content -->
-                <div class="p-3 text-center flex-grow-1 d-flex flex-column">
-                    <!-- Author -->
-                    <div class="mx-auto mb-3 border border-4 border-white rounded-circle overflow-hidden" 
-                         style="width: 80px; height: 80px;">
-                        <img src="{{ article.author_image|default:'/static/img/admin.jpg' }}" 
-                             alt="{{ article.author|default:'Ezz Eldin Ahmed' }}" 
-                             style="width: 100%; height: 100%; object-fit: cover;">
+                    <!-- Dust particles -->
+                    <div class="dust-particle" style="top: 20%; left: 15%; width: 3px; height: 3px; animation-delay: 0s;"></div>
+                    <div class="dust-particle" style="top: 70%; left: 80%; width: 2px; height: 2px; animation-delay: 3s;"></div>
+                    
+                    <!-- Author Section - Elegant Overlay -->
+                    <div class="absolute top-0 left-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                        <div class="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-black/50 to-transparent"></div>
                     </div>
 
-                    <!-- Title & Desc -->
-                    <h5 class="fw-bold mb-1">{{ article.title|default:"The Decline of the Polymath" }}</h5>
-                    <p class="text-muted mb-2 small">By {{ article.author|default:"Ezz Eldin Ahmed" }}</p>
-                    <p class="text-secondary small flex-grow-1">
-                        {{ article.description|default:"A deep, data-driven, and visual journey into the lost art of universal knowledge, exploring how society moved from Renaissance thinkers to modern-day specialization, and why it matters today." }}
-                    </p>
-
-                    <!-- CTA -->
-                    <a href="{% if article.is_custom %}{{ article.custom_url }}{% else %}{% url 'article_detail' slug=article.slug %}{% endif %}" 
-                       class="btn btn-sm btn-outline-primary rounded-pill mt-3">
-                       Read More
-                    </a>
-                </div>
-
-                <!-- Footer (only for non-custom articles) -->
-                {% if not article.is_custom %}
-                <div class="d-flex justify-content-between px-3 py-2 border-top bg-primary text-white small">
-                    <a href="#" class="text-white" onclick="toggleShare('{{ article.slug }}'); return false;">
-                        <i class="fas fa-share me-1 text-secondary"></i> Share
-                    </a>
-                    <a href="{% url 'article_detail' slug=article.slug %}#comments" class="text-white">
-                        <i class="fa fa-comments me-1 text-secondary"></i> Comments
-                    </a>
-                </div>
-
-                <!-- Share Panel -->
-                <div id="share-{{ article.slug }}" class="d-none px-3 py-2 text-center border-top">
-                    {% url 'article_detail' slug=article.slug as article_path %}
-                    {% with full_url=request.scheme|add:'://'|add:request.get_host|add:article_path %}
-                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ full_url }}" target="_blank" class="btn btn-sm btn-primary me-1">
-                        <i class="fab fa-facebook-f"></i>
-                    </a>
-                    <a href="https://twitter.com/intent/tweet?url={{ full_url }}" target="_blank" class="btn btn-sm btn-info me-1">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a href="https://wa.me/?text={{ full_url }}" target="_blank" class="btn btn-sm btn-success me-1">
-                        <i class="fab fa-whatsapp"></i>
-                    </a>
-                    <a href="https://t.me/share/url?url={{ full_url }}" target="_blank" class="btn btn-sm btn-info me-1">
-                        <i class="fab fa-telegram-plane"></i>
-                    </a>
-                    <button class="btn btn-sm btn-dark" onclick="copyLink('{{ full_url }}')">
-                        <i class="fas fa-link"></i> Copy
-                    </button>
-                    {% endwith %}
-                </div>
-                {% endif %}
+                    <!-- Article Content -->
+                    <div class="relative z-10 h-full flex flex-col">
+                        <!-- Topic Tag -->
+                        <span class="font-garamond text-xs {% if article.card_style == 'book' %}text-oldgold/80{% else %}text-oxblood/80{% endif %} mb-2 self-start px-2 py-1 {% if article.card_style == 'book' %}bg-black/20{% else %}bg-parchment/80{% endif %} rounded-full">
+                            {{ article.topic|default:"Inquiry" }}
+                        </span>
+                        
+                        <!-- Title -->
+                        <h3 class="font-garamond text-xl {% if article.card_style == 'book' %}text-parchment{% else %}text-deepbrown{% endif %} mb-3 group-hover:text-oldgold transition-colors">
+                            {{ article.title }}
+                        </h3>
+                        
+                        <!-- Description -->
+                        <p class="{% if article.card_style == 'book' %}text-parchment/70{% else %}text-deepbrown/70{% endif %} mb-4 line-clamp-3 text-sm">
+                            {{ article.description }}
+                        </p>
+                        
+                        <!-- Footer with Author Info -->
+                        <div class="mt-auto pt-3 border-t {% if article.card_style == 'book' %}border-oldgold/20{% else %}border-oxblood/20{% endif %}">
+                            <div class="flex items-center justify-between gap-3">
+                                <!-- Author Info -->
+                                <div class="flex items-center gap-2 min-w-0">
+                                    {% if article.author_image %}
+                                    <img src="{{ article.author_image }}" alt="{{ article.author }}" 
+                                        class="w-12 h-12 rounded-full border-2 border-oldgold/80 object-cover shadow-md">
+                                    {% else %}
+                                    <div class="w-6 h-6 rounded-full {% if article.card_style == 'book' %}bg-oldgold/20 border-oldgold/50{% else %}bg-oxblood/20 border-oxblood/50{% endif %} border flex items-center justify-center flex-shrink-0">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 {% if article.card_style == 'book' %}text-oldgold{% else %}text-oxblood{% endif %}" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                    {% endif %}
+                                    <div class="min-w-0">
+                                        <p class="font-garamond text-xs {% if article.card_style == 'book' %}text-oldgold/90{% else %}text-oxblood/90{% endif %} truncate">
+                                            {{ article.author|default:"Anonymous" }}
+                                        </p>
+                                        {% if article.author_description %}
+                                        <p class="text-xxs {% if article.card_style == 'book' %}text-oldgold/60{% else %}text-oxblood/60{% endif %} truncate">
+                                            {{ article.author_description }}
+                                        </p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                             </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Book-style embellishments -->
+                    {% if article.card_style == 'book' %}
+                    <div class="absolute top-0 left-0 w-12 h-full bg-gradient-to-r from-oldgold/10 to-transparent"></div>
+                    <div class="absolute bottom-4 right-4 w-8 h-8 border-2 border-oldgold/30 rounded-full"></div>
+                    {% endif %}
+                    
+                    <!-- Folder-style wax seal -->
+                    {% if article.card_style == 'folder' %}
+                    <div class="absolute top-4 right-4 w-10 h-10 rounded-full bg-oxblood/90 flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-parchment" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    {% endif %}
+                </a>
+                {% endfor %}
             </div>
+            
+            <!-- Pagination -->
+            {% if is_paginated %}
+            <div class="flex justify-center mt-16">
+                <nav class="flex items-center space-x-2">
+                    {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}" class="px-3 py-1 border border-oldgold/30 text-oldgold hover:bg-oldgold/10 transition rounded">
+                        &larr; Previous
+                    </a>
+                    {% endif %}
+                    
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                        <span class="px-3 py-1 border border-oldgold text-oldgold bg-oldgold/10 rounded">{{ num }}</span>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <a href="?page={{ num }}" class="px-3 py-1 border border-oldgold/30 text-oldgold hover:bg-oldgold/10 transition rounded">
+                            {{ num }}
+                        </a>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}" class="px-3 py-1 border border-oldgold/30 text-oldgold hover:bg-oldgold/10 transition rounded">
+                        Next &rarr;
+                    </a>
+                    {% endif %}
+                </nav>
+            </div>
+            {% endif %}
         </div>
-        {% endfor %}
-    </div>
+    </section>
 
-    <!-- Optional: Pagination -->
-    {% if page_obj.has_other_pages %}
-    <div class="pagination justify-content-center mt-5">
-        {% if page_obj.has_previous %}
-        <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-outline-secondary btn-sm me-2">← Prev</a>
-        {% endif %}
-        <span class="btn btn-secondary btn-sm disabled">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
-        {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}" class="btn btn-outline-secondary btn-sm ms-2">Next →</a>
-        {% endif %}
-    </div>
-    {% endif %}
-</div>
-<!-- Blog End -->
-{% endblock %}
+    <script>
+        // Create dust particles
+        function createDustParticles() {
+            const container = document.getElementById('dustContainer');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'dust-particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.width = (Math.random() * 3 + 1) + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.opacity = Math.random() * 0.6 + 0.2;
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                container.appendChild(particle);
+            }
+        }
 
-{% block extra_js %}
-<script>
-function toggleShare(slug) {
-    const el = document.getElementById('share-' + slug);
-    el.classList.toggle('d-none');
-}
+        // Track mouse position for card hover glow
+        document.addEventListener('DOMContentLoaded', function() {
+            createDustParticles();
+            
+            const cards = document.querySelectorAll('.card-hover');
+            
+            // Mouse position tracking for glow effect
+            document.addEventListener('mousemove', function(e) {
+                cards.forEach(card => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    card.style.setProperty('--x', x + 'px');
+                    card.style.setProperty('--y', y + 'px');
+                });
+            });
+            
+            // Fade in animation for cards
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.style.opacity = 1;
+                            entry.target.style.transform = 'translateY(0)';
+                        }, 100 * index);
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            cards.forEach(card => {
+                card.style.opacity = 0;
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(card);
+            });
 
-function copyLink(url) {
-    navigator.clipboard.writeText(url).then(() => {
-        alert("Link copied to clipboard!");
-    });
-}
-</script>
-{% endblock %}
+            // Sound toggle functionality
+            const soundToggle = document.getElementById('soundToggle');
+            let audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-ambient-study-loop-258.mp3');
+            audio.loop = true;
+            
+            soundToggle.addEventListener('click', function() {
+                if (audio.paused) {
+                    audio.play();
+                    soundToggle.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-oldgold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clip-rule="evenodd" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14a2 2 0 100-4 2 2 0 000 4z" />
+                        </svg>
+                    `;
+                } else {
+                    audio.pause();
+                    soundToggle.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-oldgold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M12 6a7.975 7.975 0 015.657 2.343m0 0a7.975 7.975 0 010 11.314m-11.314 0a7.975 7.975 0 010-11.314m0 0a7.975 7.975 0 015.657-2.343" />
+                        </svg>
+                    `;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,11 +1,20 @@
-{% extends "base.html" %}
 {% load static %}
 
-{% block title %}{{ article.title|default:"MSTAG Article" }} | MSTAG{% endblock %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="scroll-smooth dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ article.title }} | MSTAG</title>
 
-{% block extra_head %}
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Text:ital@0;1&family=Lora:ital,wght@0,400;0,600;1,400&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    
     <!-- SEO Meta Tags -->
-    <meta name="title" content="{{ article.title }} | MSTAG">
     <meta name="description" content="{{ article.description }}">
     <meta name="keywords" content="Ezz Eldin Ahmed, Data Science, Streamlit, Django, Python Developer, Automation, Machine Learning, Statistics, Statistical Modeling">
     <meta name="author" content="{{ article.author|default:'Ezz Eldin Ahmed' }}">
@@ -28,129 +37,416 @@
     <meta name="twitter:description" content="{{ article.description }}">
     <meta name="twitter:image" content="{% if article.image %}{{ article.image }}{% else %}https://ezzio.vercel.app/default-og.png{% endif %}">
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="{% static 'css/article_detail.css' %}">
-{% endblock %}
+    <!-- Template Stylesheet -->
+    <link href="{% static 'css/article_detail.css' %}" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'dm': ['DM Serif Text', 'serif'],
+                        'lora': ['Lora', 'serif'],
+                        'arabic': ['Amiri', 'serif'],
+                    },
+                    colors: {
+                        parchment: '#f5f0e6',
+                        deepcharcoal: '#1a1a1a',
+                        sepia: '#704214',
+                        goldaccent: '#c0a062',
+                        redaccent: '#8c2e2e',
+                        arabesque: '#3a2d23',
+                        archivebg: '#1b1a1f',
+                        leather: '#2a241e',
+                    },
+                    backgroundImage: {
+                        'parchment-texture': "url('https://www.transparenttextures.com/patterns/rice-paper.png')",
+                        'leather-texture': "url('https://www.transparenttextures.com/patterns/black-paper.png')",
+                        'vignette': "radial-gradient(ellipse at center, rgba(0,0,0,0) 60%, rgba(0,0,0,0.7) 100%)",
+                        'candlelight': "radial-gradient(ellipse at center, rgba(192, 160, 98, 0.15) 0%, rgba(192, 160, 98, 0.03) 50%, rgba(27, 26, 31, 0.8) 100%)",
+                    },
+                    animation: {
+                        'flicker': 'flicker 8s infinite alternate',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        flicker: {
+                            '0%, 100%': { opacity: '1' },
+                            '25%': { opacity: '0.95' },
+                            '50%': { opacity: '0.85' },
+                            '75%': { opacity: '0.9' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-deepcharcoal text-parchment font-lora overflow-x-hidden">
 
-{% block content %}
-<div class="article-container wow fadeIn" data-wow-delay=".3s">
-    <!-- Title -->
-    <h1>{{ article.title }}</h1>
+    <!-- Enhanced Mobile Menu Button -->
+    <button id="mobileMenuButton" 
+            class="md:hidden fixed top-6 left-6 z-50 group"
+            aria-label="Toggle navigation menu">
+        <div class="relative w-10 h-10 flex items-center justify-center">
+            <!-- Animated Hamburger Icon -->
+            <div class="flex flex-col items-center justify-center w-6 transform transition-all duration-300">
+                <span class="bg-goldaccent h-0.5 w-6 rounded-full transform transition-all duration-300 
+                        group-[.sidebar-open]:rotate-45 group-[.sidebar-open]:translate-y-[5px]"></span>
+                <span class="bg-goldaccent h-0.5 w-6 rounded-full my-1.5 transform transition-all duration-300 
+                        group-[.sidebar-open]:opacity-0"></span>
+                <span class="bg-goldaccent h-0.5 w-6 rounded-full transform transition-all duration-300 
+                        group-[.sidebar-open]:-rotate-45 group-[.sidebar-open]:-translate-y-[5px]"></span>
+            </div>
+            <!-- Circular Background -->
+            <div class="absolute inset-0 rounded-full bg-deepcharcoal border border-goldaccent/30 
+                    group-hover:bg-goldaccent/10 transition-all duration-300"></div>
+        </div>
+    </button>
 
-    <!-- Metadata -->
-    <div class="article-meta">
-        By <strong>{{ article.author }}</strong> • {{ article.date_published }}
+    <!-- Navigation Sidebar with Elegant Scroll -->
+    <nav id="sidebar" 
+        class="sidebar fixed right-0 top-0 h-full w-72 md:w-80 bg-deepcharcoal/95 backdrop-blur-md p-6 
+                overflow-y-auto z-40 sidebar-transition arabic border-l-2 border-goldaccent/30
+                shadow-[0_0_30px_rgba(192,160,98,0.1)] scrollbar">
         
-        {% if article.linkedin_url %}
-            <br>
-            <a href="{{ article.linkedin_url }}" target="_blank">View Author on LinkedIn</a>
-        {% endif %}
+        <!-- Custom Scrollbar Styles (add to your CSS) -->
+        <style>
+            .scrollbar {
+                scrollbar-width: thin;
+                scrollbar-color: rgba(192, 160, 98, 0.5) transparent;
+            }
+            
+            .scrollbar::-webkit-scrollbar {
+                width: 6px;
+                height: 6px;
+            }
+            
+            .scrollbar::-webkit-scrollbar-track {
+                background: transparent;
+                margin: 8px 0;
+            }
+            
+            .scrollbar::-webkit-scrollbar-thumb {
+                background-color: rgba(192, 160, 98, 0.3);
+                border-radius: 3px;
+                border: 1px solid rgba(192, 160, 98, 0.2);
+            }
+            
+            .scrollbar::-webkit-scrollbar-thumb:hover {
+                background-color: rgba(192, 160, 98, 0.5);
+            }
+            
+            /* Smooth scrolling behavior */
+            html {
+                scroll-behavior: smooth;
+            }
+        </style>
 
-        {% if article.external_url %}
-            <br>
-            <a href="{{ article.external_url }}" target="_blank">Read Full Article on External Site</a>
-        {% endif %}
-    </div>
-    <hr>
+        <!-- Close Button -->
+        <button id="sidebarCloseButton" 
+                class="md:hidden absolute top-4 left-4 p-2 text-goldaccent hover:text-parchment transition
+                    transform hover:scale-110">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+        </button>
 
-    <!-- FEATURED IMAGE -->
+        <div class="sticky top-0">
+            <!-- Logo/Brand -->
+            <a href="{% url 'mstag' %}" 
+            class="block font-dm text-goldaccent text-xl mb-8 pb-3 border-b border-sepia/20 
+                    hover:text-parchment transition-all duration-300 group">
+                <span class="inline-block group-hover:translate-x-1 transition-transform">M.S.T.A.G</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block ml-2 opacity-0 group-hover:opacity-100 transition-opacity" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+            </a>
+            
+            <!-- Table of Contents -->
+            <div class="mb-8">
+                <div class="flex items-center justify-between mb-4">
+                    <h4 class="text-xl font-dm text-goldaccent">
+                        المحتويات
+                    </h4>
+                    <button id="toc-toggle" class="text-goldaccent/70 hover:text-goldaccent transition transform hover:scale-125">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
+                <ul id="toc-list" class="space-y-3 text-parchment/80 transition-all duration-300 max-h-[50vh] overflow-y-auto pr-2 scrollbar">
+                    <!-- TOC items will be populated by JavaScript -->
+                </ul>
+            </div>
+            
+            <!-- Recommended Readings -->
+            <div class="mt-auto pt-6 border-t border-sepia/20">
+                <h4 class="text-xl font-dm text-goldaccent mb-4">
+                    قراءات أخرى
+                </h4>
+                <ul class="space-y-3 max-h-[30vh] overflow-y-auto pr-2 scrollbar" id="other-readings">
+                    <li class="text-parchment/70 flex items-center gap-2 py-1">
+                        <svg class="animate-spin h-4 w-4 text-goldaccent" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Loading recommendations...
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Footer -->
+            <div class="mt-12 pt-6 border-t border-sepia/20 text-center">
+                <div class="flex justify-center space-x-4 mb-4">
+                    <!-- Social icons -->
+                </div>
+                <p class="text-xs text-goldaccent/50">© {% now "Y" %} M.S.T.A.G</p>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="md:mr-64 min-h-screen px-4 md:px-8">
+
+    <!-- Article Header section: Image Behind Title -->
     {% if article.image %}
-    <div class="article-image text-center mb-4">
-        <img src="{{ article.image }}" alt="Featured Image" class="img-fluid rounded" style="max-height: 500px;">
-    </div>
-    {% endif %}
-
-    <div class="floating-toc" id="floating-toc">
-        <div class="toc-header">
-            <h5>📑 المحتويات</h5>
-            <button id="toc-toggle" title="إخفاء / إظهار الفهرس">📂</button>
+    <section class="relative h-[65vh] min-h-[500px] flex items-center justify-center text-center overflow-hidden">
+        <!-- Hero Image with Lazy Loading -->
+        <div class="absolute inset-0">
+            <img src="{{ article.image }}" alt="{{ article.title }}" 
+                 class="w-full h-full object-cover object-center transition-opacity duration-1000 opacity-0"
+                 loading="eager"
+                 onload="this.classList.remove('opacity-0')">
+            <div class="absolute inset-0 bg-black/30 backdrop-blur-[1px]"></div>
         </div>
-        <ul id="toc-list"></ul>
-    </div>
-
-    <!-- PDF VIEWER (FALLBACK) -->
-    {% if article.pdf_file %}
-    <div class="pdf-viewer-container">
-        <iframe src="{{ article.pdf_file.url }}" width="100%" height="800px" style="border:none;"></iframe>
-    </div>
-    <a href="{{ article.pdf_file.url }}" target="_blank" class="pdf-download">
-        <i class="fas fa-download me-2"></i>Download PDF
-    </a>
-
-    <!-- INLINE MARKDOWN/HTML CONTENT WITH IMAGES -->
     {% else %}
-    {% if article.slug == "the-decline-of-the-polymath" %}
-        {# Include your custom standalone HTML file #}
-        {% include "polymath-decline.html" %}
-    {% else %}
-        <div lang="ar" dir="rtl" class="article-body">
-            {{ rendered_content|safe }}
-        </div>
-    {% endif %}
-    {% endif %}
-</div>
-
-<hr>
-<div id="comments"></div>
-<div class="container mt-5" id="comments-section">
-    <!-- SUCCESS/ERROR MESSAGES -->
-    {% if comment_error %}
-    <div class="alert alert-danger alert-dismissible fade show">
-        {{ comment_error }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
+    <section class="relative h-[65vh] min-h-[500px] flex items-center justify-center text-center bg-leather bg-cover bg-center overflow-hidden">
     {% endif %}
 
-    {% if comment_success %}
-    <div class="alert alert-success alert-dismissible fade show">
-        ✓ Comment posted successfully!
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-    {% endif %}
+        <!-- Sophisticated Overlay System -->
+        <div class="absolute inset-0 bg-gradient-to-b from-black/5 via-black/65 to-black/90"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent"></div>
+        <div class="absolute inset-0 vignette-overlay" style="opacity: 0.7;"></div>
+        <div class="absolute inset-0 candlelight-overlay"></div>
 
-    <h3 class="mb-4">Comments ({{ comments|length }})</h3>
+        <!-- Title + Author Container -->
+        <div class="relative z-10 max-w-5xl px-6 animate-fadeIn transform transition-all duration-500 hover:scale-[1.01]">
+            <!-- Article Type Badge -->
+            <div class="inline-flex items-center justify-center mb-6 px-4 py-2 bg-black/60 rounded-full backdrop-blur-sm border border-goldaccent/30">
+                <span class="text-xs tracking-widest uppercase text-goldaccent drop-shadow-md">
+                    Featured Article
+                </span>
+            </div>
 
-    <!-- Comment List -->
-    {% if comments %}
-        <div class="comment-list mb-4">
-            {% for comment in comments %}
-                <div class="comment">
-                    <div class="comment-meta">
-                        <strong>{{ comment.name }}</strong>
-                        <small>{{ comment.created_at|date:"F j, Y, g:i a" }}</small>
+            <!-- Title with Text Shadow for Contrast -->
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-dm text-parchment leading-tight mb-8 px-4"
+                style="text-shadow: 0 2px 10px rgba(0,0,0,0.5), 0 4px 20px rgba(0,0,0,0.3);">
+                {{ article.title }}
+            </h1>
+
+            <!-- Author & Links Block - Enhanced for Visibility -->
+            <div class="flex flex-col sm:flex-row items-center justify-between bg-black/60 px-6 py-4 rounded-xl backdrop-blur-md w-full max-w-3xl mx-auto shadow-xl border border-sepia/20 transition-all duration-300 hover:bg-black/70 hover:border-goldaccent/30">
+
+                <!-- LinkedIn Link -->
+                {% if article.linkedin_url %}
+                <a href="{{ article.linkedin_url }}" target="_blank" 
+                   class="hidden sm:flex items-center text-goldaccent hover:text-parchment text-sm font-medium transition-colors group">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 group-hover:translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                    </svg>
+                    View on LinkedIn
+                </a>
+                {% endif %}
+
+                <!-- Author Info - Center Aligned -->
+                <div class="flex flex-col sm:flex-row items-center space-x-0 sm:space-x-4 space-y-2 sm:space-y-0 my-2 sm:my-0">
+                    {% if article.author_image %}
+                    <img src="{{ article.author_image }}" alt="{{ article.author }}"
+                        class="w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 border-goldaccent/50 shadow-lg object-cover hover:scale-105 transition-transform">
+                    {% else %}
+                    <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-sepia/30 border-2 border-goldaccent/50 flex items-center justify-center shadow-lg hover:scale-105 transition-transform">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 sm:h-8 sm:w-8 text-goldaccent" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                        </svg>
                     </div>
-                    <div class="comment-content">
-                        {{ comment.content }}
+                    {% endif %}
+                    <div class="text-center sm:text-left">
+                        <p class="text-sm sm:text-base text-parchment font-medium">{{ article.author }}</p>
+                        <p class="text-xs text-goldaccent/80">{{ article.date_published }}</p>
                     </div>
                 </div>
-            {% endfor %}
+
+                <!-- Read Full Article Link -->
+                {% if article.external_url %}
+                <a href="{{ article.external_url }}" target="_blank" 
+                   class="hidden sm:flex items-center text-goldaccent hover:text-parchment text-sm font-medium transition-colors group">
+                    Read Full Article
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                </a>
+                {% endif %}
+            </div>
+
+            <!-- Mobile-only links -->
+            <div class="sm:hidden flex justify-center space-x-6 mt-6">
+                {% if article.linkedin_url %}
+                <a href="{{ article.linkedin_url }}" target="_blank" class="text-goldaccent hover:text-parchment text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                    </svg>
+                </a>
+                {% endif %}
+                {% if article.external_url %}
+                <a href="{{ article.external_url }}" target="_blank" class="text-goldaccent hover:text-parchment text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                </a>
+                {% endif %}
+            </div>
         </div>
-    {% else %}
-        <p class="text-muted">No comments yet. Be the first to share your thoughts!</p>
-    {% endif %}
+    </section>
+
+        <!-- Article Content -->
+        <section class="py-12 px-4">
+            <div class="max-w-4xl mx-auto">
+
+                <!-- PDF Viewer -->
+                {% if article.pdf_file %}
+                <div class="pdf-viewer-container mb-8">
+                    <iframe src="{{ article.pdf_file.url }}" width="100%" height="600px" style="border:none;"></iframe>
+                </div>
+                <div class="text-center mb-8">
+                    <a href="{{ article.pdf_file.url }}" target="_blank" class="inline-flex items-center text-goldaccent hover:text-parchment">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        Download PDF
+                    </a>
+                </div>
+                {% endif %}
+                
+                <!-- Article Body with improved structure -->
+                <article class="article-body">
+                    {% if article.slug == "the-decline-of-the-polymath" %}
+                        {% include "polymath-decline.html" %}
+                    {% else %}
+                        <div class="arabic-text" lang="ar" dir="rtl">
+                            {{ rendered_content|safe }}
+                        </div>
+                    {% endif %}
+                </article>
+                
+                <!-- Comments Section -->
+                <div id="comments" class="mt-16 pt-8 border-t border-sepia/20">
+                    <!-- SUCCESS/ERROR MESSAGES -->
+                    {% if comment_error %}
+                    <div class="alert alert-danger alert-dismissible fade show">
+                        {{ comment_error }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert">&times;</button>
+                    </div>
+                    {% endif %}
+
+                    {% if comment_success %}
+                    <div class="alert alert-success alert-dismissible fade show">
+                        ✓ Comment posted successfully!
+                        <button type="button" class="btn-close" data-bs-dismiss="alert">&times;</button>
+                    </div>
+                    {% endif %}
+
+                    <h3 class="font-dm text-2xl text-goldaccent mb-6">Comments ({{ comments|length }})</h3>
+
+                    <!-- Comment List -->
+                    {% if comments %}
+                        <div class="comment-list mb-8">
+                            {% for comment in comments %}
+                                <div class="comment">
+                                    <div class="comment-meta">
+                                        <strong>{{ comment.name }}</strong>
+                                        <small>{{ comment.created_at|date:"F j, Y, g:i a" }}</small>
+                                    </div>
+                                    <div class="comment-content">
+                                        {{ comment.content }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-sepia mb-8">No comments yet. Be the first to share your thoughts!</p>
+                    {% endif %}
+                    
+                    <!-- Comment Form -->
+                    <div class="comment-form-container">
+                        <h4 class="font-dm text-xl text-goldaccent mb-6">Leave a Comment</h4>
+                        <form method="post" class="comment-form">
+                            {% csrf_token %}
+                            <div class="mb-4">
+                                <label for="name">Your Name</label>
+                                <input type="text" id="name" name="name" required maxlength="100" 
+                                    value="{{ request.POST.name|default:'' }}">
+                            </div>
+                            <div class="mb-4">
+                                <label for="content">Your Comment</label>
+                                <textarea id="content" name="content" rows="4" required>{{ request.POST.content|default:'' }}</textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit Comment</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-black/50 py-12 text-center border-t border-sepia/10">
+            <div class="max-w-4xl mx-auto px-6">
+                <h3 href="{% url 'mstag' %}" class="font-dm text-2xl text-goldaccent mb-6 arabic">M.S.T.A.G.</h3>
+                <p class="text-parchment/70 mb-6">A digital haven for polymaths, misfits, and curious minds</p>
+                <div class="flex justify-center space-x-6 mb-8">
+                    <a href="#" class="text-parchment/50 hover:text-goldaccent transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                    </a>
+                    <a href="#" class="text-parchment/50 hover:text-goldaccent transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                    </a>
+                </div>
+                <p class="text-parchment/50 text-sm">Access granted by special permission only. All rights reserved.</p>
+            </div>
+        </footer>
+    </main>
+
+    <!-- Ambient Controls -->
+    <div class="fixed bottom-4 right-4 flex items-center space-x-4 z-50">
+        <button id="themeToggle" class="p-2 bg-deepcharcoal border border-sepia/20 rounded-full hover:bg-sepia/10 transition" title="Toggle Theme">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-goldaccent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+        </button>
+        
+        <button id="soundToggle" class="p-2 bg-deepcharcoal border border-sepia/20 rounded-full hover:bg-sepia/10 transition" title="Ambient Sound">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-goldaccent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M12 6a7.975 7.975 0 015.657 2.343m0 0a7.975 7.975 0 010 11.314m-11.314 0a7.975 7.975 0 010-11.314m0 0a7.975 7.975 0 015.657-2.343" />
+            </svg>
+        </button>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'lib/easing/easing.min.js' %}"></script>
+    <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
+    <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
     
-    <!-- Comment Form -->
-    <div class="comment-form-container">
-        <div class="comment-form">
-            <h4>Leave a Comment</h4>
-            <form method="post">
-                {% csrf_token %}
-                <div class="mb-3">
-                    <label for="name" class="form-label">Your Name</label>
-                    <input type="text" class="form-control" id="name" name="name" required maxlength="100" 
-                        value="{{ request.POST.name|default:'' }}">
-                </div>
-                <div class="mb-3">
-                    <label for="content" class="form-label">Your Comment</label>
-                    <textarea class="form-control" id="content" name="content" rows="4" required>{{ request.POST.content|default:'' }}</textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Submit Comment</button>
-            </form>
-        </div>
-    </div>
-</div>
-{% endblock %}
-
-{% block extra_js %}
-<script src="{% static 'js/article_detail.js' %}"></script>
-{% endblock %}
+    <!-- Template Javascript -->
+    <script src="{% static 'js/article_detail.js' %}"></script>
+</body>
+</html>
