@@ -316,3 +316,10 @@ body {
 html {
     scroll-behavior: smooth;
 }
+
+@media (max-width: 767px) {
+    main {
+        width: 100vw;
+        overflow-x: hidden;
+    }
+}
