@@ -286,3 +286,33 @@ body {
     50% { opacity: 0.85; }
     75% { opacity: 0.9; }
 }
+
+.scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(192, 160, 98, 0.5) transparent;
+}
+
+.scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+    margin: 8px 0;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(192, 160, 98, 0.3);
+    border-radius: 3px;
+    border: 1px solid rgba(192, 160, 98, 0.2);
+}
+
+.scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(192, 160, 98, 0.5);
+}
+
+/* Smooth scrolling behavior */
+html {
+    scroll-behavior: smooth;
+}
