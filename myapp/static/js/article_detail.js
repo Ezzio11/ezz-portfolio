@@ -19,10 +19,40 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     const supabaseClient = initializeSupabase();
 
-    // Mobile menu toggle
-    document.getElementById('mobileMenuButton')?.addEventListener('click', function() {
-        document.getElementById('sidebar')?.classList.toggle('open');
-    });
+    // Mobile menu toggle - Updated to match new sidebar implementation
+    const mobileMenuButton = document.getElementById('mobileMenuButton');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    const sidebarCloseButton = document.getElementById('sidebarCloseButton');
+
+    if (mobileMenuButton && sidebar) {
+        mobileMenuButton.addEventListener('click', function() {
+            sidebar.classList.toggle('translate-x-0');
+            if (sidebarOverlay) {
+                sidebarOverlay.classList.toggle('opacity-0');
+                sidebarOverlay.classList.toggle('pointer-events-none');
+            }
+            document.body.classList.toggle('overflow-hidden');
+        });
+    }
+
+    if (sidebarCloseButton && sidebarOverlay) {
+        sidebarCloseButton.addEventListener('click', function() {
+            sidebar.classList.remove('translate-x-0');
+            sidebarOverlay.classList.add('opacity-0');
+            sidebarOverlay.classList.add('pointer-events-none');
+            document.body.classList.remove('overflow-hidden');
+        });
+    }
+
+    if (sidebarOverlay) {
+        sidebarOverlay.addEventListener('click', function() {
+            sidebar.classList.remove('translate-x-0');
+            this.classList.add('opacity-0');
+            this.classList.add('pointer-events-none');
+            document.body.classList.remove('overflow-hidden');
+        });
+    }
 
     // Day/Night Toggle
     document.getElementById('themeToggle')?.addEventListener('click', function() {
@@ -130,7 +160,6 @@ document.addEventListener("DOMContentLoaded", async function() {
                 a.innerText = text;
                 a.className = "text-parchment/70 hover:text-goldaccent transition flex items-start";
                 
-                // Add different styling for h2 and h3
                 if (heading.tagName === "H2") {
                     a.className += " font-medium";
                     li.className += " mt-3";
@@ -148,7 +177,6 @@ document.addEventListener("DOMContentLoaded", async function() {
                     }
                 }
                 
-                // Add elegant dot before each item
                 const dot = document.createElement("span");
                 dot.className = "inline-block w-2 h-2 rounded-full bg-goldaccent mr-2 mt-2";
                 a.prepend(dot);
