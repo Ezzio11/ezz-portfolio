@@ -88,124 +88,66 @@
 </head>
 <body class="bg-deepcharcoal text-parchment font-lora overflow-x-hidden">
 
+    <!-- Overlay (hidden by default) -->
+    <div id="sidebarOverlay"
+         class="fixed inset-0 bg-black/50 z-30 opacity-0 pointer-events-none transition-opacity duration-300 md:hidden"></div>
+
     <!-- Enhanced Mobile Menu Button -->
     <button id="mobileMenuButton" 
-            class="md:hidden fixed top-6 left-6 z-50 group"
+            class="md:hidden fixed top-6 left-6 z-50 group p-2 rounded-full bg-deepcharcoal border border-goldaccent/30 hover:bg-goldaccent/10 transition-all"
             aria-label="Toggle navigation menu">
-        <div class="relative w-10 h-10 flex items-center justify-center">
-            <!-- Animated Hamburger Icon -->
-            <div class="flex flex-col items-center justify-center w-6 transform transition-all duration-300">
-                <span class="bg-goldaccent h-0.5 w-6 rounded-full transform transition-all duration-300 
-                        group-[.sidebar-open]:rotate-45 group-[.sidebar-open]:translate-y-[5px]"></span>
-                <span class="bg-goldaccent h-0.5 w-6 rounded-full my-1.5 transform transition-all duration-300 
-                        group-[.sidebar-open]:opacity-0"></span>
-                <span class="bg-goldaccent h-0.5 w-6 rounded-full transform transition-all duration-300 
-                        group-[.sidebar-open]:-rotate-45 group-[.sidebar-open]:-translate-y-[5px]"></span>
-            </div>
-            <!-- Circular Background -->
-            <div class="absolute inset-0 rounded-full bg-deepcharcoal border border-goldaccent/30 
-                    group-hover:bg-goldaccent/10 transition-all duration-300"></div>
+        <div class="relative w-6 h-6">
+            <span class="absolute block w-6 h-0.5 bg-goldaccent top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform transition-all duration-300 group-[.sidebar-open]:rotate-45 group-[.sidebar-open]:translate-y-0"></span>
+            <span class="absolute block w-6 h-0.5 bg-goldaccent top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform transition-all duration-300 group-[.sidebar-open]:opacity-0"></span>
+            <span class="absolute block w-6 h-0.5 bg-goldaccent top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform transition-all duration-300 group-[.sidebar-open]:-rotate-45 group-[.sidebar-open]:translate-y-0"></span>
         </div>
     </button>
 
-    <!-- Navigation Sidebar with Elegant Scroll -->
-    <nav id="sidebar" 
-        class="sidebar fixed right-0 top-0 h-full w-72 md:w-80 bg-deepcharcoal/95 backdrop-blur-md p-6 
-                overflow-y-auto z-40 sidebar-transition arabic border-l-2 border-goldaccent/30
-                shadow-[0_0_30px_rgba(192,160,98,0.1)] scrollbar">
-        
-        <!-- Custom Scrollbar Styles (add to your CSS) -->
-        <style>
-            .scrollbar {
-                scrollbar-width: thin;
-                scrollbar-color: rgba(192, 160, 98, 0.5) transparent;
-            }
-            
-            .scrollbar::-webkit-scrollbar {
-                width: 6px;
-                height: 6px;
-            }
-            
-            .scrollbar::-webkit-scrollbar-track {
-                background: transparent;
-                margin: 8px 0;
-            }
-            
-            .scrollbar::-webkit-scrollbar-thumb {
-                background-color: rgba(192, 160, 98, 0.3);
-                border-radius: 3px;
-                border: 1px solid rgba(192, 160, 98, 0.2);
-            }
-            
-            .scrollbar::-webkit-scrollbar-thumb:hover {
-                background-color: rgba(192, 160, 98, 0.5);
-            }
-            
-            /* Smooth scrolling behavior */
-            html {
-                scroll-behavior: smooth;
-            }
-        </style>
+    <!-- Navigation Sidebar -->
+    <nav id="sidebar"
+         class="fixed right-0 top-0 h-full w-[85vw] max-w-xs bg-deepcharcoal/95 backdrop-blur-md p-6 overflow-y-auto z-40 border-l-2 border-goldaccent/30 transform transition-transform duration-300 ease-in-out translate-x-full md:translate-x-0 shadow-[0_0_30px_rgba(192,160,98,0.1)] scrollbar">
 
         <!-- Close Button -->
-        <button id="sidebarCloseButton" 
-                class="md:hidden absolute top-4 left-4 p-2 text-goldaccent hover:text-parchment transition
-                    transform hover:scale-110">
+        <button id="sidebarCloseButton"
+                class="md:hidden absolute top-6 right-6 p-2 text-goldaccent hover:text-parchment transition transform hover:scale-110">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
             </svg>
         </button>
 
         <div class="sticky top-0">
-            <!-- Logo/Brand -->
-            <a href="{% url 'mstag' %}" 
-            class="block font-dm text-goldaccent text-xl mb-8 pb-3 border-b border-sepia/20 
-                    hover:text-parchment transition-all duration-300 group">
-                <span class="inline-block group-hover:translate-x-1 transition-transform">M.S.T.A.G</span>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block ml-2 opacity-0 group-hover:opacity-100 transition-opacity" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-                </svg>
+            <!-- Logo/Branding -->
+            <a href="{% url 'mstag' %}" class="block font-dm text-goldaccent text-xl mb-8 pb-3 border-b border-sepia/20 hover:text-parchment transition">
+                M.S.T.A.G
             </a>
             
             <!-- Table of Contents -->
             <div class="mb-8">
                 <div class="flex items-center justify-between mb-4">
-                    <h4 class="text-xl font-dm text-goldaccent">
-                        المحتويات
-                    </h4>
-                    <button id="toc-toggle" class="text-goldaccent/70 hover:text-goldaccent transition transform hover:scale-125">
+                    <h4 class="text-xl font-dm text-goldaccent" dir="rtl">المحتويات</h4>
+                    <button id="toc-toggle" class="text-goldaccent/70 hover:text-goldaccent transition">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
                         </svg>
                     </button>
                 </div>
-                <ul id="toc-list" class="space-y-3 text-parchment/80 transition-all duration-300 max-h-[50vh] overflow-y-auto pr-2 scrollbar">
-                    <!-- TOC items will be populated by JavaScript -->
+                <ul id="toc-list" class="space-y-3 text-parchment/80 max-h-[50vh] overflow-y-auto pr-2 scrollbar" dir="rtl">
+                    <!-- Dynamically populated by JS -->
                 </ul>
             </div>
             
             <!-- Recommended Readings -->
-            <div class="mt-auto pt-6 border-t border-sepia/20">
-                <h4 class="text-xl font-dm text-goldaccent mb-4">
-                    قراءات أخرى
-                </h4>
-                <ul class="space-y-3 max-h-[30vh] overflow-y-auto pr-2 scrollbar" id="other-readings">
-                    <li class="text-parchment/70 flex items-center gap-2 py-1">
+            <div class="pt-6 border-t border-sepia/20">
+                <h4 class="text-xl font-dm text-goldaccent mb-4" dir="rtl">قراءات أخرى</h4>
+                <ul class="space-y-3 max-h-[30vh] overflow-y-auto pr-2 scrollbar" id="other-readings" dir="rtl">
+                    <li class="text-parchment/70 py-1 flex items-center gap-2">
                         <svg class="animate-spin h-4 w-4 text-goldaccent" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" opacity="0.25"></circle>
+                            <path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" opacity="0.75"></path>
                         </svg>
-                        Loading recommendations...
+                        جاري التحميل...
                     </li>
                 </ul>
-            </div>
-
-            <!-- Footer -->
-            <div class="mt-12 pt-6 border-t border-sepia/20 text-center">
-                <div class="flex justify-center space-x-4 mb-4">
-                    <!-- Social icons -->
-                </div>
-                <p class="text-xs text-goldaccent/50">© {% now "Y" %} M.S.T.A.G</p>
             </div>
         </div>
     </nav>
