@@ -13,6 +13,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 
+    <!-- Translation Dependencies -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icons/6.6.6/css/flag-icons.min.css" />
+    
     <!-- SEO Meta Tags -->
     <meta name="title" content="MSTAG | Forbidden Knowledge & Lost Sciences">
     <meta name="description" content="Recovered works, lost sciences, and dangerous ideas from brilliant minds — once hidden, now revealed.">
@@ -191,23 +194,79 @@
             border-radius: 50%;
             cursor: pointer;
         }
+
+        /* Language switcher styles */
+        .language-dropdown {
+            transition: all 0.3s ease;
+        }
+        
+        .language-dropdown:hover .language-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .language-menu {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+        
+        .language-option:hover {
+            background: rgba(213, 160, 33, 0.1);
+        }
+        
+        .fi {
+            border-radius: 1px;
+            box-shadow: 0 0 1px rgba(0,0,0,0.5);
+        }
     </style>
 </head>
 <body class="bg-archivebg text-parchment font-lora overflow-x-hidden">
 
-    <!-- Minimal Navigation Bar -->
+    <!-- Minimal Navigation Bar with Language Switcher -->
     <nav class="fixed top-0 left-0 right-0 z-50 bg-leather/90 backdrop-blur-sm border-b border-oldgold/20">
         <div class="container mx-auto px-6 py-3 flex justify-between items-center">
             <a href="{% url 'home' %}" class="font-garamond text-xl text-oldgold hover:text-parchment transition-colors">
                 &larr; Return to Main Site
             </a>
-            <div class="flex space-x-4">
-                <a href="{% url 'about' %}" class="font-lora text-sm text-parchment/80 hover:text-oldgold transition-colors">About Ezz (The Curator)</a>
-                <a href="{% url 'projects' %}" class="font-lora text-sm text-parchment/80 hover:text-oldgold transition-colors">Projects</a>
+            <div class="flex items-center space-x-6">
+                <!-- Language Switcher -->
+                <div class="language-dropdown relative">
+                    <button class="flex items-center font-lora text-sm text-parchment/80 hover:text-oldgold transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+                        </svg>
+                        <span id="currentLanguage">English</span>
+                    </button>
+                    <div class="language-menu absolute right-0 mt-2 w-40 bg-leather border border-oldgold/20 rounded-md shadow-lg py-1 z-50">
+                        <a href="#" data-lang="en" class="language-option block px-4 py-2 text-sm text-parchment hover:bg-oldgold/10 flex items-center">
+                            <span class="fi fi-us mr-2"></span> English
+                        </a>
+                        <a href="#" data-lang="es" class="language-option block px-4 py-2 text-sm text-parchment hover:bg-oldgold/10 flex items-center">
+                            <span class="fi fi-es mr-2"></span> Español
+                        </a>
+                        <a href="#" data-lang="fr" class="language-option block px-4 py-2 text-sm text-parchment hover:bg-oldgold/10 flex items-center">
+                            <span class="fi fi-fr mr-2"></span> Français
+                        </a>
+                        <a href="#" data-lang="de" class="language-option block px-4 py-2 text-sm text-parchment hover:bg-oldgold/10 flex items-center">
+                            <span class="fi fi-de mr-2"></span> Deutsch
+                        </a>
+                        <a href="#" data-lang="it" class="language-option block px-4 py-2 text-sm text-parchment hover:bg-oldgold/10 flex items-center">
+                            <span class="fi fi-it mr-2"></span> Italiano
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Other navigation links -->
+                <a href="{% url 'about' %}" class="font-lora text-sm text-parchment/80 hover:text-oldgold transition-colors hidden sm:block">About Ezz (The Curator)</a>
+                <a href="{% url 'projects' %}" class="font-lora text-sm text-parchment/80 hover:text-oldgold transition-colors hidden sm:block">Projects</a>
             </div>
         </div>
     </nav>
 
+    <!-- Rest of your HTML remains the same -->
     <!-- Ambient Sound Toggle -->
     <div class="library-sounds flex items-center gap-3 bg-black/50 rounded-full px-4 py-2 border border-oldgold/30">
         <button id="soundToggle" class="p-2 hover:bg-oldgold/10 rounded-full transition">
@@ -499,6 +558,106 @@
                     soundToggle.click();
                 }
             });
+
+            // Translation System
+            const translationCache = JSON.parse(localStorage.getItem('translationCache') || {};
+            const currentLanguageElement = document.getElementById('currentLanguage');
+            
+            // Language names for display
+            const languageNames = {
+                en: 'English',
+                es: 'Español',
+                fr: 'Français',
+                de: 'Deutsch',
+                it: 'Italiano'
+            };
+
+            // Set up language switcher
+            document.querySelectorAll('[data-lang]').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    const lang = e.currentTarget.getAttribute('data-lang');
+                    await translatePage(lang);
+                    currentLanguageElement.textContent = languageNames[lang];
+                    localStorage.setItem('preferredLanguage', lang);
+                });
+            });
+
+            // Initialize with preferred language or English
+            const preferredLanguage = localStorage.getItem('preferredLanguage') || 'en';
+            if (preferredLanguage !== 'en') {
+                translatePage(preferredLanguage);
+                currentLanguageElement.textContent = languageNames[preferredLanguage];
+            }
+
+            // Translation function using LibreTranslate
+            async function translatePage(targetLang) {
+                if (targetLang === 'en') {
+                    // Reset to original English
+                    document.querySelectorAll('[data-original-text]').forEach(el => {
+                        if (el.dataset.originalText) {
+                            el.textContent = el.dataset.originalText;
+                        }
+                    });
+                    return;
+                }
+
+                // Get all text elements that need translation
+                const elementsToTranslate = document.querySelectorAll(
+                    'h1, h2, h3, h4, h5, h6, p, span, a, button, li, figcaption, blockquote'
+                );
+
+                for (const element of elementsToTranslate) {
+                    // Skip elements with no text or in navigation/footer
+                    if (!element.textContent.trim() || 
+                        element.closest('nav') || 
+                        element.closest('footer') ||
+                        element.hasAttribute('data-no-translate')) {
+                        continue;
+                    }
+
+                    // Store original text if not already stored
+                    if (!element.dataset.originalText) {
+                        element.dataset.originalText = element.textContent;
+                    }
+
+                    const originalText = element.dataset.originalText.trim();
+                    if (!originalText) continue;
+
+                    // Check cache first
+                    const cacheKey = `${originalText}_${targetLang}`;
+                    if (translationCache[cacheKey]) {
+                        element.textContent = translationCache[cacheKey];
+                        continue;
+                    }
+
+                    try {
+                        // Use LibreTranslate API (free)
+                        const response = await fetch('https://libretranslate.de/translate', {
+                            method: 'POST',
+                            body: JSON.stringify({
+                                q: originalText,
+                                source: 'en',
+                                target: targetLang,
+                                format: 'text'
+                            }),
+                            headers: { 'Content-Type': 'application/json' }
+                        });
+
+                        const data = await response.json();
+                        if (data.translatedText) {
+                            translationCache[cacheKey] = data.translatedText;
+                            localStorage.setItem('translationCache', JSON.stringify(translationCache));
+                            element.textContent = data.translatedText;
+                        }
+                    } catch (error) {
+                        console.error('Translation error:', error);
+                    }
+
+                    // Add delay to avoid rate limiting
+                    await new Promise(resolve => setTimeout(resolve, 200));
+                }
+            }
         });
     </script>
 </body>
