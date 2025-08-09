@@ -191,6 +191,99 @@
             border-radius: 50%;
             cursor: pointer;
         }
+
+        /* Google Translate Widget Styling */
+        #google_translate_element {
+            min-width: 140px;
+            z-index: 9999;
+        }
+        
+        .goog-te-combo {
+            background-color: #2a241e !important; /* leather */
+            color: #f5f0e6 !important; /* parchment */
+            border: 1px solid #d5a021 !important; /* oldgold */
+            padding: 0.25rem 0.5rem !important;
+            border-radius: 0.25rem !important;
+            font-family: 'Lora', serif !important;
+            font-size: 0.875rem !important; /* text-sm */
+            outline: none !important;
+            transition: all 0.3s ease !important;
+            cursor: pointer !important;
+            box-shadow: none !important;
+            height: auto !important;
+            line-height: 1.5 !important;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            position: relative;
+            padding-right: 1.5rem !important;
+        }
+        
+        .goog-te-combo:hover,
+        .goog-te-combo:focus {
+            background-color: #76323F !important; /* oxblood */
+            color: #f5f0e6 !important;
+            border-color: #d5a021 !important;
+        }
+        
+        /* Dropdown arrow */
+        .goog-te-combo:after {
+            content: "▼";
+            color: #d5a021;
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            font-size: 0.6rem;
+        }
+        
+        /* Hide Google branding */
+        .goog-logo-link,
+        .goog-te-gadget-icon {
+            display: none !important;
+        }
+        
+        .goog-te-gadget {
+            color: transparent !important;
+            font-size: 0 !important;
+        }
+        
+        /* Dropdown menu styling */
+        .goog-te-menu2 {
+            background-color: #2a241e !important;
+            border: 1px solid #d5a021 !important;
+            border-radius: 0.25rem !important;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+            max-height: 300px !important;
+            overflow-y: auto !important;
+        }
+        
+        .goog-te-menu2-item {
+            color: #f5f0e6 !important;
+            padding: 0.5rem 1rem !important;
+            font-family: 'Lora', serif !important;
+        }
+        
+        .goog-te-menu2-item:hover {
+            background-color: #76323F !important;
+        }
+        
+        .goog-te-menu2-item div,
+        .goog-te-menu2-item:link {
+            color: inherit !important;
+            text-decoration: none !important;
+        }
+        
+        /* Hide the language detection banner */
+        .goog-te-banner-frame {
+            display: none !important;
+        }
+        
+        /* Fix for layout shift */
+        body {
+            top: 0 !important;
+        }
     </style>
 </head>
 <body class="bg-archivebg text-parchment font-lora overflow-x-hidden">
@@ -201,9 +294,12 @@
             <a href="{% url 'home' %}" class="font-garamond text-xl text-oldgold hover:text-parchment transition-colors">
                 &larr; Return to Main Site
             </a>
-            <div class="flex space-x-4">
-                <a href="{% url 'about' %}" class="font-lora text-sm text-parchment/80 hover:text-oldgold transition-colors">About Ezz (The Curator)</a>
-                <a href="{% url 'projects' %}" class="font-lora text-sm text-parchment/80 hover:text-oldgold transition-colors">Projects</a>
+            <div class="flex items-center space-x-6">
+                <div class="flex space-x-4">
+                    <a href="{% url 'about' %}" class="font-lora text-sm text-parchment/80 hover:text-oldgold transition-colors">About Ezz (The Curator)</a>
+                    <a href="{% url 'projects' %}" class="font-lora text-sm text-parchment/80 hover:text-oldgold transition-colors">Projects</a>
+                </div>
+                <div id="google_translate_element" class="text-sm text-parchment/90"></div>
             </div>
         </div>
     </nav>
@@ -500,6 +596,52 @@
                 }
             });
         });
+
+        // Google Translate Widget Initialization
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,es,fr,de,it,pt,ru,zh-CN,ja,ar',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                gaTrack: false,
+                gaId: '',
+                multilanguagePage: true
+            }, 'google_translate_element');
+            
+            // Additional styling after load
+            setTimeout(function() {
+                var iframe = document.querySelector('.goog-te-menu-frame');
+                if (iframe) {
+                    iframe.style.backgroundColor = 'transparent';
+                    iframe.style.border = 'none';
+                    iframe.style.boxShadow = 'none';
+                }
+                
+                // Add custom dropdown arrow
+                var select = document.querySelector('.goog-te-combo');
+                if (select) {
+                    select.style.paddingRight = '1.5rem';
+                    select.style.position = 'relative';
+                    select.style.appearance = 'none';
+                    select.style.webkitAppearance = 'none';
+                    select.style.mozAppearance = 'none';
+                    
+                    var arrow = document.createElement('span');
+                    arrow.innerHTML = '▼';
+                    arrow.style.position = 'absolute';
+                    arrow.style.right = '8px';
+                    arrow.style.top = '50%';
+                    arrow.style.transform = 'translateY(-50%)';
+                    arrow.style.color = '#D5A021';
+                    arrow.style.fontSize = '0.6rem';
+                    arrow.style.pointerEvents = 'none';
+                    
+                    select.parentNode.insertBefore(arrow, select.nextSibling);
+                }
+            }, 1000);
+        }
     </script>
+    
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
