@@ -174,7 +174,7 @@
             left: 20px;
             z-index: 50;
         }
-    
+
         /* Volume slider styling */
         input[type="range"] {
             -webkit-appearance: none;
@@ -191,63 +191,21 @@
             border-radius: 50%;
             cursor: pointer;
         }
-    
-        /* Style Google Translate widget dropdown */
-        #google_translate_element select {
-            background-color: #2a241e; /* leather */
-            color: #f5f0e6; /* parchment */
-            border: 1px solid #d5a021; /* oldgold */
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.25rem;
-            font-family: 'Lora', serif;
-            font-size: 0.875rem; /* text-sm */
-            outline: none;
-            transition: background-color 0.3s ease, color 0.3s ease;
-            appearance: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            cursor: pointer;
-            min-width: 6rem;
-        }
-        
-        /* Hover and focus states */
-        #google_translate_element select:hover,
-        #google_translate_element select:focus {
-            background-color: #76323F; /* oxblood */
-            color: #f5f0e6; /* parchment */
-            border-color: #d5a021; /* oldgold */
-        }
-        
-        /* Remove Google Translate branding */
-        .goog-te-gadget-icon {
-            display: none !important;
-        }
-        
-        .goog-te-banner-frame.skiptranslate {
-            display: none !important;
-        }
-        
-        body {
-            top: 0 !important; /* Fix layout shift when Google Translate injects styles */
-        }
     </style>
 </head>
 <body class="bg-archivebg text-parchment font-lora overflow-x-hidden">
 
     <!-- Minimal Navigation Bar -->
     <nav class="fixed top-0 left-0 right-0 z-50 bg-leather/90 backdrop-blur-sm border-b border-oldgold/20">
-      <div class="container mx-auto px-6 py-3 flex justify-between items-center">
-        <a href="{% url 'home' %}" class="font-garamond text-xl text-oldgold hover:text-parchment transition-colors">
-          &larr; Return to Main Site
-        </a>
-        <div class="flex items-center space-x-6">
-          <div class="flex space-x-4">
-            <a href="{% url 'about' %}" class="font-lora text-sm text-parchment/80 hover:text-oldgold transition-colors">About Ezz (The Curator)</a>
-            <a href="{% url 'projects' %}" class="font-lora text-sm text-parchment/80 hover:text-oldgold transition-colors">Projects</a>
-          </div>
-          <div id="google_translate_element" class="text-sm text-parchment/90"></div>
+        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <a href="{% url 'home' %}" class="font-garamond text-xl text-oldgold hover:text-parchment transition-colors">
+                &larr; Return to Main Site
+            </a>
+            <div class="flex space-x-4">
+                <a href="{% url 'about' %}" class="font-lora text-sm text-parchment/80 hover:text-oldgold transition-colors">About Ezz (The Curator)</a>
+                <a href="{% url 'projects' %}" class="font-lora text-sm text-parchment/80 hover:text-oldgold transition-colors">Projects</a>
+            </div>
         </div>
-      </div>
     </nav>
 
     <!-- Ambient Sound Toggle -->
@@ -543,17 +501,5 @@
             });
         });
     </script>
-    
-    <script type="text/javascript">
-      function googleTranslateElementInit() {
-        new google.translate.TranslateElement({
-          pageLanguage: 'ar', 
-          includedLanguages: 'en,ar',
-          layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-        }, 'google_translate_element');
-      }
-    </script>
-    
-    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
