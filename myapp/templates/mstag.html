@@ -12,7 +12,27 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+    <!-- SEO Meta Tags -->
+    <meta name="title" content="MSTAG | Forbidden Knowledge & Lost Sciences">
+    <meta name="description" content="Recovered works, lost sciences, and dangerous ideas from brilliant minds — once hidden, now revealed.">
+    <meta name="keywords" content="forbidden knowledge, lost sciences, recovered works, brilliant minds, rare documents, dangerous ideas">
+    <meta name="author" content="MSTAG">
     
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://ezzio.vercel.app/mstag/">
+    <meta property="og:title" content="MSTag | Forbidden Knowledge & Lost Sciences">
+    <meta property="og:description" content="Recovered works, lost sciences, and dangerous ideas from brilliant minds — once hidden, now revealed.">
+    <meta property="og:image" content="https://ezzio.vercel.app/static/img/mstag-preview.png">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://ezzio.vercel.app/mstag/">
+    <meta name="twitter:title" content="MSTAG | Forbidden Knowledge & Lost Sciences">
+    <meta name="twitter:description" content="Recovered works, lost sciences, and dangerous ideas from brilliant minds — once hidden, now revealed.">
+    <meta name="twitter:image" content="https://ezzio.vercel.app/static/img/mstag-preview.png">
+
     <!-- Vercel Analytics -->
     <script defer src="/_vercel/insights/script.js"></script>
     <script defer src="/_vercel/speed-insights/script.js"></script>
@@ -375,7 +395,7 @@
                 container.appendChild(particle);
             }
         }
-
+    
         // Track mouse position for card hover glow
         document.addEventListener('DOMContentLoaded', function() {
             createDustParticles();
@@ -411,8 +431,8 @@
                 card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
                 observer.observe(card);
             });
-
-            //  Audio Player Setup
+    
+            // Audio Player Setup
             const soundToggle = document.getElementById('soundToggle');
             const volumeControl = document.getElementById('volumeControl');
             const playIcon = document.getElementById('playIcon');
@@ -428,6 +448,28 @@
                 console.error("Audio error:", e);
                 alert("Failed to load audio. Please check console for details.");
             });
+            
+            // Set initial icon to "unmuted" state (sound on)
+            playIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clip-rule="evenodd" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14a2 2 0 100-4 2 2 0 000 4z" />`;
+            
+            // Try to play audio immediately
+            const playAudio = async () => {
+                try {
+                    await audio.play();
+                    console.log("Audio playing automatically");
+                } catch (err) {
+                    console.log("Auto-play was prevented:", err);
+                    // Show some UI indication that user needs to interact to play sound
+                }
+            };
+            
+            // Some browsers require a user interaction first
+            document.addEventListener('click', () => {
+                playAudio();
+            }, { once: true });
+            
+            // Try immediately (might work in some browsers)
+            playAudio();
             
             // Play/Pause Toggle
             soundToggle.addEventListener('click', async () => {
@@ -457,20 +499,6 @@
                     soundToggle.click();
                 }
             });
-            
-            // Handle autoplay policies
-            document.addEventListener('click', initializeAudio, { once: true });
-            
-            function initializeAudio() {
-                // Try to unlock audio context
-                audio.play().then(() => {
-                    audio.pause();
-                    audio.currentTime = 0;
-                    console.log("Audio context unlocked");
-                }).catch(e => {
-                    console.log("Initial unlock attempt failed (normal for some browsers):", e);
-                });
-            }
         });
     </script>
 </body>
