@@ -288,22 +288,32 @@
 </head>
 <body class="bg-archivebg text-parchment font-lora overflow-x-hidden">
 
-    <!-- Minimal Navigation Bar -->
+    <!-- Navigation Bar -->
     <nav class="fixed top-0 left-0 right-0 z-50 bg-leather/90 backdrop-blur-sm border-b border-oldgold/20">
         <div class="container mx-auto px-6 py-3 flex justify-between items-center">
-            <a href="{% url 'home' %}" class="font-garamond text-xl text-oldgold hover:text-parchment transition-colors">
+            <!-- Left-aligned return link -->
+            <a href="{% url 'home' %}" class="font-garamond text-xl text-oldgold hover:text-parchment transition-colors flex-shrink-0">
                 &larr; Return to Main Site
             </a>
+            
+            <!-- Right-aligned items with proper spacing -->
             <div class="flex items-center space-x-6">
-                <div class="flex space-x-4">
-                    <a href="{% url 'about' %}" class="font-lora text-sm text-parchment/80 hover:text-oldgold transition-colors">About Ezz (The Curator)</a>
-                    <a href="{% url 'projects' %}" class="font-lora text-sm text-parchment/80 hover:text-oldgold transition-colors">Projects</a>
+                <!-- Navigation links -->
+                <div class="hidden md:flex space-x-6">
+                    <a href="{% url 'about' %}" class="font-lora text-sm text-parchment/80 hover:text-oldgold transition-colors whitespace-nowrap">
+                        About Ezz (The Curator)
+                    </a>
+                    <a href="{% url 'projects' %}" class="font-lora text-sm text-parchment/80 hover:text-oldgold transition-colors whitespace-nowrap">
+                        Projects
+                    </a>
                 </div>
+                
+                <!-- Google Translate Widget -->
                 <div id="google_translate_element" class="text-sm text-parchment/90"></div>
             </div>
         </div>
     </nav>
-
+    
     <!-- Ambient Sound Toggle -->
     <div class="library-sounds flex items-center gap-3 bg-black/50 rounded-full px-4 py-2 border border-oldgold/30">
         <button id="soundToggle" class="p-2 hover:bg-oldgold/10 rounded-full transition">
