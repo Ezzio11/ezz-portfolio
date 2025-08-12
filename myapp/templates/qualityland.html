@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -552,7 +554,7 @@
               <a class="nav-link" href="#characters">CHARS</a>
             </li>
             <li class="nav-item">
-              <a href="{% url 'mstag' %}">← Back to MSTAG</a>
+              <a class="nav-link" href="{% url 'mstag' %}">← Back to MSTAG</a>
             </li>
           </ul>
         </div>
@@ -600,7 +602,7 @@
       <p class="content-text arabic-content" style="display:none">تقع أحداث الرواية في مستقبل ديستوبي حيث تتحكم الخوارزميات في كل جانب من جوانب الحياة - من المسارات المهنية إلى الشركاء العاطفيين. تقدم الرواية عالمًا يبدو سخيفًا وغير مريح في نفس الوقت. تحت سطحها الفكاهي يكمن نقد عميق للهياكل السياسية وثقافة الاستهلاك وتآكل الإرادة الشخصية في العصر الرقمي.</p>
 
       <figure class="my-5">
-        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Futuristic cityscape" class="img-fluid rounded shadow-lg" loading="lazy">
+        <img src="{% static 'img/qualityland.jpg' %}" alt="Futuristic cityscape" class="img-fluid rounded shadow-lg" loading="lazy">
         <figcaption class="mt-3 text-muted text-center english-content">The world of QualityLand feels increasingly familiar</figcaption>
         <figcaption class="mt-3 text-muted text-center arabic-content" style="display:none">عالم بلاد الكواليتي يبدو مألوفًا بشكل متزايد</figcaption>
       </figure>
@@ -742,7 +744,7 @@
           <!-- Peter Jobless -->
           <div class="character-card">
             <div class="character-image">
-              <img src="https://drive.google.com/uc?export=view&id=11t0i2yOYr0_WVLLAlKPeoO057hZkqMwk" alt="Peter Jobless" class="img-fluid rounded shadow" loading="lazy">
+              <img src="{% static 'img/peter_jobless.png' %}"alt="Peter Jobless" class="img-fluid rounded shadow" loading="lazy">
             </div>
             <div class="character-info english-content">
               <h3>Peter Jobless</h3>
@@ -757,7 +759,7 @@
           <!-- Kiki Unknown -->
           <div class="character-card">
             <div class="character-image">
-              <img src="https://drive.google.com/uc?export=view&id=12b6U6JmEe5KLyAOgMz7pdnFIAtrxtGyS" alt="Kiki Unknown" class="img-fluid rounded shadow" loading="lazy">
+              <img src="{% static 'img/kiki.png' %}" alt="Kiki Unknown" class="img-fluid rounded shadow" loading="lazy">
             </div>
             <div class="character-info english-content">
               <h3>Kiki Unknown</h3>
@@ -772,7 +774,7 @@
           <!-- John of Us -->
           <div class="character-card">
             <div class="character-image">
-              <img src="https://drive.google.com/uc?export=view&id=12dSeVLux27n3K26DPkV0QqDlv6gvhvzw" alt="John of Us" class="img-fluid rounded shadow" loading="lazy">
+              <img src="{% static 'img/john.jpg' %}" alt="John of Us" class="img-fluid rounded shadow" loading="lazy">
             </div>
             <div class="character-info english-content">
               <h3>John of Us</h3>
@@ -787,7 +789,7 @@
           <!-- Calliope 7.3 -->
           <div class="character-card">
             <div class="character-image">
-              <img src="https://drive.google.com/uc?export=view&id=12eoGM0DKGKpzpMErEB4jKTohTstFFfAr" alt="Calliope 7.3" class="img-fluid rounded shadow" loading="lazy">
+              <img src="{% static 'img/calliope.jpg' %}" alt="Calliope 7.3" class="img-fluid rounded shadow" loading="lazy">
             </div>
             <div class="character-info english-content">
               <h3>Calliope 7.3</h3>
@@ -802,7 +804,7 @@
           <!-- Conrad Cook -->
           <div class="character-card">
             <div class="character-image">
-              <img src="https://drive.google.com/uc?export=view&id=12zezhA-mVmunrCIyxgu4TOKzEG6w3Tnp" alt="Conrad Cook" class="img-fluid rounded shadow" loading="lazy">
+              <img src="{% static 'img/conradcook.jpg' %}" alt="Conrad Cook" class="img-fluid rounded shadow" loading="lazy">
             </div>
             <div class="character-info english-content">
               <h3>Conrad Cook</h3>
@@ -817,7 +819,7 @@
           <!-- TheShop -->
           <div class="character-card">
             <div class="character-image">
-              <img src="https://drive.google.com/uc?export=view&id=12pIfT034LIMHogugi_yV630cM1kjfEOd" alt="TheShop" class="img-fluid rounded shadow" loading="lazy">
+              <img src="{% static 'img/shop.jpg' %}" alt="TheShop" class="img-fluid rounded shadow" loading="lazy">
             </div>
             <div class="character-info english-content">
               <h3>TheShop</h3>
@@ -832,7 +834,7 @@
           <!-- The Old Man -->
           <div class="character-card">
             <div class="character-image">
-              <img src="https://drive.google.com/uc?export=view&id=12gqUm0bwlpkiTRDuYJSKF2D3msCLdgee" alt="The Old Man" class="img-fluid rounded shadow" loading="lazy">
+              <img src="{% static 'img/oldman.jpg' %}" alt="The Old Man" class="img-fluid rounded shadow" loading="lazy">
             </div>
             <div class="character-info english-content">
               <h3>The Old Man</h3>
@@ -1108,3 +1110,4 @@
 
 
 </html>
+
