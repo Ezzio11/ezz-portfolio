@@ -1,0 +1,2195 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="The Decline of The Polymath" />
+    <meta property="og:description" content="An exploration of how polymaths like Leonardo and Ibn Sina became rare in our hyper-specialized age." />
+    <meta property="og:image" content="https://ezzio.vercel.app/static/img/polymath-preview.png" />
+    <meta property="og:type" content="website" />
+    <meta property="twitter:card" content="summary_large_image" />
+
+    <title>The Decline of The Polymath | A Visual Inquiry</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.1.0/dist/chartjs-plugin-annotation.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts/map/js/world.js"></script>
+    
+    <!-- Vercel Analytics -->
+    <script defer src="/_vercel/insights/script.js"></script>
+    
+    <!-- Vercel Speed Insights -->
+    <script defer src="/_vercel/speed-insights/script.js"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'garamond': ['EB Garamond', 'serif'],
+                        'lora': ['Lora', 'serif'],
+                        'montserrat': ['Montserrat', 'sans-serif'],
+                    },
+                    colors: {
+                        parchment: '#f5f0e6',
+                        oxblood: '#76323F',
+                        oldgold: '#D5A021',
+                        deepbrown: '#3A2D23',
+                        inkwell: '#1A1818',
+                        sage: '#8A9B68',
+                        slate: '#4A5C6A',
+                    },
+                    backgroundImage: {
+                        'parchment-texture': "url('https://www.transparenttextures.com/patterns/rice-paper.png')",
+                        'paper-curl': "url('https://www.transparenttextures.com/patterns/paper-curl.png')",
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'fadeIn': 'fadeIn 1.5s ease-in forwards',
+                        'fadeInUp': 'fadeInUp 1s ease-out forwards',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        glow: {
+                            '0%': { boxShadow: '0 0 5px rgba(213, 160, 33, 0.2)' },
+                            '100%': { boxShadow: '0 0 15px rgba(213, 160, 33, 0.5)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23D5A021" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/><path fill="%23D5A021" d="M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4 4-1.79 4-4 4z"/></svg>'), auto;
+        }
+
+        .section-divider {
+            height: 120px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M1200 120L0 16.48 0 0 1200 0 1200 120z" fill="%23f5f0e6"></path></svg>');
+            background-size: cover;
+            background-position: center;
+            transform: rotate(180deg);
+        }
+
+        .polymath-card {
+            transition: all 0.5s ease;
+            opacity: 0;
+        }
+
+        .polymath-card.visible {
+            opacity: 1;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .polymath-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(118, 50, 63, 0.3);
+        }
+
+        .fade-in {
+            opacity: 0;
+            transition: opacity 1.5s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+        }
+
+        .timeline-item {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s ease;
+        }
+
+        .timeline-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .country-bar-fill {
+            width: 0;
+            transition: width 1.5s ease 0.3s;
+        }
+
+        .progress-step {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+
+        .progress-step.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .blockquote-plaque {
+            background: rgba(245, 240, 230, 0.9);
+            border: 1px solid #D5A021;
+            border-radius: 8px;
+            padding: 1.5rem;
+            font-style: italic;
+            position: relative;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .blockquote-plaque:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(213, 160, 33, 0.3);
+        }
+
+        .blockquote-plaque::before {
+            content: '“';
+            position: absolute;
+            top: -1.5rem;
+            left: 1rem;
+            font-size: 3rem;
+            color: #D5A021;
+            font-family: 'EB Garamond', serif;
+        }
+
+        .blockquote-plaque::after {
+            content: '”';
+            position: absolute;
+            bottom: -1.5rem;
+            right: 1rem;
+            font-size: 3rem;
+            color: #D5A021;
+            font-family: 'EB Garamond', serif;
+        }
+
+        @media (max-width: 768px) {
+            .blockquote-plaque {
+                padding: 1rem;
+            }
+
+            .blockquote-plaque::before, .blockquote-plaque::after {
+                font-size: 2rem;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f5f0e6;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #D5A021;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #76323F;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 500px;
+            width: 100%;
+            border: 1px solid #D5A021;
+            border-radius: 8px;
+            background: rgba(245, 240, 230, 0.95);
+        }
+
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+
+        .etymology-note {
+            background: rgba(245, 240, 230, 0.9);
+            border-left: 4px solid #8A9B68;
+            padding: 1rem;
+            font-style: italic;
+            position: relative;
+            margin: 1.5rem 0;
+            border-radius: 4px;
+        }
+
+        .epilogue {
+            animation: fadeInUp 1.5s ease-out forwards;
+        }
+
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .snap-start {
+            scroll-snap-align: start;
+        }
+
+        body.rtl {
+            font-family: "Amiri", serif;
+            direction: rtl;
+        }
+        body.rtl nav div {
+            flex-direction: row-reverse;
+        }
+        body.rtl .blockquote-plaque::before {
+            right: 1rem;
+            left: auto;
+        }
+        body.rtl .blockquote-plaque::after {
+            left: 1rem;
+            right: auto;
+        }
+        
+        .lightbox-nav {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          background: rgba(0,0,0,0.5);
+          color: white;
+          border: none;
+          border-radius: 50%;
+          width: 48px;
+          height: 48px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          z-index: 10;
+          opacity: 0.7;
+          transition: opacity 0.3s;
+        }
+        
+        .lightbox-nav:hover {
+          opacity: 1;
+          background: rgba(0,0,0,0.7);
+        }
+        
+        .lightbox-nav svg {
+          pointer-events: none;
+        }
+        
+        #occupationTreemap {
+            transition: box-shadow 0.3s ease;
+        }
+        #occupationTreemap:hover {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        }
+    </style>
+</head>
+<body class="bg-inkwell text-deepbrown font-montserrat leading-relaxed">
+    
+    <!-- Navigation -->
+    <nav class="fixed w-full bg-parchment z-50 shadow-md border-b border-deepbrown/20">
+      <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+        
+        <!-- Title -->
+        <a href="#cover" data-i18n="site.title"
+           class="font-garamond text-2xl text-oxblood hover:text-oldgold transition-colors duration-300">
+          The Decline of The Polymath
+        </a>
+    
+        <!-- Desktop menu -->
+        <div class="hidden md:flex space-x-8 items-center">
+          <a href="{% url 'mstag' %}" class="text-sm font-garamond ...">← MSTAG</a>
+          <a href="#prologue" data-i18n="nav.prologue" class="text-sm font-garamond ...">Prologue</a>
+          <a href="#polymath-hall" data-i18n="nav.hall_of_fame" class="text-sm font-garamond ...">Hall of Fame</a>
+          <a href="#act1" data-i18n="nav.act1" class="text-sm font-garamond ...">Act 1</a>
+          <a href="#act2" data-i18n="nav.act2" class="text-sm font-garamond ...">Act 2</a>
+          <a href="#act3" data-i18n="nav.act3" class="text-sm font-garamond ...">Act 3</a>
+          <a href="#act4" data-i18n="nav.act4" class="text-sm font-garamond ...">Act 4</a>
+          <a href="#epilogue" data-i18n="nav.epilogue" class="text-sm font-garamond ...">Epilogue</a>
+        </div>
+    
+        <!-- Right side: Language (desktop) + Hamburger (mobile) -->
+        <div class="flex items-center space-x-4">
+          <!-- Language buttons always visible -->
+          <button id="lang-en" class="text-sm hover:text-oldgold">EN</button>
+          <button id="lang-ar" class="text-sm hover:text-oldgold">AR</button>
+    
+          <!-- Hamburger only on mobile -->
+          <button id="menu-toggle" class="text-2xl text-oxblood focus:outline-none md:hidden">☰</button>
+        </div>
+      </div>
+    
+      <!-- Mobile dropdown -->
+        <div id="mobile-menu" class="hidden absolute top-full left-0 w-full bg-parchment border-t border-deepbrown/20 shadow-md md:hidden">
+        <div class="flex flex-col items-center py-4 space-y-4">
+          <a href="{% url 'mstag' %}" class="font-garamond text-deepbrown/80 hover:text-oldgold">← MSTAG</a>
+          <a href="#prologue" data-i18n="nav.prologue" class="font-garamond text-deepbrown/80 hover:text-oldgold">Prologue</a>
+          <a href="#polymath-hall" data-i18n="nav.hall_of_fame" class="font-garamond text-deepbrown/80 hover:text-oldgold">Hall of Fame</a>
+          <a href="#act1" data-i18n="nav.act1" class="font-garamond text-deepbrown/80 hover:text-oldgold">Act 1</a>
+          <a href="#act2" data-i18n="nav.act2" class="font-garamond text-deepbrown/80 hover:text-oldgold">Act 2</a>
+          <a href="#act3" data-i18n="nav.act3" class="font-garamond text-deepbrown/80 hover:text-oldgold">Act 3</a>
+          <a href="#act4" data-i18n="nav.act4" class="font-garamond text-deepbrown/80 hover:text-oldgold">Act 4</a>
+          <a href="#epilogue" data-i18n="nav.epilogue" class="font-garamond text-deepbrown/80 hover:text-oldgold">Epilogue</a>
+        </div>
+      </div>
+    </nav>
+    
+    <!-- Cover Section -->
+    <section id="cover" class="min-h-screen bg-parchment bg-parchment-texture flex flex-col items-center justify-center p-8 relative overflow-hidden pt-20">
+        <div class="absolute top-1/4 left-1/4 w-16 h-16 rounded-full bg-oldgold/20 blur-xl animate-float animation-delay-100"></div>
+        <div class="absolute top-1/3 right-1/5 w-24 h-24 rounded-full bg-oxblood/15 blur-xl animate-float animation-delay-300"></div>
+        <div class="absolute bottom-1/4 right-1/3 w-20 h-20 rounded-full bg-sage/20 blur-xl animate-float animation-delay-500"></div>
+
+        <div class="text-center max-w-3xl z-10 fade-in">
+            <h1 data-i18n="cover.title" class="text-5xl md:text-7xl font-garamond italic mb-6 text-oxblood">
+                The Decline of The Polymath
+            </h1>
+            <h2 data-i18n="cover.subtitle" class="text-xl md:text-2xl font-garamond mb-8 text-slate">
+                A Statistical Inquiry
+            </h2>
+
+            <div class="blockquote-plaque max-w-xl mx-auto">
+                <p data-i18n="cover.quote" class="text-lg text-deepbrown/80">
+                    "The greatest scientists are artists as well."
+                </p>
+                <footer class="mt-2 text-base text-oxblood" data-i18n="cover.quote_author">
+                    — Albert Einstein
+                </footer>
+            </div>
+
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mt-8">
+                <button data-i18n="cover.cta_start"
+                        onclick="document.getElementById('prologue').scrollIntoView({ behavior: 'smooth' })"
+                        class="px-8 py-3 bg-oxblood text-parchment font-garamond tracking-wider hover:bg-oldgold hover:text-deepbrown transition-all duration-500 shadow-lg rounded">
+                    Begin Exhibition
+                </button>
+                <button data-i18n="cover.cta_hall"
+                        onclick="document.getElementById('polymath-hall').scrollIntoView({ behavior: 'smooth' })"
+                        class="px-8 py-3 border border-oxblood text-oxblood font-garamond tracking-wider hover:bg-oxblood/10 transition-all duration-500 rounded">
+                    Explore the Hall of Fame
+                </button>
+            </div>
+        </div>
+
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-oxblood/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
+        </div>
+    </section>
+
+    <!-- Section divider -->
+    <div class="section-divider bg-parchment"></div>
+
+    <!-- Prologue Section -->
+    <section id="prologue" class="bg-parchment bg-parchment-texture py-20 px-6">
+        <div class="max-w-5xl mx-auto fade-in">
+            <div class="fade-in">
+                <div class="flex items-center mb-12 px-4">
+                    <span class="font-garamond text-4xl text-oldgold mr-4">P</span>
+                    <h2 data-i18n="prologue.title" class="font-garamond text-3xl md:text-4xl text-oxblood border-b border-oldgold/30 pb-2">
+                        Prologue: What is a Polymath?
+                    </h2>
+                </div>
+
+                <div class="px-4 space-y-8">
+                    <p data-i18n="prologue.intro1" class="text-lg leading-relaxed">
+                        We all know someone who seems to know it all—not in a pretentious way. A person who can study, design, code, lead teams ...—all at the same time. Now, imagine that, but on a much larger scale. Someone who can design buildings, engineer machines, treat people, write poetry, and paint the galaxies. That's the heart of being a polymath, someone with so much knowledge in many distinct fields, you never satisfied, never stops learning.
+                    </p>
+
+                    <div class="blockquote-plaque max-w-2xl mx-auto">
+                        <p data-i18n="prologue.definition" class="text-lg text-deepbrown/80">
+                            For a more precise definition. A polymath is a person who possesses expertise in multiple, diverse fields of study. They are known for their ability to draw on complex bodies of knowledge to solve specific problems and generate significant insights across various disciplines, including the sciences, arts, and humanities. Unlike generalists, who may know a little about many topics, polymaths have a deep understanding of several subjects. The term can also be defined as a person of encyclopedic learning.
+                        </p>
+                        <footer data-i18n="prologue.definition_author" class="mt-2 text-base text-oxblood">— Definition of Polymath</footer>
+                    </div>
+
+                    <div class="etymology-note">
+                        <p data-i18n="prologue.etymology" class="text-deepbrown/80">
+                            The term "polymath" first appeared in the early 17th century. Specifically, the earliest known use of the word in English is in 1624 in Robert Burton's The Anatomy of Melancholy.
+                        </p>
+                    </div>
+
+                    <p data-i18n="prologue.history" class="text-lg leading-relaxed">
+                        From Islamic Golden Age scholars to Renaissance thinkers, polymaths have transcended cultural boundaries, embodying universal curiosity.
+                    </p>
+
+                    <p data-i18n="prologue.example" class="text-lg leading-relaxed">
+                        A prime example would be Fermat's Last Theorem, proven by Andrew Wiles. Andrew relied on a vast array of mathematical tools including elliptic curves, modular forms, Galois representations, and the Taniyama-Shimura conjecture. Seemingly unrelated to the proof, yet he managed to prove the theorem.
+                    </p>
+
+                    <p data-i18n="prologue.closing" class="text-lg leading-relaxed">
+                        Do you find yourself torn between code and canvas, science and story? You are not alone. You carry the spark of an ancient, beautiful tradition.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section divider -->
+    <div class="section-divider bg-parchment"></div>
+
+    <!-- Polymath Hall of Fame Section -->
+    <section id="polymath-hall" class="bg-parchment bg-parchment-texture py-20 px-6">
+        <div class="max-w-7xl mx-auto fade-in">
+            <div class="flex items-center mb-12">
+                <span class="font-garamond text-4xl text-oldgold mr-4">★</span>
+                <h2 class="font-garamond text-3xl md:text-4xl text-oxblood border-b border-oldgold/30 pb-2" data-i18n="hall.title">
+                    Hall of Fame: The Great Polymaths
+                </h2>
+            </div>
+    
+            <div class="pl-6 mb-10">
+                <p class="mb-6 text-lg" data-i18n="hall.subtitle">
+                    Step into the gallery of extraordinary minds who wove knowledge across disciplines, creating tapestries of innovation that still inspire today.
+                </p>
+            </div>
+    
+            <!-- Horizontal Scroll Container -->
+            <div class="relative pl-6">
+                <!-- Carousel buttons -->
+                <button class="scroll-left absolute -left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-oldgold/30 flex items-center justify-center hover:bg-oldgold/50 transition-colors z-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-oxblood" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+                <button class="scroll-right absolute -right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-oldgold/30 flex items-center justify-center hover:bg-oldgold/50 transition-colors z-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-oxblood" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </button>
+    
+                <div class="flex space-x-8 pb-8 overflow-x-auto scrollbar-hide polymath-scroller scroll-smooth snap-x snap-mandatory">
+                    {% for p in polymaths %}
+                    <button class="timeline-img-btn polymath-card flex-shrink-0 w-80 bg-white/90 p-6 rounded-lg shadow-lg border border-deepbrown/10 snap-start"
+                        data-src="{{ p.image_url }}"
+                        data-name-en="{{ p.name_en }}"
+                        data-name-ar="{{ p.name_ar }}"
+                        data-fields-en="{{ p.fields_en }}"
+                        data-fields-ar="{{ p.fields_ar }}"
+                        data-quote-en="{{ p.quote_en }}"
+                        data-quote-ar="{{ p.quote_ar }}"
+                        data-description-en="{{ p.description_en }}"
+                        data-description-ar="{{ p.description_ar }}">
+                        
+                        <div class="h-48 mb-4 bg-parchment flex items-center justify-center overflow-hidden rounded">
+                            <img src="{{ p.image_url }}" alt="{{ p.name_en }}" class="h-full object-cover" loading="lazy">
+                        </div>
+                        <h3 class="font-garamond text-2xl text-oxblood mb-2">{{ p.name_en }}</h3>
+                        <p class="text-sm text-deepbrown/70 mb-3">{{ p.fields_en }}</p>
+                        <div class="blockquote-plaque text-sm">
+                            <p class="text-deepbrown/80">{{ p.quote_en }}</p>
+                        </div>
+                        <p class="text-xs text-deepbrown/60">
+                            {{ p.description_en }}
+                        </p>
+                    </button>
+                    {% endfor %}    
+                </div>
+            </div>
+        </div>
+
+            <div class="pl-6 mt-12 text-center">
+                <div class="blockquote-plaque max-w-xl mx-auto">
+                    <p data-i18n="hall.bottom.quote" class="text-lg text-deepbrown/80">
+                        "The true sign of intelligence is not knowledge but imagination."
+                    </p>
+                    <footer data-i18n="hall.bottom.author" class="mt-2 text-base text-oxblood">— Albert Einstein</footer>
+                </div>
+            </div>
+
+            <!-- Bubble Chart -->
+            <div class="px-2 sm:px-4 md:px-8 mb-12">
+              <div class="w-full md:max-w-5xl md:mx-auto" style="height: 400px;">
+                <div id="polymathScatter" class="w-full h-full"></div>
+              </div>
+              <div class="text-center mt-4 text-xs sm:text-sm text-deepbrown/60 font-garamond px-2" data-i18n="act1.fig1">
+                Fig. 1: Polymaths scattered by Polymath Score (Number of Distinct Occupations)
+              </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section divider -->
+    <div class="section-divider bg-parchment"></div>
+
+    <!-- Act 1 Section -->
+    <section id="act1" class="bg-parchment bg-parchment-texture py-20 px-6">
+        <div class="max-w-5xl mx-auto">
+            <!-- Rise and Fall -->
+            <div id="rise-fall" class="mb-20 fade-in">
+                <div class="flex items-center mb-12">
+                    <span class="font-garamond text-4xl text-oldgold mr-4">1</span>
+                    <h2 data-i18n="act1.title" class="font-garamond text-3xl md:text-4xl text-oxblood border-b border-oldgold/30 pb-2">
+                        Act 1: The Rise and Fall of The Polymath
+                    </h2>
+                </div>
+
+                <div class="px-4 md:px-8">
+                    <p data-i18n="act1.para1" class="mb-6 text-lg">
+                        From that, we calculated "polymath score", the average number of distinct fields in which a person made meaningful contributions. We tracked individuals from antiquity to modernity, mapping when and how the universal mind rose—and declined.
+                    </p>
+
+                    <p data-i18n="act1.para2" class="mb-6 text-lg">
+                        The chart reveals a golden arc. Before the Renaissance, polymaths were rare—but when they emerged, they burned bright. Around 1000 AD, their average contribution across fields peaked, even if their numbers were still low. (The sudden rise around 1000 AD is curious—and possibly driven by a few towering figures. This reveals a flaw in simple averages, when polymaths are few, a single extraordinary life can distort the curve.)
+                    </p>
+
+                    <p data-i18n="act1.para3" class="mb-6 text-lg">
+                        Then came the Renaissance. Polymaths surged—Leonardo, Galileo, Newton—names that still echo today. The 1700s and 1800s saw this rise continue into the Enlightenment, as science and philosophy advanced hand in hand.
+                    </p>
+
+                    <p data-i18n="act1.para4" class="mb-6 text-lg">
+                        But, suddenly, the arc breaks. By the 20th century, the number of polymaths fell sharply. After 1969, the data fell silent. Not a single individual crosses the threshold. The polymath, it seems, became a relic of a different age.
+                    </p>
+
+                    <div class="blockquote-plaque max-w-3xl mx-auto">
+                        <p data-i18n="act1.quote1" class="text-lg text-deepbrown/80">
+                            In his 1959 lecture The Two Cultures, C.P. Snow warned of a growing divide between sciences and humanities—a fracture that broke the polymath.
+                        </p>
+                        <footer data-i18n="act1.quote1.author" class="mt-2 text-base text-oxblood text-right">
+                            — Scientific polymathy: the end of a two-cultures era?, Araki, Michael, The Lancet, Volume 395, Issue 10218, 113-114
+                        </footer>
+                    </div>
+
+                    <p data-i18n="act1.para5" class="mb-6 text-lg">
+                        One of the last voices to warn us was Charles Percy Snow. In his 1959 lecture The Two Cultures, Snow spoke of a growing "gulf of incomprehension" between the sciences and the humanities. It wasn't just a philosophical rift. It was the fracture of the polymath.
+                    </p>
+
+                    <p data-i18n="act1.para6" class="mb-6 text-lg">
+                        Today, Snow's warning feels prophetic. Not only do we see this divide in our academic systems and online discourse—it's visible in the data.
+                    </p>
+                </div>
+
+                <!-- Time Series Chart -->
+                <div class="px-4 md:px-8 mb-12">
+                    <div class="chart-container">
+                        <div id="polymathTimeSeries" style="height: 100%;"></div>
+                    </div>
+                    <div class="text-center mt-4 text-sm text-deepbrown/60 font-garamond" data-i18n="act1.fig2">
+                        Fig. 2: Evolution of Polymath Scores and Prevalence (Annual Averages and Counts)
+                    </div>
+                </div>
+
+                <!-- Timeline -->
+                <div class="px-4 md:px-8">
+                    <h3 data-i18n="act1.timeline.title" class="font-garamond text-2xl text-oxblood mb-6">
+                        The Golden Arc
+                    </h3>
+                    <div class="relative max-w-3xl mx-auto">
+                        <div class="absolute left-4 top-0 bottom-0 w-0.5 bg-oldgold/50"></div>
+                        <div class="space-y-12">
+
+                            <!-- 1000 -->
+                            <div class="timeline-item relative pl-12">
+                                <div class="absolute left-0 top-0 w-12 h-12 rounded-full bg-oldgold border-4 border-parchment flex items-center justify-center">
+                                    <span class="font-garamond text-parchment">1000</span>
+                                </div>
+                                <div class="bg-white/90 p-6 rounded-lg shadow-lg border border-deepbrown/10 flex flex-col md:flex-row gap-4">
+                                    <button class="timeline-img-btn" data-src="https://pbs.twimg.com/media/EmUb0mwVcAEPVAf?format=jpg&name=medium">
+                                        <img src="https://pbs.twimg.com/media/EmUb0mwVcAEPVAf?format=jpg&name=medium" 
+                                            alt="Medieval polymath manuscript" 
+                                            class="w-full md:w-32 h-32 object-cover rounded"
+                                            loading="lazy">
+                                    </button>
+                                    <div>
+                                        <p data-i18n="act1.timeline.1000" class="text-deepbrown/80">
+                                            Before the Renaissance, polymaths were rare but brilliant, their contributions peaking despite low numbers.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 1400 -->
+                            <div class="timeline-item relative pl-12">
+                                <div class="absolute left-0 top-0 w-12 h-12 rounded-full bg-oldgold border-4 border-parchment flex items-center justify-center">
+                                    <span class="font-garamond text-parchment">1400</span>
+                                </div>
+                                <div class="bg-white/90 p-6 rounded-lg shadow-lg border border-deepbrown/10 flex flex-col md:flex-row gap-4">
+                                    <button class="timeline-img-btn" data-src="https://vitruvio.imss.fi.it/foto/galileopalazzostrozzi/41544_1000.jpg">
+                                        <img src="https://vitruvio.imss.fi.it/foto/galileopalazzostrozzi/41544_1000.jpg" 
+                                            alt="Galileo's work" 
+                                            class="w-full md:w-32 h-32 object-cover rounded"
+                                            loading="lazy">
+                                    </button>
+                                    <div>
+                                        <p data-i18n="act1.timeline.1400" class="text-deepbrown/80">
+                                            The Renaissance ignited a surge of polymaths—Leonardo, Galileo, Newton—whose names echo through time. This period saw unprecedented cross-pollination between art and science.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 1920 -->
+                            <div class="timeline-item relative pl-12">
+                                <div class="absolute left-0 top-0 w-12 h-12 rounded-full bg-oldgold border-4 border-parchment flex items-center justify-center">
+                                    <span class="font-garamond text-parchment">1920</span>
+                                </div>
+                                <div class="bg-white/90 p-6 rounded-lg shadow-lg border border-deepbrown/10 flex flex-col md:flex-row gap-4">
+                                    <button class="timeline-img-btn" data-src="https://preview.redd.it/bauhaus-art-students-1927-v0-6lx7nzvlz6a91.jpg?width=640&crop=smart&auto=webp&s=b0bb85c67f4a88ad1bd08929dfa27c74d6ae76e3">
+                                        <img src="https://preview.redd.it/bauhaus-art-students-1927-v0-6lx7nzvlz6a91.jpg?width=640&crop=smart&auto=webp&s=b0bb85c67f4a88ad1bd08929dfa27c74d6ae76e3"
+                                            alt="Bauhaus class 1927"
+                                            class="w-full md:w-32 h-32 object-cover rounded"
+                                            loading="lazy">
+                                    </button>
+                                    <div>
+                                        <p data-i18n="act1.timeline.1920" class="text-deepbrown/80">
+                                            A final flare before the decline, as the world turned from holistic thinkers to specialists.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 1969 -->
+                            <div class="timeline-item relative pl-12">
+                                <div class="absolute left-0 top-0 w-12 h-12 rounded-full bg-oxblood border-4 border-parchment flex items-center justify-center">
+                                    <span class="font-garamond text-parchment">1969</span>
+                                </div>
+                                <div class="bg-white/90 p-6 rounded-lg shadow-lg border border-deepbrown/10 flex flex-col md:flex-row gap-4">
+                                    <button class="timeline-img-btn" data-src="https://i0.wp.com/circulatingnow.nlm.nih.gov/wp-content/uploads/2019/07/apollo11-0.jpg?resize=840%2C840&ssl=1">
+                                        <img src="https://i0.wp.com/circulatingnow.nlm.nih.gov/wp-content/uploads/2019/07/apollo11-0.jpg?resize=840%2C840&ssl=1"
+                                            alt="Apollo 11"
+                                            class="w-full md:w-32 h-32 object-cover rounded"
+                                            loading="lazy">
+                                    </button>
+                                    <div>
+                                        <p data-i18n="act1.timeline.1969" class="text-deepbrown/80">
+                                            The polymath vanishes from record, as no individual crosses three fields of expertise.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Geography of Genius -->
+            <div id="geography" class="mb-20 fade-in">
+                <div class="flex items-center mb-12 px-4 md:px-8">
+                    <span class="font-garamond text-4xl text-oldgold mr-4">1.1</span>
+                    <h2 data-i18n="act1.geography.title" class="font-garamond text-3xl md:text-4xl text-oxblood border-b border-oldgold/30 pb-2">
+                        Geography of Genius
+                    </h2>
+                </div>
+
+                <div class="px-4 md:px-8"> 
+                    <p data-i18n="act1.geography.para1" class="mb-6 text-lg">
+                        The decline of polymathy isn't just told in centuries—it's told in nations. The bar chart below shows the top countries to have such beautiful minds. Germany leads the list with 368 recorded polymaths, followed by the United States (314) and the United Kingdom (224). France, Italy, and Spain round out the top six—unsurprising, given their historic roles in science, philosophy, and the arts.
+                    </p>
+
+                    <div id="countryMap" class="my-12 mx-auto" style="width:100%;max-width:900px;height:500px;"></div>
+                    
+                    <div class="text-center mt-4 text-sm text-deepbrown/60 font-garamond" data-i18n="act1.fig3">
+                        Fig. 3: World map of polymath distribution
+                    </div>
+
+                    <p data-i18n="act1.geography.para2" class="mb-6 text-lg text-deepbrown/80 max-w-2xl mx-auto">
+                        Yet some entries, like the Czech Republic and Hungary, may surprise readers—small nations with deep academic legacies. What made these countries such rich soil for universal minds? Was it access to education, cross-disciplinary institutions, or moments of cultural flourishing? The answer, like the polymath, resists a single field of explanation.
+                    </p>
+
+                    <p data-i18n="act1.geography.para3" class="mb-6 text-lg text-deepbrown/80 max-w-2xl mx-auto">
+                        It's worth noting that the top nations in our dataset, each had their golden era. These weren't just nations. They were crucibles. Germany during the Enlightenment, Italy in the Renaissance, Britain at the height of industrial and scientific revolution. Each era opened doors across disciplines—art, philosophy, invention, and science—allowing polymaths to emerge, thrive, and contribute without being confined to a single domain. These countries built the cathedrals of knowledge. And for a time, they let people wander freely inside. But golden ages pass. And when they do, the walls grow taller, the rooms more isolated—and the wanderers disappear.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Where Minds Roamed -->
+            <div id="occupations" class="mb-20 fade-in">
+                <div class="flex items-center mb-12 px-4 md:px-8">
+                    <span class="font-garamond text-4xl text-oldgold mr-4">1.2</span>
+                    <h2 data-i18n="act1.occupations.title" class="font-garamond text-3xl md:text-4xl text-oxblood border-b border-oldgold/30 pb-2">
+                        Where Minds Roamed
+                    </h2>
+                </div>
+            
+                <div class="px-4 md:px-8"> 
+                    <p data-i18n="act1.occupations.para1" class="mb-6 text-lg">
+                        If genius had a passport in geography, it found its freedom in occupation. The chart below shows how polymaths expressed their restless curiosity—not through a single calling, but through many. This is more than a ranking of jobs; it is a map of intellectual motion. Writing, teaching, healing, governing—these were not destinations, but pathways.
+                    </p>
+            
+                    <div id="occupationTreemap" class="my-12 mx-auto" style="width:100%;max-width:900px;height:500px;"></div>
+                    
+                    <div class="text-center mt-4 text-sm text-deepbrown/60 font-garamond" data-i18n="act1.fig4">
+                        Fig. 4: Tree map of the top 15 polymath occupations
+                    </div>
+            
+                    <p data-i18n="act1.occupations.para2" class="mb-6 text-lg">
+                        The most common role? Writer. But to write was rarely just to record. It was to distill philosophy, share discoveries, translate truths between domains. Close behind were university teachers, physicians, and politicians—professions that straddled theory and action, solitude and society. These weren't just jobs. They were platforms from which polymaths launched their ideas into the world.
+                    </p>
+            
+                    <p data-i18n="act1.occupations.para3" class="mb-6 text-lg text-deepbrown/80 max-w-2xl mx-auto">
+                        Engineers, naturalists, and translators make quiet appearances—reminding us that polymathy thrived in the margins as much as in the spotlight. The presence of poets and historians speaks to a deep humanism at the heart of the polymathic impulse: to understand not just how the world works, but how it feels, remembers, and changes.
+                    </p>
+            
+                    <p data-i18n="act1.occupations.para4" class="mb-6 text-lg text-deepbrown/80 max-w-2xl mx-auto">
+                        These occupations were never just labels. They were windows, tools, vessels. In an age before hyper-specialization, minds could roam—freely, wildly, brilliantly—through fields that today feel impossibly siloed. This chart is not a taxonomy. It’s a trace of how curiosity once moved: freely, across the terrain of human thought.
+                    </p>
+                </div>
+                <!-- Data source -->
+                <p class="mt-10 text-center text-sm text-deepbrown/70">
+                  Full dataset and scraping scripts are available on
+                  <a href="https://github.com/Ezzio11/polymath-decline"
+                     class="text-oxblood hover:text-oldgold underline">
+                    GitHub
+                  </a>.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section divider -->
+    <div class="section-divider bg-parchment"></div>
+
+    <!-- Act 2 Section -->
+    <section id="act2" class="bg-parchment bg-parchment-texture py-20 px-6">
+        <div class="max-w-4xl mx-auto">
+            <div id="why-faded" class="mb-20 fade-in">
+                <!-- Header Section -->
+                <div class="flex items-center mb-12 px-4">
+                    <span class="font-garamond text-4xl text-oldgold mr-4">2</span>
+                    <h2 data-i18n="act2.title"
+                        class="font-garamond text-3xl md:text-4xl text-oxblood border-b border-oldgold/30 pb-2">
+                        Act 2: Why The Polymath Faded
+                    </h2>
+                </div>
+
+                <!-- Main Content -->
+                <div class="px-4 space-y-8">
+                    <p data-i18n="act2.para1" class="text-lg leading-relaxed">
+                        Where did they go? Did they go out quietly? Did their light dim slowly until they stopped existing altogether? No. Their disappearance wasn't accidental. It was the result of a slow, deliberate structural change—from the education system to the job market.
+                    </p>
+
+                    <p data-i18n="act2.para2" class="text-lg leading-relaxed">
+                        Schools and universities started designing their curriculums to suit the industrial revolutions that demanded efficiency and specialization. Students are forced to choose a specialization before they even know what paths exist.
+                    </p>
+
+                    <!-- Blockquote -->
+                    <div class="blockquote-plaque max-w-2xl mx-auto my-8">
+                        <p data-i18n="act2.quote1" class="text-lg text-deepbrown/80">
+                            "A lot of people don't choose these paths, because they don't see a path."
+                        </p>
+                        <footer data-i18n="act2.quote1.author"
+                            class="mt-3 text-base text-oxblood text-right">
+                            — Farah Kamel, managing partner of Dayma
+                        </footer>
+                    </div>
+
+                    <!-- Egyptian Case Study Section -->
+                    <div class="space-y-6">
+                        <h3 data-i18n="act2.egypt.title"
+                            class="font-garamond text-2xl text-oxblood mt-12 mb-6 border-b border-oldgold/20 pb-2">
+                            The Egyptian Case Study
+                        </h3>
+
+                        <p data-i18n="act2.egypt.para" class="text-lg leading-relaxed">
+                            A suitable example would be the Egyptian education system. Kids spend their first 10 years of academic life studying various subjects—Arabic, English, Mathematics, Social Sciences (History and Geography), Sciences (Physics, Chemistry and Biology). Suddenly, at the age of 15, the student is asked to specialize in either humanities or science. A year later, those who choose science, have to choose between pure science and mathematics. This reveals a deeper flaw in how modern education is structured—mistaking early curiosity for confusion. The age of 15 is considered to be not only an age of curiosity—but also this is when they start asking bigger questions. Who am I? What matters? What is real?
+                        </p>
+
+                        <div class="space-y-8 mt-12">
+                            <h3 data-i18n="act2.young.title"
+                                class="font-garamond text-2xl text-oxblood border-b border-oldgold/20 pb-2">
+                                Young Polymaths
+                            </h3>
+
+                            <div class="grid md:grid-cols-3 gap-6">
+                                <!-- Pascal -->
+                                <div
+                                    class="bg-white/90 p-5 rounded-lg border border-deepbrown/10 shadow-sm hover:shadow-md transition-all text-center">
+                                    <div
+                                        class="w-20 h-20 mx-auto mb-3 rounded-full overflow-hidden border-2 border-oldgold">
+                                        <img
+                                            src="https://cdn.britannica.com/48/250048-050-86A99242/Blaise-Pascal-anonymous-artists-Musee-Carnavalet-Paris.jpg?w=400&h=300&c=crop"
+                                            alt="Blaise Pascal" class="w-full h-full object-cover" loading="lazy">
+                                    </div>
+                                    <h4 data-i18n="act2.young.pascal.title"
+                                        class="font-garamond text-xl text-oxblood mb-1">
+                                        Blaise Pascal
+                                    </h4>
+                                    <p data-i18n="act2.young.pascal.desc"
+                                        class="text-deepbrown/80 text-sm leading-snug">
+                                        French mathematician and physicist, started developing the foundation of projective geometry at 15.
+                                    </p>
+                                </div>
+
+                                <!-- Shelley -->
+                                <div
+                                    class="bg-white/90 p-5 rounded-lg border border-deepbrown/10 shadow-sm hover:shadow-md transition-all text-center">
+                                    <div
+                                        class="w-20 h-20 mx-auto mb-3 rounded-full overflow-hidden border-2 border-oldgold">
+                                        <img src="https://wordsworth.org.uk/wp-content/uploads/2018/01/MS-header.png"
+                                            alt="Mary Shelley" class="w-full h-full object-cover" loading="lazy">
+                                    </div>
+                                    <h4 data-i18n="act2.young.shelley.title"
+                                        class="font-garamond text-xl text-oxblood mb-1">
+                                        Mary Shelley
+                                    </h4>
+                                    <p data-i18n="act2.young.shelley.desc"
+                                        class="text-deepbrown/80 text-sm leading-snug">
+                                        English novelist, began drafting Frankenstein at 17, but the ideas were brewing earlier.
+                                    </p>
+                                </div>
+
+                                <!-- Malala -->
+                                <div
+                                    class="bg-white/90 p-5 rounded-lg border border-deepbrown/10 shadow-sm hover:shadow-md transition-all text-center">
+                                    <div
+                                        class="w-20 h-20 mx-auto mb-3 rounded-full overflow-hidden border-2 border-oldgold">
+                                        <img src="https://s7d1.scene7.com/is/image/wbcollab/Malala-Yousafzai-2?qlt=90&fmt=webp&resMode=sharp2"
+                                            alt="Malala Yousafzai" class="w-full h-full object-cover" loading="lazy">
+                                    </div>
+                                    <h4 data-i18n="act2.young.malala.title"
+                                        class="font-garamond text-xl text-oxblood mb-1">
+                                        Malala Yousafzai
+                                    </h4>
+                                    <p data-i18n="act2.young.malala.desc"
+                                        class="text-deepbrown/80 text-sm leading-snug">
+                                        Pakistani education activist, was 15 when she was targeted for activism.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p data-i18n="act2.young.para" class="text-lg leading-relaxed mt-6">
+                        Many great minds dabbled early—across fields—and emerged with lasting creations. At fifteen, curiosity isn't a distraction—it's a superpower. Yet our systems treat it like a liability. Creative freedom should be granted. All of this results in a not-so-pretty butterfly effect.
+                    </p>
+
+                    <!-- Adolescent Crystallization Section -->
+                    <div class="space-y-6 mt-16">
+                        <h3 data-i18n="act2.crystallization.title"
+                            class="font-garamond text-2xl text-oxblood border-b border-oldgold/20 pb-2">
+                            Adolescent Crystallization
+                        </h3>
+
+                        <p data-i18n="act2.crystallization.para1" class="text-lg leading-relaxed">
+                            This brings me to talk about an important concept brought by Laurence Steinberg. His concept of "adolescent crystallization" describes the period between ages 14-18 when individuals begin to form their adult identity, acquire a sense of belonging to their peer interests, and values with specific career paths. On the surface, this sounds like a thoughtful developmental process. But in practice—especially in rigid educational systems like Egypt's—it often becomes a forced narrowing rather than a self-driven discovery.
+                        </p>
+
+                        <p data-i18n="act2.crystallization.para2" class="text-lg leading-relaxed mt-6">
+                            The choice a student makes at fifteen is not symbolic—it's structural. Choose humanities, and you're cut off from ever entering faculties like Engineering or Computer Science. There's no second path, no formal bridge. Your ceiling is reset. Your dreams are re-routed. The best options become Economics and Political Science, Accounting, or Languages. And if you're lucky, you might stumble into a Statistics major with a bit of technical exposure. But for many, it's too late. The system tells you what you can't be before you've even had a chance to figure out what you could be.
+                        </p>
+
+                        <p data-i18n="act2.crystallization.para3" class="text-lg leading-relaxed mt-6">
+                            Crystallization implies finality. The metaphor suggests solidifying into a shape. But adolescents are not crystals. They're closer to rivers—still flowing, still shifting, still searching. It assumes access to possibilities. How can someone "realistically" form occupational plans at 15 if they've never been exposed to half the fields that exist? Most teens don't know what anthropology, data science, or urban planning even are. The role of role models becomes problematic. The theory admits teens look to role models—but what happens in environments where interdisciplinary or creative role models are absent or discouraged?
+                        </p>
+
+                        <p data-i18n="act2.crystallization.para4" class="text-lg leading-relaxed mt-6">
+                            To be fair, specialization didn't arise from malice. It answered the demands of industrial and technological complexity. The world needed experts to build bridges, design machines, and decipher DNA. But the cost was paid in breadth. In the end in this age of rapid movement—when you can't even keep up with the college you're enrolled in—it diminishes your chances of becoming anything that the major you're studying. Unless you carve one—alone.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section divider -->
+    <div class="section-divider bg-parchment"></div>
+
+    <!-- Act 3 Section -->
+    <section id="act3" class="bg-parchment bg-parchment-texture py-20 px-6">
+        <div class="max-w-4xl mx-auto">
+            <div id="consequences" class="mb-20 fade-in">
+                <!-- Header Section -->
+                <div class="flex items-center mb-12 px-4">
+                    <span class="font-garamond text-4xl text-oldgold mr-4">3</span>
+                    <h2 data-i18n="act3.title"
+                        class="font-garamond text-3xl md:text-4xl text-oxblood border-b border-oldgold/30 pb-2">
+                        Act 3: A World Without Wanderers
+                    </h2>
+                </div>
+
+                <!-- Main Content -->
+                <div class="px-4 space-y-8">
+                    <!-- Fox vs Hedgehog Metaphor -->
+                    <div class="blockquote-plaque max-w-2xl mx-auto">
+                        <p data-i18n="act3.fox_hedgehog.quote" class="text-lg text-deepbrown/80">
+                            "A fox knows many things, but a hedgehog knows one big thing."
+                        </p>
+                        <footer data-i18n="act3.fox_hedgehog.author" class="mt-2 text-base text-oxblood text-right">
+                            — Archilochus, repopularized by Isaiah Berlin
+                        </footer>
+                    </div>
+
+                    <!-- Visual Comparison -->
+                    <div class="grid md:grid-cols-2 gap-8 my-12">
+                        <!-- Fox -->
+                        <div class="bg-white/90 p-8 rounded-xl border border-deepbrown/10 shadow-sm text-center transition-all hover:shadow-lg hover:border-oldgold/30">
+                            <div class="w-32 h-32 mx-auto mb-6 rounded-full border-4 border-oldgold/30 overflow-hidden">
+                                <img src="https://image.pollinations.ai/prompt/An%20oil%20painting%20in%20a%20dark%20academia%20style%2C%20showing%20a%20red%20fox%20seated%20at%20an%20antique%20wooden%20desk%20inside%20a%20dimly%20lit%20library%20filled%20with%20books%20and%20globes.%20%0AThe%20fox%20is%20elegant%2C%20thoughtful%2C%20with%20a%20slightly%20anthropomorphic%20posture%2C%20surrounded%20by%20scattered%20notebooks%2C%20scientific%20instruments%2C%20and%20sketches%20of%20inventions.%20%0AGolden%20light%20streams%20through%20a%20tall%20gothic%20window%2C%20highlighting%20the%20fox%E2%80%99s%20intelligence%20and%20curiosity.%20%0AStyle%3A%2019th-century%20painting%2C%20rich%20warm%20tones%2C%20deep%20shadows%2C%20Renaissance-inspired.%0AAspect%20ratio%3A%201%3A1%20(square)?width=1920&height=1080&seed=6563&enhance=true&nologo=true&model=kontext"
+                                    alt="Fox representing polymath" class="w-full h-full object-cover" loading="lazy">
+                            </div>
+                            <h3 data-i18n="act3.fox.title" class="font-garamond text-2xl text-oxblood mb-3">
+                                The Fox (Polymath)
+                            </h3>
+                            <p data-i18n="act3.fox.desc" class="text-deepbrown/80">
+                                The current system has successfully created a generation of hedgehogs—hyper-specialists who excel at one thing with remarkable efficiency, but lack the broad vision of polymathic foxes. Polymaths connect seemingly unrelated fields—as illustrated by the Fermat Last Theorem example—which grants them the ability to creatively solve problems that otherwise would've been considered an impossibility.
+                            </p>
+                        </div>
+
+                        <!-- Hedgehog -->
+                        <div class="bg-white/90 p-8 rounded-xl border border-deepbrown/10 shadow-sm text-center transition-all hover:shadow-lg hover:border-oxblood/30">
+                            <div class="w-32 h-32 mx-auto mb-6 rounded-full border-4 border-oxblood/30 overflow-hidden">
+                                <img src="https://image.pollinations.ai/prompt/An%20oil%20painting%20in%20a%20dark%20academia%20style%2C%20showing%20a%20hedgehog%20studying%20intently%20at%20a%20single%20illuminated%20desk%20in%20a%20vast%20dark%20library.%20%0AUnlike%20the%20fox%2C%20the%20hedgehog%20is%20alone%20in%20a%20narrow%20circle%20of%20light%2C%20focused%20on%20one%20massive%20tome%2C%20oblivious%20to%20the%20rest%20of%20the%20room.%20%0AThe%20shelves%20stretch%20infinitely%20into%20darkness%2C%20symbolizing%20depth%20but%20narrow%20scope.%20%0AStyle%3A%2019th-century%20painting%2C%20warm%20candlelight%2C%20muted%20colors%2C%20dramatic%20chiaroscuro.%0AAspect%20ratio%3A%201%3A1%20(square)%0A?width=1920&height=1080&seed=6563&enhance=true&nologo=true&model=flux"
+                                    alt="Hedgehog representing specialist" class="w-full h-full object-cover" loading="lazy">
+                            </div>
+                            <h3 data-i18n="act3.hedgehog.title" class="font-garamond text-2xl text-oxblood mb-3">
+                                The Hedgehog (Specialist)
+                            </h3>
+                            <p data-i18n="act3.hedgehog.desc" class="text-deepbrown/80">
+                                Excels in one domain with deep expertise but often lacks perspective outside their specialty. The hedgehog's strength is focus.
+                            </p>
+                        </div>
+                    </div>
+
+                    <p data-i18n="act3.para1" class="text-lg leading-relaxed max-w-2xl mx-auto">
+                        Deep overruled breadth. No longer do we have the type of people with knowledge that spans multiple distinct, unrelated fields. The cost? Nobody looks sideways anymore.
+                    </p>
+
+                    <!-- Consequences Section -->
+                    <div class="space-y-8 mt-16">
+                        <h3 data-i18n="act3.consequences.title"
+                            class="font-garamond text-2xl text-oxblood border-b border-oldgold/20 pb-2">
+                            The Consequences
+                        </h3>
+
+                        <div class="grid md:grid-cols-3 gap-6">
+                            <div class="bg-white/90 p-6 rounded-lg border border-deepbrown/10 shadow-sm hover:shadow-md transition-all">
+                                <h4 data-i18n="act3.consequences.slow.title"
+                                    class="font-garamond text-xl text-oxblood mb-3">Slower Progress</h4>
+                                <p data-i18n="act3.consequences.slow.desc" class="text-deepbrown/80">
+                                    Polymaths connect seemingly unrelated fields—as illustrated by the Fermat Last Theorem example—which grants them the ability to creatively solve problems that otherwise would've been considered an impossibility.
+                                </p>
+                            </div>
+                            <div class="bg-white/90 p-6 rounded-lg border border-deepbrown/10 shadow-sm hover:shadow-md transition-all">
+                                <h4 data-i18n="act3.consequences.identity.title"
+                                    class="font-garamond text-xl text-oxblood mb-3">Shrinking Identity</h4>
+                                <p data-i18n="act3.consequences.identity.desc" class="text-deepbrown/80">
+                                    Students say 'I'm a business student,' instead of 'I'm curious about systems, economies, and socities.' We lost identity fluidity. Our souls began to specialize too. This results in a loss of flexibility. People become so focused on studying one topic for their whole lives, and what happens if that topic becomes irrelevant? I'll leave that one to you.
+                                </p>
+                            </div>
+                            <div class="bg-white/90 p-6 rounded-lg border border-deepbrown/10 shadow-sm hover:shadow-md transition-all">
+                                <h4 data-i18n="act3.wholehuman.title"
+                                    class="font-garamond text-xl text-oxblood mb-3">Loss of the Whole Human</h4>
+                                    <p data-i18n="act3.wholehuman.para1">
+                                        Without polymathy, we began to shrink ourselves to fit job titles. There's less poetry in science. Less creativity in business. Less empathy in policy. We become efficient, sure, but hollow. The cost of hyperspecialization isn't just economic. It's existential.
+                                    </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white/90 p-6 rounded-lg border border-deepbrown/10 shadow-sm hover:shadow-md transition-all">
+                        <h4 data-i18n="act3.consequences.translators.title"
+                            class="font-garamond text-xl text-oxblood mb-3">The Disappearance of Translators</h4>
+                        <p data-i18n="act3.consequences.translators.desc" class="text-deepbrown/80">
+                            A research paper I recently read highlighted an extremely important point: specialists have their own linguistics. Let's take statisticians as an example. We, as people who analyze data, have our own terminologies, Multicollinearity, Heteroskedasticity, R-Squared, P-value, and the list goes on. We're trained as statisticians who find interpret results. As such, if a statistician works with, say, a biologist, and that biologist asks for some data analysis, without either training or some third person in the room that understands both statistics and biology—communication becomes increasingly difficult. However, all hope is not lost. A few fields have emerged that dare to live between the cracks—hybrid disciplines like bioinformatics, computational linguistics, and neuroeconomics. They don't belong to one domain. They speak in multiple tongues. In their very structure, they resist the divide that fractured the polymath.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section divider -->
+    <div class="section-divider bg-parchment"></div>
+
+    <!-- Act 4 Section -->
+    <section id="act4" class="bg-parchment bg-parchment-texture py-20 px-6">
+        <div class="max-w-4xl mx-auto">
+            <div class="fade-in">
+                <!-- Act Header -->
+                <div class="flex items-center mb-12 px-4">
+                    <span class="font-garamond text-4xl text-oldgold mr-4">4</span>
+                    <h2 data-i18n="act4.title" class="font-garamond text-3xl md:text-4xl text-oxblood border-b border-oldgold/30 pb-2">
+                        Act 4: The Polymath Will Be Back
+                    </h2>
+                </div>
+
+                <!-- Main Content -->
+                <div class="px-4 space-y-8">
+                    <p class="text-lg leading-relaxed" data-i18n="act4.para1">
+                        Polymaths aren't dead—they're just dormant. In the age of Artificial Intelligence (AI) and Large Language Models (LLMs), it's no secret that many people abuse their capabilities in the wrong ways. Instead of using them as intended—as assistants—they're used as a big, red 'click me to finish your work' button. But what if we start teaching people how to use AI appropriately? This could be the very tool to bring back polymaths. AI could be used to teach and help within many different fields—mathematics, physics, statistics, programming... The list simply goes on. The result? Effective and efficient learning. No longer will a person have to sacrifice his wide array of skills and interests, in exchange for settlement.
+                    </p>
+
+                    <!-- Blockquote -->
+                    <div class="blockquote-plaque max-w-2xl mx-auto">
+                        <p class="text-lg text-deepbrown/80" data-i18n="act4.quote">
+                            "If AI is the hammer, then polymaths are the architects. But we keep handing out nails instead of blueprints."
+                        </p>
+                    </div>
+
+                    <!-- Modern Polymaths -->
+                    <div class="space-y-8 mt-12">
+                        <h3 class="font-garamond text-2xl text-oxblood border-b border-oldgold/20 pb-2" data-i18n="act4.modern.title">
+                            Modern Polymaths
+                        </h3>
+
+                        <div class="grid md:grid-cols-3 gap-6">
+                            <div class="bg-white/90 p-5 rounded-lg border border-deepbrown/10 shadow-sm hover:shadow-md transition-all text-center">
+                                <div class="w-20 h-20 mx-auto mb-3 rounded-full overflow-hidden border-2 border-oldgold">
+                                    <img src="https://sourcesofinsight.com/wp-content/uploads/2021/11/Tim-Ferris-1.jpg" 
+                                        alt="Tim Ferriss" 
+                                        class="w-full h-full object-cover"
+                                        loading="lazy">
+                                </div>
+                                <h4 class="font-garamond text-xl text-oxblood mb-1" data-i18n="act4.modern.tim.name">Tim Ferriss</h4>
+                                <p class="text-sm text-deepbrown/70 mb-2" data-i18n="act4.modern.tim.fields">
+                                    Author • Entrepreneur • Podcaster • Athlete
+                                </p>
+                                <p class="text-xs text-deepbrown/60" data-i18n="act4.modern.tim.desc">
+                                    Built a career blending productivity, self-experimentation, investing, and martial arts—becoming a bestselling author and startup advisor all at once.
+                                </p>
+                            </div>
+                            <div class="bg-white/90 p-5 rounded-lg border border-deepbrown/10 shadow-sm hover:shadow-md transition-all text-center">
+                                <div class="w-20 h-20 mx-auto mb-3 rounded-full overflow-hidden border-2 border-oldgold">
+                                    <img src="https://images.forwardcdn.com/image/970x/center/images/cropped/f50-lanier-103111-1425822312.jpg" 
+                                        alt="Jaron Lanier" 
+                                        class="w-full h-full object-cover"
+                                        loading="lazy">
+                                </div>
+                                <h4 class="font-garamond text-xl text-oxblood mb-1" data-i18n="act4.modern.jaron.name">Jaron Lanier</h4>
+                                <p class="text-sm text-deepbrown/70 mb-2" data-i18n="act4.modern.jaron.fields">
+                                    Computer Scientist • Composer • Author
+                                </p>
+                                <p class="text-xs text-deepbrown/60" data-i18n="act4.modern.jaron.desc">
+                                    Pioneered virtual reality while simultaneously composing classical music and writing influential critiques of the digital age.
+                                </p>
+                            </div>
+                            <div class="bg-white/90 p-5 rounded-lg border border-deepbrown/10 shadow-sm hover:shadow-md transition-all text-center">
+                                <div class="w-20 h-20 mx-auto mb-3 rounded-full overflow-hidden border-2 border-oldgold">
+                                    <img src="https://www.marefa.org/w/images/d/de/Rushdi_Said.jpg" 
+                                        alt="Rushdi Said" 
+                                        class="w-full h-full object-cover"
+                                        loading="lazy">
+                                </div>
+                                <h4 class="font-garamond text-xl text-oxblood mb-1" data-i18n="act4.modern.rushdi.name">Rushdi Said</h4>
+                                <p class="text-sm text-deepbrown/70 mb-2" data-i18n="act4.modern.rushdi.fields">
+                                    Geologist • Author • Public Intellectual
+                                </p>
+                                <p class="text-xs text-deepbrown/60" data-i18n="act4.modern.rushdi.desc">
+                                    An eminent Egyptian-American geologist and policymaker who led Egypt’s national mining organization, advanced geological research and mineral development, and authored influential works on Egypt’s geology, water resources, and development, later becoming a prominent voice on science and politics.                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI as an Enabler -->
+                    <div class="space-y-6 mt-12">
+                        <h3 class="font-garamond text-2xl text-oxblood border-b border-oldgold/20 pb-2" data-i18n="act4.ai.title">
+                            AI as an Enabler
+                        </h3>
+
+                        <div class="space-y-6 text-lg leading-relaxed">
+                            <p data-i18n="act4.ai.para1">
+                                Another supplementary method would be "open access education." Instead of relying entirely on the educational system—independence should be encouraged. We live in an age where knowledge is as accessible as the air we breathe. YouTube videos, PDF books, scientific articles and podcasts—this as the era of access.
+                            </p>
+
+                            <p data-i18n="act4.ai.para2">
+                                Rather than asking ChatGPT to generate a Python script that implements a machine learning algorithm—ask it to explain in thorough details, what machine learning is. What the algorithms are. What's XGB? Catboost? LightGBM? Neural networks? LLMs can explain each concept with absolute ease—in whichever way the user would like. Explain like I'm 5? Explain like it's a Harry Potter movie? Explain like machine learning is my long lost relative? All of this could be done.
+                            </p>
+
+                            <div class="bg-white/90 p-6 rounded-lg border border-oldgold/30 shadow-sm mt-8">
+                                <h4 class="font-garamond text-xl text-oxblood mb-3" data-i18n="act4.ai.box.title">
+                                    The New Learning Paradigm
+                                </h4>
+                                <ul class="space-y-3 text-deepbrown/80 text-sm">
+                                    <li class="flex items-start">
+                                        <span class="text-oldgold mr-2">•</span>
+                                        <span data-i18n="act4.ai.box.point1">Use AI to explore connections between fields</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-oldgold mr-2">•</span>
+                                        <span data-i18n="act4.ai.box.point2">Create personalized learning journeys across disciplines</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <span class="text-oldgold mr-2">•</span>
+                                        <span data-i18n="act4.ai.box.point3">Develop 'T-shaped' knowledge—depth in one area, breadth in many</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- The Path Forward -->
+                    <div class="space-y-6 mt-12">
+                        <h3 class="font-garamond text-2xl text-oxblood border-b border-oldgold/20 pb-2" data-i18n="act4.path.title">
+                            The Path Forward
+                        </h3>
+
+                        <div class="space-y-6 text-lg leading-relaxed">
+                            <p data-i18n="act4.path.para1">
+                                Polymathy and specialization can co-exist—peacefully. They just need one thing, society's approval. Instead of pushing every kid towards a very specific path, just because 'it is the future' or 'this is where the money is at,' simply let them choose—freely.
+                            </p>
+
+                            <div class="grid md:grid-cols-2 gap-6 mt-6">
+                                <div class="bg-white/90 p-5 rounded-lg border border-deepbrown/10 shadow-sm">
+                                    <h4 class="font-garamond text-lg text-oxblood mb-2" data-i18n="act4.path.explore.title">
+                                        Encourage Exploration
+                                    </h4>
+                                    <p class="text-deepbrown/80" data-i18n="act4.path.explore.desc">
+                                        Let students sample diverse fields before specializing
+                                    </p>
+                                </div>
+                                <div class="bg-white/90 p-5 rounded-lg border border-deepbrown/10 shadow-sm">
+                                    <h4 class="font-garamond text-lg text-oxblood mb-2" data-i18n="act4.path.synthesis.title">
+                                        Reward Synthesis
+                                    </h4>
+                                    <p class="text-deepbrown/80" data-i18n="act4.path.synthesis.desc">
+                                        Value connections between disciplines as much as depth in one
+                                    </p>
+                                </div>
+                            </div>
+
+                            <p class="mt-6" data-i18n="act4.path.para2">
+                                We still need specialists that delve deep into a very specific matter and master it thoroughly. But we also need generalists that connect the dots, think out of the entire field—not just the box.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section divider -->
+    <div class="section-divider bg-parchment"></div>
+
+    <!-- Epilogue Section -->
+    <section id="epilogue" class="bg-parchment bg-parchment-texture py-20 px-6">
+        <div class="max-w-4xl mx-auto">
+            <div class="fade-in">
+                <!-- Act Header -->
+                <div class="flex items-center mb-12 px-4">
+                    <span class="font-garamond text-4xl text-oldgold mr-4">E</span>
+                    <h2 data-i18n="epilogue.title" class="font-garamond text-3xl md:text-4xl text-oxblood border-b border-oldgold/30 pb-2">
+                        Epilogue: To the Wanderer Reading This
+                    </h2>
+                </div>
+
+                <!-- Main Content -->
+                <div class="px-4 space-y-8">
+                    <p class="text-lg leading-relaxed" data-i18n="epilogue.para1">
+                        My friend, I did not write this article to enrich my portfolio—I wrote it to put into words how I—and many others—have felt for years. The constant narrowing of vision just to fit the mold—to not feel 'lost' or 'confused'.
+                    </p>
+
+                    <div class="space-y-6 text-lg leading-relaxed">
+                        <p data-i18n="epilogue.para2">
+                            Ironically, there was a time when I myself dismissed wide knowledge. I believed that true mastery lay only in depth. And yet, I've always had an interest in everything—from code to art, from economics to psychology. I fought that instinct, thinking it made me scattered. I was wrong.
+                        </p>
+
+                        <div class="blockquote-plaque max-w-2xl mx-auto my-8">
+                            <p class="text-lg text-deepbrown/80" data-i18n="epilogue.quote">
+                                "You're not a cog in a machine. You're the whole engine. Your curiosity is not a liability—it's a flame. Your wide interests are not a burden—they're a blueprint."
+                            </p>
+                        </div>
+
+                        <p data-i18n="epilogue.para3">
+                            Ask yourself this: What if the real richness of life lies in living wide, not just deep? Somewhere out there, there's a child still dreaming freely. Let's make room for them. And to you—yes, you—keep reading, keep studying, keep expanding your skillset. Don't shrink to fit the system. Stretch to reshape it.
+                        </p>
+                    </div>
+
+                    <!-- Closing -->
+                    <div class="text-center mt-16">
+                        <button onclick="window.scrollTo({ top: 0, behavior: 'smooth' })" 
+                                class="px-8 py-3 border border-oxblood text-oxblood font-garamond hover:bg-oxblood hover:text-parchment transition-all duration-500 rounded"
+                                data-i18n="epilogue.return">
+                            Return to Exhibition Start
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery of Lost Knowledge -->
+    <section class="bg-parchment bg-parchment-texture py-12 px-6">
+        <div class="max-w-7xl mx-auto">
+            <h3 class="font-garamond text-3xl text-oxblood mb-8 text-center" data-i18n="gallery.title">
+                Gallery of Lost Knowledge
+            </h3>
+
+            <div class="relative">
+                <!-- Scroll buttons -->
+                <button
+                    class="gallery-left absolute left-0 top-1/2 -translate-y-1/2 bg-oxblood/80 text-parchment p-3 rounded-full shadow hover:bg-oxblood z-10"
+                >
+                    &#10094;
+                </button>
+                <button
+                    class="gallery-right absolute right-0 top-1/2 -translate-y-1/2 bg-oxblood/80 text-parchment p-3 rounded-full shadow hover:bg-oxblood z-10"
+                >
+                    &#10095;
+                </button>
+
+                <!-- Horizontal scroll container -->
+                <div class="gallery-scroller flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth">
+                    <!-- Card 1 -->
+                    <button class="group relative overflow-hidden rounded-lg flex-none w-64 h-48 timeline-img-btn"
+                            data-src="https://upload.wikimedia.org/wikipedia/commons/7/7a/Leonardo_da_Vinci_-_RCIN_919000%2C_Verso_The_bones_and_muscles_of_the_arm_c.1510-11.jpg">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/7/7a/Leonardo_da_Vinci_-_RCIN_919000%2C_Verso_The_bones_and_muscles_of_the_arm_c.1510-11.jpg"
+                            alt="Da Vinci's anatomical studies"
+                            class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity duration-300"
+                            loading="lazy">
+                        <div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <span class="text-parchment font-garamond text-center px-2" data-i18n="gallery.card1">
+                                Anatomical Studies<br>Leonardo da Vinci
+                            </span>
+                        </div>
+                    </button>
+
+                    <!-- Card 2 -->
+                    <button class="group relative overflow-hidden rounded-lg flex-none w-64 h-48 timeline-img-btn"
+                            data-src="https://cdn.britannica.com/53/194753-050-FC2897A8/Hypatia-Teaching-Alexandria-watercolour-paper-Robert-Trewick.jpg">
+                        <img src="https://cdn.britannica.com/53/194753-050-FC2897A8/Hypatia-Teaching-Alexandria-watercolour-paper-Robert-Trewick.jpg"
+                            alt="Hypatia teaching"
+                            class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity duration-300"
+                            loading="lazy">
+                        <div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <span class="text-parchment font-garamond text-center px-2" data-i18n="gallery.card2">
+                                Hypatia Teaching Mathematics
+                            </span>
+                        </div>
+                    </button>
+
+                    <!-- Card 3 -->
+                    <button class="group relative overflow-hidden rounded-lg flex-none w-64 h-48 timeline-img-btn"
+                            data-src="https://tile.loc.gov/image-services/iiif/service:gdc:gdcwdl:wd:l_:09:71:8:wdl_09718:A5_0004_2/full/pct:100/0/default.jpg">
+                        <img src="https://tile.loc.gov/image-services/iiif/service:gdc:gdcwdl:wd:l_:09:71:8:wdl_09718:A5_0004_2/full/pct:100/0/default.jpg"
+                            alt="Avicenna's medical text"
+                            class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity duration-300"
+                            loading="lazy">
+                        <div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <span class="text-parchment font-garamond text-center px-2" data-i18n="gallery.card3">
+                                Avicenna's Medical Manuscript
+                            </span>
+                        </div>
+                    </button>
+
+                    <!-- Card 4 -->
+                    <button class="group relative overflow-hidden rounded-lg flex-none w-64 h-48 timeline-img-btn"
+                            data-src="https://onbeing.org/wp-content/uploads/2016/11/14829763184_435057b29b_o-768x552.jpg.webp">
+                        <img src="https://onbeing.org/wp-content/uploads/2016/11/14829763184_435057b29b_o-768x552.jpg.webp"
+                            alt="Tagore's painting"
+                            class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity duration-300"
+                            loading="lazy">
+                        <div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <span class="text-parchment font-garamond text-center px-2" data-i18n="gallery.card4">
+                                Tagore's Visual Poetry
+                            </span>
+                        </div>
+                    </button>
+
+                    <!-- Card 5 -->
+                    <button class="group relative overflow-hidden rounded-lg flex-none w-64 h-48 timeline-img-btn"
+                            data-src="https://www.arthistoryproject.com/site/assets/files/15723/andreas_cellarius-the_copernican_world_system-1660-obelisk-art-history-1.jpg">
+                        <img src="https://www.arthistoryproject.com/site/assets/files/15723/andreas_cellarius-the_copernican_world_system-1660-obelisk-art-history-1.jpg"
+                            alt="Copernicus heliocentric diagram"
+                            class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity duration-300"
+                            loading="lazy">
+                        <div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <span class="text-parchment font-garamond text-center px-2">
+                                Heliocentric Revolution<br>Nicolaus Copernicus
+                            </span>
+                        </div>
+                    </button>
+
+                    <!-- Card 6 -->
+                    <button class="group relative overflow-hidden rounded-lg flex-none w-64 h-48 timeline-img-btn"
+                            data-src="https://pbs.twimg.com/media/Fyp5myZXgAEIol4.jpg">
+                        <img src="https://pbs.twimg.com/media/Fyp5myZXgAEIol4.jpg"
+                            alt="Copernicus heliocentric diagram"
+                            class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity duration-300"
+                            loading="lazy">
+                        <div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <span class="text-parchment font-garamond text-center px-2">
+                                Mechanical Automata – Al‑Jazari (1206)
+                            </span>
+                        </div>
+                    </button>
+
+                    <!-- Card 7 -->
+                    <button class="group relative overflow-hidden rounded-lg flex-none w-64 h-48 timeline-img-btn"
+                            data-src="https://www.meisterdrucke.us/kunstwerke/1000px/Unknown_Artist_-_The_English_physicist_Isaac_Newton_%281642-1727%29_decomposing_light_with_a_prism_of_-_%28MeisterDrucke-924185%29.jpg">
+                        <img src="https://www.meisterdrucke.us/kunstwerke/1000px/Unknown_Artist_-_The_English_physicist_Isaac_Newton_%281642-1727%29_decomposing_light_with_a_prism_of_-_%28MeisterDrucke-924185%29.jpg"
+                            alt="Copernicus heliocentric diagram"
+                            class="w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity duration-300"
+                            loading="lazy">
+                        <div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <span class="text-parchment font-garamond text-center px-2">
+                                Isaac Newton (1642-1727) decomposing light with a prism of glass.
+                            </span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-inkwell text-parchment/60 py-12 text-center">
+        <div class="max-w-4xl mx-auto px-6">
+            <!-- Back to MSTAG link added here -->
+            <a href="{% url 'mstag' %}" 
+               class="inline-block mb-8 text-sm font-garamond text-parchment/70 hover:text-oldgold transition-colors duration-300">
+                ← Back to MSTAG
+            </a>
+            
+            <h3 class="font-garamond text-xl text-oldgold mb-4" data-i18n="footer.title">
+                Further Exploration
+            </h3>
+            <div class="grid md:grid-cols-3 gap-4 mb-8">
+                <a href="https://apps.weber.edu/wsuimages/michaelwutz/6510.Trio/Rede-lecture-2-cultures.pdf" class="text-sm text-parchment/70 hover:text-oldgold transition-colors" data-i18n="footer.link1">
+                    The Two Cultures by C.P. Snow
+                </a>
+                <a href="https://davidepstein.com/range/" class="text-sm text-parchment/70 hover:text-oldgold transition-colors" data-i18n="footer.link2">
+                    Range by David Epstein
+                </a>
+                <a href="https://en.wikipedia.org/wiki/The_Polymath" class="text-sm text-parchment/70 hover:text-oldgold transition-colors" data-i18n="footer.link3">
+                    The Polymath by Waqas Ahmed
+                </a>
+            </div>
+            <p class="text-sm" data-i18n="footer.credit">A visual inquiry by Ezz Eldin Ahmed</p>
+            <p class="text-xs mt-2" data-i18n="footer.copyright">© 2025 | Crafted with ink and curiosity</p>
+        </div>
+    </footer>
+     
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          class I18n {
+            constructor() {
+              this.translations = {};
+              this.currentLang = localStorage.getItem('lang') || 'en';
+            }
+        
+            async loadTranslations(lang) {
+              try {
+                const response = await fetch(`/static/i18n/${lang}.json`);
+                if (!response.ok) throw new Error('Translation file not found');
+                this.translations[lang] = await response.json();
+              } catch (error) {
+                console.error('Failed to load translations:', error);
+              }
+            }
+        
+            async setLanguage(lang) {
+              if (!this.translations[lang]) {
+                await this.loadTranslations(lang);
+              }
+              this.currentLang = lang;
+              localStorage.setItem('lang', lang);
+              this.applyTranslations();
+              this.applyDirection();
+            }
+        
+            applyTranslations() {
+              document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                const translation = this.translations[this.currentLang]?.[key] || key;
+                
+                if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                  element.placeholder = translation;
+                } else {
+                  element.textContent = translation;
+                }
+              });
+            }
+        
+            applyDirection() {
+              if (this.currentLang === 'ar') {
+                document.documentElement.dir = 'rtl';
+                document.body.classList.add('rtl');
+              } else {
+                document.documentElement.dir = 'ltr';
+                document.body.classList.remove('rtl');
+              }
+            }
+          }
+        
+          // Initialize i18n
+          const i18n = new I18n();
+          // ===== END OF I18N CODE =====
+            // Cache for loaded polymaths data
+            const polymathCache = {
+                en: null,
+                ar: null
+            };
+            let debounceTimer;
+    
+            // ===== LIGHTBOX/MODAL SETUP =====
+            function setupLightbox() {
+              // Create modal element if it doesn't exist
+              let modal = document.getElementById('lightboxModal');
+              const lightboxImages = Array.from(document.querySelectorAll('.timeline-img-btn[data-src]'));
+              let currentIndex = 0;
+              
+              if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'lightboxModal';
+                modal.className = 'fixed inset-0 bg-black/90 z-50 hidden flex items-center justify-center p-4';
+                modal.innerHTML = `
+                  <div class="relative max-w-full max-h-full">
+                    <img id="lightboxImage" class="max-w-[90vw] max-h-[90vh] object-contain">
+                    <button class="absolute -top-12 right-0 text-white text-4xl hover:text-oldgold transition-colors">&times;</button>
+                    <button class="lightbox-nav left-4 md:left-8" id="lightboxPrev">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </button>
+                    <button class="lightbox-nav right-4 md:right-8" id="lightboxNext">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                  </div>
+                `;
+                document.body.appendChild(modal);
+                
+                // Navigation functions
+                const navigate = (direction) => {
+                  if (direction === 'prev') {
+                    currentIndex = (currentIndex - 1 + lightboxImages.length) % lightboxImages.length;
+                  } else {
+                    currentIndex = (currentIndex + 1) % lightboxImages.length;
+                  }
+                  updateLightboxImage();
+                };
+                
+                const updateLightboxImage = () => {
+                  if (lightboxImages[currentIndex]) {
+                    document.getElementById('lightboxImage').src = lightboxImages[currentIndex].dataset.src;
+                  }
+                };
+                
+                // Button event listeners
+                document.getElementById('lightboxPrev').addEventListener('click', () => navigate('prev'));
+                document.getElementById('lightboxNext').addEventListener('click', () => navigate('next'));
+                
+                // Keyboard navigation
+                document.addEventListener('keydown', (e) => {
+                  if (!modal.classList.contains('hidden')) {
+                    if (e.key === 'ArrowLeft') {
+                      navigate('prev');
+                      e.preventDefault();
+                    } else if (e.key === 'ArrowRight') {
+                      navigate('next');
+                      e.preventDefault();
+                    }
+                  }
+                });
+                
+                // Close modal
+                modal.addEventListener('click', (e) => {
+                  if (e.target === modal || e.target.closest('button:not(.lightbox-nav)')) {
+                    modal.classList.add('hidden');
+                  }
+                });
+              }
+              
+              // Update the click handler for image buttons
+              document.addEventListener('click', (e) => {
+                const imgBtn = e.target.closest('.timeline-img-btn');
+                if (imgBtn && imgBtn.dataset.src) {
+                  e.preventDefault();
+                  currentIndex = lightboxImages.indexOf(imgBtn);
+                  const modal = document.getElementById('lightboxModal');
+                  const modalImg = document.getElementById('lightboxImage');
+                  modalImg.src = imgBtn.dataset.src;
+                  modal.classList.remove('hidden');
+                  modal.focus(); // Focus the modal for keyboard navigation
+                }
+              });
+            }
+    
+            // Initialize lightbox early
+            setupLightbox();
+    
+            function renderPolymaths(polymaths, lang) {
+                const container = document.querySelector('.polymath-scroller');
+                const fragment = document.createDocumentFragment();
+    
+                polymaths.forEach(pm => {
+                    // Use appropriate language fields with fallback to English
+                    const name = lang === "ar" ? (pm.name_ar || pm.name_en) : pm.name_en;
+                    const fields = lang === "ar" ? (pm.fields_ar || pm.fields_en) : pm.fields_en;
+                    const quote = lang === "ar" ? (pm.quote_ar || pm.quote_en) : pm.quote_en;
+                    const description = lang === "ar" ? (pm.description_ar || pm.description_en) : pm.description_en;
+    
+                    const card = document.createElement('button');
+                    card.className = "timeline-img-btn polymath-card flex-shrink-0 w-80 bg-white/90 p-6 rounded-lg shadow-lg border border-deepbrown/10 hover:shadow-xl transition-all";
+                    card.setAttribute('data-src', pm.image_url || '');
+    
+                    card.innerHTML = `
+                        <div class="h-48 mb-4 bg-parchment flex items-center justify-center overflow-hidden rounded">
+                            <img src="${pm.image_url}" alt="${name}" class="h-full object-cover" loading="lazy">
+                        </div>
+                        <h3 class="font-garamond text-2xl text-oxblood mb-2">${name}</h3>
+                        <p class="text-sm text-deepbrown/70 mb-3">${fields || ''}</p>
+                        <div class="blockquote-plaque text-sm">
+                            <p class="text-deepbrown/80">${quote || ''}</p>
+                        </div>
+                        <p class="text-xs text-deepbrown/60 mt-2">${description || ''}</p>
+                    `;
+                    fragment.appendChild(card);
+                });
+    
+                // Clear and render with animation
+                container.innerHTML = '';
+                container.appendChild(fragment);
+    
+                // Observe new cards for intersection
+                const cards = container.querySelectorAll('.polymath-card');
+                cards.forEach((card, index) => {
+                    setTimeout(() => {
+                        intersectionObserver.observe(card);
+                    }, index * 100);
+                });
+            }
+    
+            // ===== INTERSECTION OBSERVER =====
+            const intersectionObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        
+                        if (entry.target.id === 'geography') {
+                            document.querySelectorAll('.country-bar-fill').forEach(bar => {
+                                bar.style.width = bar.style.width;
+                            });
+                        }
+                        
+                        intersectionObserver.unobserve(entry.target);
+                    }
+                });
+            }, {
+                rootMargin: '0px 0px -10% 0px',
+                threshold: 0.05
+            });
+    
+            // ===== CAROUSEL FUNCTION =====
+            function setupAutoScroller(containerSelector, leftSelector, rightSelector) {
+              const container = document.querySelector(containerSelector);
+              const leftBtn = document.querySelector(leftSelector);
+              const rightBtn = document.querySelector(rightSelector);
+            
+              if (!container) return;
+            
+              // --- Calculate card width dynamically (card + gap) ---
+              const card = container.querySelector('.polymath-card');
+              const gap = 32; // space-x-8 = 2rem = 32px
+              const cardWidth = card ? card.offsetWidth + gap : 352;
+            
+              // --- Scroll helper ---
+              const scrollTo = (direction) => {
+                const currentScroll = container.scrollLeft;
+                const newScroll = direction === 'left'
+                  ? Math.max(0, currentScroll - cardWidth)
+                  : currentScroll + cardWidth;
+            
+                container.scrollTo({
+                  left: newScroll,
+                  behavior: 'smooth'
+                });
+              };
+            
+              // --- Button click handlers ---
+              leftBtn?.addEventListener('click', () => scrollTo('left'));
+              rightBtn?.addEventListener('click', () => scrollTo('right'));
+            
+              // --- Swipe gestures ---
+              let touchStartX = 0;
+              let touchEndX = 0;
+            
+              container.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+              }, { passive: true });
+            
+              container.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+              }, { passive: true });
+            
+              const handleSwipe = () => {
+                const threshold = 50; // min swipe distance
+                if (touchStartX - touchEndX > threshold) {
+                  scrollTo('right'); // Swipe left
+                } else if (touchEndX - touchStartX > threshold) {
+                  scrollTo('left'); // Swipe right
+                }
+              };
+            
+              // --- Keyboard navigation (optional) ---
+              container.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') scrollTo('left');
+                if (e.key === 'ArrowRight') scrollTo('right');
+              });
+            
+              // --- Auto-scroll ---
+              let interval;
+              const startAutoScroll = () => {
+                interval = setInterval(() => {
+                  const isAtEnd = container.scrollLeft + container.clientWidth >= container.scrollWidth - 1;
+                  scrollTo(isAtEnd ? 'left' : 'right');
+                }, 5000);
+              };
+            
+              const pauseAutoScroll = () => clearInterval(interval);
+            
+              container.addEventListener('mouseenter', pauseAutoScroll);
+              container.addEventListener('mouseleave', startAutoScroll);
+              container.addEventListener('touchstart', pauseAutoScroll);
+            
+              // --- Initialize ---
+              startAutoScroll();
+            }
+            
+              // --- Center the first card on load ---
+              window.addEventListener('load', () => {
+                // Compute initial offset to center the content
+                const totalScroll = container.scrollWidth - container.clientWidth;
+                if (totalScroll > 0) {
+                  const center = totalScroll / 2;
+                  container.scrollTo({
+                    left: center,
+                    behavior: 'auto'
+                  });
+                }
+              });
+
+            // ===== INITIALIZATION =====
+            // Language switchers:
+            function setupLanguageButton(id, lang) {
+              const btn = document.getElementById(id);
+              if (btn) {
+                btn.addEventListener('click', async () => {
+                  await i18n.setLanguage(lang); // Update UI translations
+                  
+                  // Reload polymath data for the new language
+                  const container = document.querySelector('.polymath-scroller');
+                  container.classList.add('loading');
+                  
+                  try {
+                    if (!polymathCache[lang]) {
+                      const response = await fetch(`/api/polymaths/`);
+                      if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+                      polymathCache[lang] = await response.json();
+                    }
+                    renderPolymaths(polymathCache[lang], lang);
+                  } catch (err) {
+                    console.error("Failed to fetch polymaths:", err);
+                    container.innerHTML = '<div class="text-center py-8 text-red-600">Failed to load data. Please try again.</div>';
+                  } finally {
+                    container.classList.remove('loading');
+                  }
+                });
+              }
+            }
+            setupLanguageButton('lang-en', 'en');
+            setupLanguageButton('lang-ar', 'ar');
+    
+            // Initialize carousels
+            setupAutoScroller('.polymath-scroller', '.scroll-left', '.scroll-right', 320, 5000);
+            setupAutoScroller('.gallery-scroller', '.gallery-left', '.gallery-right', 300, 5000);
+    
+            // Initial load
+            const initialLang = localStorage.getItem('lang') || 'en';
+            i18n.setLanguage(initialLang);
+            
+            (async () => {
+              try {
+                if (!polymathCache[initialLang]) {
+                  const response = await fetch(`/api/polymaths/`);
+                  if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+                  polymathCache[initialLang] = await response.json();
+                }
+                renderPolymaths(polymathCache[initialLang], initialLang);
+              } catch (err) {
+                console.error("Failed to fetch polymaths:", err);
+              }
+            })();
+    
+            // Fade-in animations
+            const fadeElements = document.querySelectorAll('.fade-in');
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            
+            fadeElements.forEach(el => intersectionObserver.observe(el));
+            timelineItems.forEach(el => intersectionObserver.observe(el));
+    
+            // Smooth scroll
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+    
+            // === ECharts Dual-Axis Chart ===
+            Papa.parse("/static/data/polymaths_clean.csv", {
+                download: true,
+                header: true,
+                complete: function(results) {
+                    const raw = results.data;
+    
+                    // Aggregate by birth_year
+                    const grouped = {};
+                    raw.forEach(d => {
+                        const year = parseInt(d.birth_year);
+                        const score = parseFloat(d.polymath_score_mapped);
+                        if (!isNaN(year) && !isNaN(score)) {
+                            if (!grouped[year]) grouped[year] = [];
+                            grouped[year].push(score);
+                        }
+                    });
+    
+                    // Compute avg and counts
+                    const years = Object.keys(grouped).map(Number).sort((a,b) => a - b);
+                    const avgScores = years.map(y => {
+                        const scores = grouped[y];
+                        return scores.reduce((a,b) => a + b, 0) / scores.length;
+                    });
+                    const counts = years.map(y => grouped[y].length);
+    
+                    // Smooth average scores (moving average)
+                    function smooth(values, window = 5) {
+                        const smoothed = [];
+                        for (let i = 0; i < values.length; i++) {
+                            const start = Math.max(0, i - window);
+                            const end = Math.min(values.length - 1, i + window);
+                            const subset = values.slice(start, end + 1);
+                            const mean = subset.reduce((a, b) => a + b, 0) / subset.length;
+                            smoothed.push(mean);
+                        }
+                        return smoothed;
+                    }
+                    const smoothedScores = smooth(avgScores, 5);
+    
+                    // Initialize ECharts instance
+                    const chartDom = document.getElementById('polymathTimeSeries');
+                    const myChart = echarts.init(chartDom);
+    
+                    // Detect if mobile
+                    const isMobile = window.innerWidth < 640;
+                    
+                    // Adjust x-axis labels: show fewer labels on mobile
+                    const labelInterval = isMobile ? Math.ceil(years.length / 6) : 1;
+                    
+                    const option = {
+                        backgroundColor: '#f5f0e6',
+                        title: {
+                            text: 'The Rise and Fall of the Polymath',
+                            left: 'center',
+                            textStyle: {
+                                fontFamily: 'EB Garamond, serif',
+                                color: '#3A2D23',
+                                fontSize: isMobile ? 14 : 18
+                            }
+                        },
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: { type: 'cross' }
+                        },
+                        legend: {
+                            top: isMobile ? 10 : 30,
+                            textStyle: {
+                                color: '#3A2D23',
+                                fontFamily: 'EB Garamond, serif',
+                                fontSize: isMobile ? 10 : 12
+                            }
+                        },
+                        grid: {
+                            top: isMobile ? 60 : 80,
+                            right: isMobile ? 40 : 60,
+                            left: isMobile ? 40 : 60,
+                            bottom: isMobile ? 40 : 60
+                        },
+                        xAxis: {
+                            type: 'category',
+                            data: years,
+                            name: 'Birth Year',
+                            nameTextStyle: {
+                                fontFamily: 'EB Garamond, serif',
+                                fontSize: isMobile ? 10 : 12
+                            },
+                            axisLabel: {
+                                color: '#3A2D23',
+                                interval: labelInterval // skip labels on mobile
+                            },
+                            axisLine: { lineStyle: { color: '#3A2D23' } },
+                            splitLine: { lineStyle: { color: 'rgba(0,0,0,0.05)' } }
+                        },
+                        yAxis: [
+                            {
+                                type: 'value',
+                                name: 'Average Polymath Score',
+                                position: 'left',
+                                min: 2,
+                                max: 7,
+                                axisLabel: { color: 'goldenrod', fontSize: isMobile ? 10 : 12 },
+                                axisLine: { lineStyle: { color: 'goldenrod' } },
+                                splitLine: { lineStyle: { color: 'rgba(0,0,0,0.05)' } }
+                            },
+                            {
+                                type: 'value',
+                                name: 'Number of Polymaths',
+                                position: 'right',
+                                scale: true,
+                                axisLabel: { fontSize: isMobile ? 10 : 12 }
+                            }
+                        ],
+                        series: [
+                            {
+                                name: 'Polymaths Born per Year',
+                                type: 'bar',
+                                yAxisIndex: 1,
+                                itemStyle: { color: 'dimgrey' },
+                                barMaxWidth: isMobile ? 16 : 12,
+                                data: counts
+                            },
+                            {
+                                name: 'Avg Polymath Score (Smoothed)',
+                                type: 'line',
+                                smooth: true,
+                                symbol: 'none',
+                                lineStyle: { color: 'goldenrod', width: isMobile ? 2 : 3 },
+                                data: smoothedScores
+                            }
+                        ]
+                    };
+    
+                    myChart.setOption(option);
+                    window.addEventListener('resize', () => myChart.resize());
+    
+                    // === World Map Heatmap ===
+                    const countryAliases = {
+                      'Czech Republic': 'Czech Rep.',
+                      'Bosnia and Herzegovina': 'Bosnia and Herz.',
+                      'Democratic Republic of the Congo': 'Dem. Rep. Congo'
+                    };
+                    
+                    const countryCounts = {};
+                    raw.forEach(d => {
+                      if (d.citizenship && d.citizenship !== "Unknown") {
+                        d.citizenship.split('/').forEach(country => {
+                          const c = country.trim();
+                          const normalizedName = countryAliases[c] || c;
+                          if (normalizedName) {
+                            countryCounts[normalizedName] = (countryCounts[normalizedName] || 0) + 1;
+                          }
+                        });
+                      }
+                    });
+                    
+                    const countryData = Object.entries(countryCounts)
+                      .map(([name, value]) => ({ name, value }))
+                      .sort((a, b) => b.value - a.value);
+    
+                    const mapDom = document.getElementById('countryMap');
+                    const mapChart = echarts.init(mapDom);
+    
+                    const mapOption = {
+                        backgroundColor: '#f5f0e6',
+                        tooltip: {
+                            trigger: 'item',
+                            formatter: params => `${params.name}<br/>Polymaths: ${params.value || 0}`
+                        },
+                        visualMap: {
+                            min: 0,
+                            max: Math.max(...countryData.map(d => d.value)),
+                            text: ['High','Low'],
+                            realtime: false,
+                            calculable: true,
+                            inRange: { color: ['#e6dcc4','#d5a021','#76323F'] },
+                            textStyle: { color: '#3A2D23' }
+                        },
+                        series: [
+                            {
+                                name: 'Polymaths by Country',
+                                type: 'map',
+                                map: 'world',
+                                roam: true,
+                                emphasis: { label: { show: false } },
+                                itemStyle: { borderColor: '#999' },
+                                data: countryData
+                            }
+                        ]
+                    };
+    
+                    mapChart.setOption(mapOption);
+                    window.addEventListener('resize', () => mapChart.resize());
+
+                    // === Enhanced Occupation Treemap ===
+                    const occupationCounts = {};
+                    raw.forEach(d => {
+                        if (d.occupations && typeof d.occupations === 'string' && d.occupations !== "Unknown") {
+                            d.occupations.replace(/[\[\]']/g, "").split(', ').forEach(occupation => {
+                                const o = occupation.trim();
+                                if (o) {
+                                    occupationCounts[o] = (occupationCounts[o] || 0) + 1;
+                                }
+                            });
+                        }
+                    });
+                    
+                    // Icon mapping for occupations
+                    const occupationIcons = {
+                        'writer': '✍️',
+                        'university teacher': '🎓',
+                        'physician': '🩺',
+                        'politician': '🏛️',
+                        'philosopher': '🧠',
+                        'mathematician': '🧮',
+                        'poet': '📜',
+                        'botanist': '🌿',
+                        'historian': '📜',
+                        'engineer': '⚙️',
+                        'teacher': '👨‍🏫',
+                        'physicist': '⚛️',
+                        'astronomer': '🔭',
+                        'naturalist': '🦋',
+                        'translator': '🗣️'
+                    };
+                    
+                    // Process data with icons and enhanced styling
+                    const values = Object.values(occupationCounts);
+                    const maxVal = Math.max(...values);
+                    const minVal = Math.min(...values);
+                    
+                    const occupationData = Object.entries(occupationCounts)
+                        .map(([name, value]) => ({
+                            name,
+                            value,
+                            icon: occupationIcons[name] || '✨',
+                            tooltip: `${occupationIcons[name] || ''} ${name}<br/><b>${value}</b> polymaths`,
+                            itemStyle: {
+                                color: (value - minVal) / (maxVal - minVal) > 0.7 ? '#5E3023' : 
+                                       (value - minVal) / (maxVal - minVal) > 0.4 ? '#895737' : '#B88B4A',
+                                borderColor: '#3A2D23',
+                                borderWidth: 1,
+                                shadowBlur: 8,
+                                shadowColor: 'rgba(0,0,0,0.1)'
+                            }
+                        }))
+                        .sort((a, b) => b.value - a.value)
+                        .slice(0, 15);
+                    
+                    const treemapDom = document.getElementById('occupationTreemap');
+                    const treemapChart = echarts.init(treemapDom);
+                    
+                    const treemapOption = {
+                        backgroundColor: 'transparent',
+                        title: {
+                            text: 'Where Minds Roamed',
+                            left: 'center',
+                            textStyle: {
+                                fontFamily: 'EB Garamond, serif',
+                                fontSize: 22,
+                                color: '#3A2D23',
+                                fontWeight: 'normal'
+                            }
+                        },
+                        tooltip: {
+                            trigger: 'item',
+                            backgroundColor: '#F5F0E6',
+                            borderColor: '#D5A021',
+                            borderWidth: 2,
+                            textStyle: {
+                                color: '#3A2D23',
+                                fontFamily: 'EB Garamond, serif',
+                                fontSize: 14
+                            },
+                            formatter: params => params.data.tooltip
+                        },
+                        series: [{
+                            type: 'treemap',
+                            data: occupationData,
+                            breadcrumb: { show: false },
+                            roam: false,
+                            nodeClick: false,
+                            label: {
+                                show: true,
+                                fontFamily: 'EB Garamond, serif',
+                                fontSize: 14,
+                                color: '#F5F0E6',
+                                rich: {
+                                    icon: {
+                                        fontSize: 18,
+                                        padding: [0, 5, 0, 0]
+                                    }
+                                },
+                                formatter: params => {
+                                    const shortName = params.name.length > 12 ? 
+                                        params.name.substring(0, 10) + '…' : params.name;
+                                    return `{icon|${params.data.icon}} ${shortName}`;
+                                }
+                            },
+                            upperLabel: {
+                                show: true,
+                                fontFamily: 'EB Garamond, serif',
+                                fontSize: 11,
+                                color: '#3A2D23',
+                                formatter: params => params.value
+                            },
+                            itemStyle: {
+                                borderColor: '#D5A021',
+                                borderWidth: 1
+                            },
+                            emphasis: {
+                                label: {
+                                    show: true,
+                                    color: '#3A2D23'
+                                },
+                                itemStyle: {
+                                    shadowBlur: 12,
+                                    shadowOffsetY: 4,
+                                    borderWidth: 2
+                                }
+                            },
+                            levels: [{
+                                itemStyle: {
+                                    borderColor: '#3A2D23',
+                                    gapWidth: 1
+                                }
+                            }],
+                            visualMap: {
+                                show: false,
+                                min: minVal,
+                                max: maxVal,
+                                inRange: {
+                                    colorAlpha: [0.7, 1]
+                                }
+                            }
+                        }],
+                        animationDuration: 1200,
+                        animationEasing: 'quarticOut'
+                    };
+                    
+                    treemapChart.setOption(treemapOption);
+                    window.addEventListener('resize', () => treemapChart.resize());
+                    
+                    // Add parchment texture and styling
+                    const style = document.createElement('style');
+                    style.textContent = `
+                        #occupationTreemap {
+                            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" opacity="0.03"><path d="M0 0h100v100H0z" fill="none"/><path d="M20 20l60 60M80 20l-60 60" stroke="%233A2D23" stroke-width="0.5"/></svg>');
+                            border: 1px solid #D5A021;
+                            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+                            transition: box-shadow 0.3s ease;
+                        }
+                        #occupationTreemap:hover {
+                            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+                        }
+                    `;
+                    document.head.appendChild(style);
+                    
+                    // === Bubble Scatter Chart ===
+                    let scatterData = raw.map(d => {
+                        const year = parseInt(d.birth_year);
+                        const score = parseFloat(d.polymath_score_mapped);
+                        return [year, score, d.name];
+                    }).filter(item => !isNaN(item[0]) && !isNaN(item[1]));
+    
+                    scatterData.sort((a, b) => b[1] - a[1]);
+    
+                    const yearsAll = scatterData.map(d => d[0]);
+                    const scoresAll = scatterData.map(d => d[1]);
+                    const minYear = Math.min(...yearsAll);
+                    const maxYear = Math.max(...yearsAll);
+                    const minScore = Math.min(...scoresAll);
+                    const maxScore = Math.max(...scoresAll);
+    
+                    const bubbleDom = document.getElementById('polymathScatter');
+                    const bubbleChart = echarts.init(bubbleDom);
+    
+                    const bubbleOption = {
+                        backgroundColor: '#f5f0e6',
+                        title: {
+                            text: 'Exceptional Polymaths: Breadth of Knowledge Over Time',
+                            left: 'center',
+                            textStyle: {
+                                fontFamily: 'EB Garamond, serif',
+                                color: '#3A2D23',
+                                fontSize: 18
+                            }
+                        },
+                        tooltip: {
+                            trigger: 'item',
+                            formatter: params => {
+                                const [year, score, name] = params.value;
+                                return `
+                                    <b>${name}</b><br/>
+                                    Birth Year: ${year}<br/>
+                                    Polymath Score: ${score}
+                                `;
+                            }
+                        },
+                        xAxis: {
+                            type: 'value',
+                            name: 'Birth Year',
+                            min: minYear - 10,
+                            max: maxYear + 10,
+                            nameTextStyle: { fontFamily: 'EB Garamond, serif' },
+                            axisLabel: { color: '#3A2D23' },
+                            axisLine: { lineStyle: { color: '#3A2D23' } },
+                            splitLine: { lineStyle: { color: 'rgba(0,0,0,0.05)' } }
+                        },
+                        yAxis: {
+                            type: 'value',
+                            name: 'Polymath Score',
+                            min: Math.max(0, minScore - 1),
+                            max: maxScore + 1,
+                            axisLabel: { color: '#3A2D23' },
+                            axisLine: { lineStyle: { color: '#3A2D23' } },
+                            splitLine: { lineStyle: { color: 'rgba(0,0,0,0.05)' } }
+                        },
+                        series: [
+                            {
+                                name: 'Polymaths',
+                                type: 'scatter',
+                                symbolSize: function (data) {
+                                    const minSize = 12;
+                                    const maxSize = 70;
+                                    const score = data[1];
+                                    const normalized = (score - minScore) / (maxScore - minScore || 1);
+                                    return minSize + normalized * (maxSize - minSize);
+                                },
+                                itemStyle: {
+                                    color: 'rgba(34, 139, 140, 0.65)',
+                                    borderColor: '#5A4636',
+                                    borderWidth: 1
+                                },
+                                emphasis: {
+                                    itemStyle: { color: 'rgba(34, 139, 140, 0.9)' }
+                                },
+                                data: scatterData
+                            }
+                        ]
+                    };
+    
+                    bubbleChart.setOption(bubbleOption);
+                    window.addEventListener('resize', () => bubbleChart.resize());
+                }
+            });
+                    document.getElementById('menu-toggle').addEventListener('click', () => {
+                        document.getElementById('mobile-menu').classList.toggle('hidden');
+                    });
+        });
+    </script>
+</body>
+</html>

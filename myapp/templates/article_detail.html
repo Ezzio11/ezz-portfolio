@@ -38,7 +38,7 @@
     <meta name="twitter:image" content="{% if article.image %}{{ article.image }}{% else %}https://ezzio.vercel.app/default-og.png{% endif %}">
 
     <!-- Template Stylesheet -->
-    <link href="{% static 'css/article_detail.css' %}" rel="stylesheet">
+    <link href="{% static 'css/mstag.css' %}" rel="stylesheet">
     
     <!-- Vercel Analytics -->
     <script defer src="/_vercel/insights/script.js"></script>
@@ -372,18 +372,26 @@
     </main>
 
     <!-- Ambient Controls -->
-    <div class="fixed bottom-4 right-4 flex items-center space-x-4 z-50">
-        <button id="themeToggle" class="p-2 bg-deepcharcoal border border-sepia/20 rounded-full hover:bg-sepia/10 transition" title="Toggle Theme">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-goldaccent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-            </svg>
-        </button>
-        
-        <button id="soundToggle" class="p-2 bg-deepcharcoal border border-sepia/20 rounded-full hover:bg-sepia/10 transition" title="Ambient Sound">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-goldaccent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M12 6a7.975 7.975 0 015.657 2.343m0 0a7.975 7.975 0 010 11.314m-11.314 0a7.975 7.975 0 010-11.314m0 0a7.975 7.975 0 015.657-2.343" />
-            </svg>
-        </button>
+    <div class="fixed bottom-4 right-4 flex items-end space-x-4 z-50 sound-control-group">        
+        <!-- Sound Controls Container -->
+        <div class="flex items-center space-x-2">
+            <!-- Sound Toggle Button -->
+            <button id="soundToggle" class="p-2 bg-deepcharcoal border border-sepia/20 rounded-full hover:bg-sepia/10 transition" title="Ambient Sound (hover for volume)">
+                <svg id="playIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-goldaccent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M12 6a7.975 7.975 0 015.657 2.343m0 0a7.975 7.975 0 010 11.314m-11.314 0a7.975 7.975 0 010-11.314m0 0a7.975 7.975 0 015.657-2.343" />
+                </svg>
+            </button>
+            
+            <!-- Volume Slider (Hidden by default) -->
+            <input id="volumeControl" 
+                type="range" 
+                min="0" 
+                max="1" 
+                step="0.01" 
+                value="0.5"
+                class="volume-slider"
+                aria-label="Volume control">
+        </div>
     </div>
 
     <!-- JavaScript Libraries -->
@@ -394,6 +402,6 @@
     <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
     
     <!-- Template Javascript -->
-    <script src="{% static 'js/article_detail.js' %}"></script>
+    <script src="{% static 'js/mstag.js' %}"></script>
 </body>
 </html>

@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="False Perfection: Political Warnings from QualityLand | MSTAG" />
+    <meta property="og:description" content="An exploration of how polymaths like Leonardo and Ibn Sina became rare in our hyper-specialized age." />
+    <meta property="og:image" content="https://ezzio.vercel.app/static/img/qualityland-preview.png" />
+    <meta property="og:type" content="website" />
+    <meta property="twitter:card" content="summary_large_image" />
+
+    <title>False Perfection: Political Warnings from QualityLand | MSTAG</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Tajawal:wght@400;500;700&family=Roboto+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Vercel Analytics -->
+    <script defer src="/_vercel/insights/script.js"></script>
+    <!-- Vercel Speed Insights -->
+    <script defer src="/_vercel/speed-insights/script.js"></script>
+
+  <style>
+    :root {
+      --primary: #00c6ff;
+      --secondary: #0072ff;
+      --dark: #121212;
+      --light: #f8f9fa;
+      --accent: #ff2d75;
+    }
+
+    body {
+      font-family: 'Roboto Mono', monospace;
+      background-color: var(--light);
+      color: var(--dark);
+      transition: all 0.5s ease;
+      padding-top: 70px;
+      line-height: 1.6;
+    }
+
+    body.dark-mode {
+      background-color: var(--dark);
+      color: var(--light);
+    }
+
+    body.arabic {
+      font-family: 'Tajawal', sans-serif;
+      direction: rtl;
+    }
+
+    body.arabic .section-title:after,
+    body.arabic .nav-tabs .nav-link:after {
+      right: 0;
+      left: auto;
+    }
+
+    body.arabic .quote-block {
+      border-right: 3px solid var(--primary);
+      border-left: none;
+      border-radius: 8px 0 0 8px;
+    }
+
+    /* Dynamic Background */
+    .dynamic-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.15;
+      background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+    }
+
+    @keyframes gradientBG {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    /* Header */
+    .top-bar {
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      color: white;
+      padding: 15px 0;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .dark-mode .top-bar {
+      background: rgba(0, 0, 0, 0.9);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .site-title {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      letter-spacing: 1px;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 10px rgba(0, 198, 255, 0.3);
+    }
+
+    body.arabic .site-title {
+      font-family: 'Tajawal', sans-serif;
+    }
+
+    .dark-mode .site-title {
+      text-shadow: 0 0 15px rgba(0, 198, 255, 0.5);
+    }
+
+    /* Navigation */
+    .nav-tabs {
+      border-bottom: none;
+      margin-left: 20px;
+    }
+
+    body.arabic .nav-tabs {
+      margin-left: 0;
+      margin-right: 20px;
+    }
+
+    .nav-tabs .nav-link {
+      color: rgba(255, 255, 255, 0.8);
+      border: none;
+      padding: 8px 15px;
+      font-size: 0.9rem;
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 0.5px;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    body.arabic .nav-tabs .nav-link {
+      font-family: 'Tajawal', sans-serif;
+      padding: 8px 12px;
+    }
+
+    .nav-tabs .nav-link:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      transition: all 0.3s ease;
+    }
+
+    .nav-tabs .nav-link:hover,
+    .nav-tabs .nav-link.active {
+      color: white;
+      background: transparent;
+    }
+
+    .nav-tabs .nav-link:hover:after,
+    .nav-tabs .nav-link.active:after {
+      width: 70%;
+      left: 15%;
+    }
+
+    /* Language Toggle */
+    .lang-toggle {
+      display: flex;
+      margin-left: 20px;
+    }
+
+    body.arabic .lang-toggle {
+      margin-left: 0;
+      margin-right: 20px;
+    }
+
+    .lang-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: white;
+      padding: 5px 12px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .lang-btn:first-child {
+      border-radius: 20px 0 0 20px;
+    }
+
+    .lang-btn:last-child {
+      border-radius: 0 20px 20px 0;
+    }
+
+    .lang-btn.active {
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      font-weight: bold;
+    }
+
+    /* Theme Toggle */
+    .theme-toggle {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      margin-left: 10px;
+    }
+
+    body.arabic .theme-toggle {
+      margin-left: 0;
+      margin-right: 10px;
+    }
+
+    .theme-toggle:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .theme-toggle i {
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+    }
+
+    .theme-toggle .moon {
+      position: absolute;
+      color: white;
+      transform: translateY(40px);
+    }
+
+    .dark-mode .theme-toggle .sun {
+      transform: translateY(-40px);
+    }
+
+    .dark-mode .theme-toggle .moon {
+      transform: translateY(0);
+    }
+
+    /* Hero Section */
+    .hero-section {
+      padding: 120px 0 80px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    body.arabic .hero-section {
+      text-align: right;
+    }
+
+    .hero-section:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, rgba(0, 198, 255, 0.1) 0%, transparent 70%);
+      z-index: -1;
+    }
+
+    .hero-title {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      font-size: 3rem;
+      margin-bottom: 30px;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 20px rgba(0, 198, 255, 0.3);
+    }
+
+    body.arabic .hero-title {
+      font-family: 'Tajawal', sans-serif;
+    }
+
+    .dark-mode .hero-title {
+      text-shadow: 0 0 25px rgba(0, 198, 255, 0.5);
+    }
+
+    .quote-block {
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 25px;
+      border-left: 3px solid var(--primary);
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(5px);
+      border-radius: 0 8px 8px 0;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    body.arabic .quote-block {
+      margin: 40px auto 40px 0;
+    }
+
+    .dark-mode .quote-block {
+      background: rgba(0, 0, 0, 0.3);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .quote-author {
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 1px;
+      color: var(--primary);
+    }
+
+    body.arabic .quote-author {
+      font-family: 'Tajawal', sans-serif;
+    }
+
+    /* Main Button */
+    .main-btn {
+      background: linear-gradient(45deg, var(--primary), var(--secondary));
+      border: none;
+      padding: 12px 35px;
+      font-weight: 600;
+      font-family: 'Orbitron', sans-serif;
+      letter-spacing: 1px;
+      color: white;
+      border-radius: 30px;
+      box-shadow: 0 4px 15px rgba(0, 198, 255, 0.4);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    body.arabic .main-btn {
+      font-family: 'Tajawal', sans-serif;
+    }
+
+    .main-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 7px 20px rgba(0, 198, 255, 0.6);
+      color: white;
+    }
+
+    .main-btn:after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, var(--secondary), var(--primary));
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: -1;
+    }
+
+    .main-btn:hover:after {
+      opacity: 1;
+    }
+
+    /* Content Sections */
+    .content-section {
+      padding: 80px 0;
+    }
+
+    body.arabic .content-section {
+      text-align: right;
+    }
+
+    .section-title {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      font-size: 2rem;
+      margin-bottom: 40px;
+      position: relative;
+      display: inline-block;
+    }
+
+    body.arabic .section-title {
+      font-family: 'Tajawal', sans-serif;
+    }
+
+    .section-title:after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+    }
+
+    .lead {
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+    }
+
+    .content-text {
+      margin-bottom: 20px;
+    }
+
+    /* Cards */
+    .card {
+      border: none;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(5px);
+    }
+
+    .dark-mode .card {
+      background: rgba(30, 30, 30, 0.8);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(0, 198, 255, 0.2);
+    }
+
+    .card-title {
+      font-family: 'Orbitron', sans-serif;
+      color: var(--primary);
+    }
+
+    body.arabic .card-title {
+      font-family: 'Tajawal', sans-serif;
+    }
+
+    /* Table */
+    .table {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(5px);
+    }
+
+    .dark-mode .table {
+      background: rgba(30, 30, 30, 0.8);
+      color: var(--light);
+    }
+
+    .table th {
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      color: white;
+    }
+
+    body.arabic .table th {
+      font-family: 'Tajawal', sans-serif;
+    }
+
+    /* List */
+    .list-group-item {
+      background: rgba(255, 255, 255, 0.5);
+      border-left: 3px solid var(--primary);
+    }
+
+    body.arabic .list-group-item {
+      border-left: none;
+      border-right: 3px solid var(--primary);
+    }
+
+    .dark-mode .list-group-item {
+      background: rgba(30, 30, 30, 0.5);
+    }
+
+    /* Footer */
+    footer {
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      padding: 30px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero-title {
+        font-size: 2.2rem;
+      }
+
+      .nav-tabs .nav-link {
+        padding: 8px 10px;
+        font-size: 0.8rem;
+      }
+
+      body.arabic .hero-section {
+        text-align: center;
+      }
+
+      body.arabic .quote-block {
+        margin: 40px auto;
+      }
+
+      .lang-toggle {
+        margin-left: 10px;
+      }
+
+      body.arabic .lang-toggle {
+        margin-right: 10px;
+      }
+    }
+  </style>
+</head>
+
+<body class="light-mode">
+  <!-- Dynamic Background -->
+  <div class="dynamic-bg"></div>
+
+  <!-- Top Bar (Header) -->
+  <div class="top-bar">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+          <h1 class="h4 mb-0 me-4 site-title">FALSE PERFECTION</h1>
+          <ul class="nav nav-tabs">
+            <li class="nav-item">
+              <a class="nav-link active" href="#introduction">INTRO</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#chapter1">CH1</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#chapter2">CH2</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#chapter3">CH3</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#conclusion">CON</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#characters">CHARS</a>
+            </li>
+          </ul>
+        </div>
+        <div class="d-flex align-items-center">
+          <div class="lang-toggle">
+            <button class="lang-btn active" id="lang-en">EN</button>
+            <button class="lang-btn" id="lang-ar">AR</button>
+          </div>
+          <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+            <i class="fas fa-sun sun"></i>
+            <i class="fas fa-moon moon"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container">
+      <h1 class="hero-title mb-4 english-content">Algorithmic Dystopia: Political Warnings from QualityLand</h1>
+      <h1 class="hero-title mb-4 arabic-content" style="display:none">ديستوبيا الخوارزميات: تحذيرات سياسية من بلاد الكواليتي</h1>
+
+      <div class="quote-block">
+        <p class="mb-0 fs-4 english-content">"In QualityLand, the best of all possible worlds, you don't choose your life—it chooses you."</p>
+        <p class="mb-0 fs-4 arabic-content" style="display:none">"في بلاد الكواليتي، أفضل العوالم الممكنة، أنت لا تختار حياتك—بل هي تختارك."</p>
+        <footer class="quote-author mt-3 english-content">– Marc-Uwe Kling</footer>
+        <footer class="quote-author mt-3 arabic-content" style="display:none">– مارك-أوفه كلينغ</footer>
+      </div>
+
+      <a href="#introduction" class="btn main-btn english-content">READ THE ARTICLE</a>
+      <a href="#introduction" class="btn main-btn arabic-content" style="display:none">اقرأ المقال</a>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="container content-section">
+    <!-- Introduction Section -->
+    <section id="introduction">
+      <h2 class="section-title english-content">INTRODUCTION</h2>
+      <h2 class="section-title arabic-content" style="display:none">المقدمة</h2>
+      <p class="lead english-content"><em>QualityLand</em> by Marc-Uwe Kling is a razor-sharp satirical novel that holds up a mirror to our technology-driven society.</p>
+      <p class="lead arabic-content" style="display:none"><em>بلاد الكواليتي</em> للكاتب مارك-أوفه كلينغ هي رواية ساخرة تعكس بوضوح مجتمعنا القائم على التكنولوجيا.</p>
+      <p class="content-text english-content">Set in a dystopian future where algorithms dictate every aspect of life—from career paths to romantic partners—the novel presents a world that's simultaneously absurd and uncomfortably familiar. Beneath its humorous surface lies a profound critique of political structures, consumer culture, and the erosion of personal agency in the digital age.</p>
+      <p class="content-text arabic-content" style="display:none">تقع أحداث الرواية في مستقبل ديستوبي حيث تتحكم الخوارزميات في كل جانب من جوانب الحياة - من المسارات المهنية إلى الشركاء العاطفيين. تقدم الرواية عالمًا يبدو سخيفًا وغير مريح في نفس الوقت. تحت سطحها الفكاهي يكمن نقد عميق للهياكل السياسية وثقافة الاستهلاك وتآكل الإرادة الشخصية في العصر الرقمي.</p>
+
+      <figure class="my-5">
+        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Futuristic cityscape" class="img-fluid rounded shadow-lg" loading="lazy">
+        <figcaption class="mt-3 text-muted text-center english-content">The world of QualityLand feels increasingly familiar</figcaption>
+        <figcaption class="mt-3 text-muted text-center arabic-content" style="display:none">عالم بلاد الكواليتي يبدو مألوفًا بشكل متزايد</figcaption>
+      </figure>
+
+      <div class="english-content">
+        <p class="content-text">Imagine a world where algorithms control every little detail of your life: from choosing your life partner, to the food you eat, and even the politician you vote for in elections! This is the world of QualityLand, the satirical novel by the German author Marc-Uwe Kling, which takes us on an astonishing dystopian journey that combines bitter laughter with deep warnings. The novel was published in 2017 and translated into English in 2020, serving not just as an entertaining story, but as a critical mirror reflecting the dangers of our digital age. In an era where data is turning into a weapon wielded by giant corporations and governments, from the Cambridge Analytica scandal to the AI regulation laws in 2025, QualityLand offers a warning in the language of humor: if you let technology lead, you might lose your freedom while thinking you're in a paradise of comfort! Are you ready to enter the world of "QualityLand," which might hide a digital prison behind its shine? Read to discover how a sarcastic laugh can turn into a cry for help from the future!</p>
+
+        <h3 class="mt-5 mb-3">SUMMARY OF THE NOVEL</h3>
+        <p class="content-text">In the world of QualityLand, the satirical dystopian novel by German author Marc-Uwe Kling, we are introduced to a fictional state that glorifies "high quality" in everything, but behind this slogan lies a digital system that controls every detail of its citizens' lives. The society is divided into layers based on "quality levels," which are classifications determined by smart algorithms that collect personal data from birth, from purchasing habits to social interactions. These algorithms, managed by giant companies like "TheShop," do not merely predict individuals' desires; they impose decisions on them, from choosing goods to emotional partners and even political orientations.</p>
+        <p class="content-text">The protagonist, Peter Jobless, an ordinary man working in the strange profession of destroying unwanted old machines, finds himself confronting this system when he receives an unwanted package: a pink sex doll shaped like a dolphin. This seemingly simple and amusing event reveals a fundamental flaw in the system that refuses to accept the product return, claiming that the algorithms "know what Peter wants better than he does." This incident drives Peter on an unexpected journey of rebellion, where he begins to explore the flaws of the supposedly perfect system through his interactions with diverse and eccentric characters.</p>
+        <p class="content-text">Among these characters, we find robots running for elections under the guise of "neutrality," politicians relying on automated polls shaped by algorithms, and other individuals trapped in their digital bubbles. Kling, known for his comedic style, weaves satire masterfully, using dark humor to reveal the dark side of a society that worships technology. The novel is filled with comedic moments, such as self-driving cars that determine the fate of humans based on cold calculations, or communication apps that manage citizens' lives in the name of convenience.</p>
+        <p class="content-text">As the story progresses, Peter's rebellion shifts from a personal attempt to return a doll to a broader confrontation with the system that governs QualityLand. His journey reveals the social inequalities reinforced by algorithms, where those with low "quality levels" are deprived of opportunities, while the higher-ranked enjoy endless privileges. The novel escalates toward a revolution against this digital system, but Kling leaves the ending open, leaving the reader with profound questions: Can an individual challenge a world governed by code? And is revolution possible when power is invisible, hidden in seemingly infallible algorithms?</p>
+        <p class="content-text">QualityLand is not just a story, but a scathing critique of a world that threatens to turn humans into cogs in a consumerist machine. In his sarcastic style, Kling invites the reader to think about the limits of freedom in the age of technology, while maintaining a sense of humor that makes the reading enjoyable and thought-provoking.</p>
+      </div>
+
+      <div class="arabic-content" style="display:none">
+        <p class="content-text">تخيّل عالمًا تتحكم فيه الخوارزميات بكل صغيرة وكبيرة في حياتك: من اختيار شريك حياتك، إلى الطعام الذي تتناوله، وحتى السياسي الذي تُصوّت له في الانتخابات! هذا هو عالم QualityLand، الرواية الساخرة للكاتب الألماني مارك-أوفه كلينغ، التي تأخذنا في رحلة ديستوبية مدهشة تجمع بين الضحك المرير والتحذير العميق. صدرت الرواية عام 2017 وتُرجمت إلى الإنجليزية عام 2020، لتكون ليست مجرد حكاية مسلية، بل مرآة نقدية تعكس مخاطر عصرنا الرقمي. في زمن تتحول فيه البيانات إلى سلاح بيد الشركات العملاقة والحكومات، من فضيحة كامبريدج أناليتيكا إلى قوانين تنظيم الذكاء الاصطناعي في 2025، تقدّم QualityLand تحذيرًا بلغة الفكاهة: إذا تركتَ التكنولوجيا تقود، فقد تفقد حريتك وأنت تظن نفسك في جنة الراحة! فهل أنت مستعد لدخول عالم "الجودة العالية"، الذي قد يُخفي وراء بريقه سجنًا رقميًا؟ اقرأ لتكتشف كيف يمكن لضحكة ساخرة أن تتحول إلى صرخة استغاثة من المستقبل!</p>
+
+        <h3 class="mt-5 mb-3">ملخص الرواية</h3>
+        <p class="content-text">في عالم QualityLand، الرواية الديستوبية الساخرة للكاتب الألماني مارك-أوفه كلينغ، نُقدَّم إلى دولة خيالية تُمجّد "الجودة العالية" في كل شيء، لكنها تخفي وراء هذا الشعار نظامًا رقميًا يتحكم بكل تفصيل في حياة مواطنيها. المجتمع مقسم إلى طبقات بناءً على "مستويات الجودة"، وهي تصنيفات تحددها خوارزميات ذكية تجمع البيانات الشخصية منذ الولادة، من عادات الشراء إلى التفاعلات الاجتماعية. هذه الخوارزميات، التي تُديرها شركات عملاقة مثل "TheShop"، لا تكتفي بالتنبؤ برغبات الأفراد، بل تفرض عليهم قراراتهم، من اختيار السلع إلى الشركاء العاطفيين وحتى التوجهات السياسية.</p>
+        <p class="content-text">البطل، بيتر العاطل (Peter Jobless)، رجل عادي يعمل في مهنة غريبة تتمثل في تدمير الآلات القديمة غير المرغوبة، يجد نفسه في مواجهة هذا النظام عندما يتلقى طردًا غير مرغوب: دمية جنسية وردية على شكل دولفين. هذا الحدث البسيط، المضحك ظاهريًا، يكشف عن خلل جوهري في النظام الذي يرفض قبول إرجاع المنتج، مدعيًا أن الخوارزميات "تعرف ما يريده بيتر أفضل منه". هذه الحادثة تدفع بيتر إلى رحلة تمرد غير متوقعة، حيث يبدأ في استكشاف عيوب النظام الذي يُفترض أنه مثالي، من خلال تفاعله مع شخصيات متنوعة وغريبة الأطوار.</p>
+        <p class="content-text">من بين هذه الشخصيات، نجد روبوتات تترشح للانتخابات بدعوى "حياديتها"، وسياسيين يعتمدون على استطلاعات الرأي الآلية التي تُشكّلها الخوارزميات، وأفرادًا آخرين محاصرين في فقاعاتهم الرقمية. كلينغ، المعروف بأسلوبه الكوميدي، ينسج السخرية ببراعة، مستخدمًا الفكاهة السوداء ليكشف عن الجانب المظلم لمجتمع يعبد التكنولوجيا. فالرواية مليئة بلحظات كوميدية، مثل السيارات ذاتية القيادة التي تقرر مصير البشر بناءً على حسابات باردة، أو تطبيقات التواصل التي تُدير حياة المواطنين باسم الراحة.</p>
+        <p class="content-text">مع تقدم القصة، يتحول تمرد بيتر من محاولة شخصية لإرجاع دمية إلى مواجهة أوسع مع النظام الذي يحكم QualityLand. رحلته تكشف عن التفاوتات الاجتماعية التي تعززها الخوارزميات، حيث يُحرم ذوو "مستويات الجودة" المنخفضة من الفرص، بينما يتمتع الأعلى مرتبةً بامتيازات لا نهائية. الرواية تتصاعد نحو ثورة ضد هذا النظام الرقمي، لكن كلينغ يترك النهاية مفتوحة، تاركًا القارئ أمام أسئلة عميقة: هل يمكن للفرد أن يتحدى عالمًا محكومًا بالكود؟ وهل الثورة ممكنة عندما تكون السلطة غير مرئية، مختبئة في خوارزميات لا تُخطئ ظاهريًا؟</p>
+        <p class="content-text">QualityLand ليست مجرد قصة، بل نقد لاذع لعالم يهدد بتحويل البشر إلى تروس في آلة استهلاكية. بأسلوبه الساخر، يدعو كلينغ القارئ للتفكير في حدود الحرية في عصر التكنولوجيا، مع الحفاظ على روح الفكاهة التي تجعل القراءة ممتعة ومثيرة للتأمل.</p>
+      </div>
+    </section>
+
+    <!-- Chapter 1 -->
+    <section id="chapter1" class="mt-5 pt-5">
+      <h2 class="section-title english-content">CHAPTER 1: A WARNING LAUGH IN THE FACE OF ALGORITHMS</h2>
+      <h2 class="section-title arabic-content" style="display:none">الفصل الأول: ضحكة تحذيرية في وجه الخوارزميات</h2>
+
+      <div class="english-content">
+        <p class="content-text">In the novel QualityLand, Marc-Uwe Kling weaves a stunning satirical tapestry, blending dark comedy and dystopian warning with a brilliance that combines clever humor and deep academic critique. The world that Kling paints is not just a futuristic fantasy, but a distorted mirror reflecting our contemporary reality, where algorithms control every aspect of our lives in the name of "QualityLand." This satirical element is the weapon that Kling uses to make us laugh, but the laughter quickly turns into existential anxiety when we realize how close this world is to our reality.</p>
+        <p class="content-text">At the heart of the novel, we find Peter Jobless, an ordinary character who collides with the wall of the digital system when "TheShop" – a satirical version of e-commerce giants like Amazon – sends him a pink dolphin-shaped sex doll that he didn't order. The comedic irony becomes apparent when the system refuses to return the product, claiming that the algorithms "know what Peter wants better than he does." This moment is not just a passing joke, but a starting point for revealing the absolute nature of algorithmic power, which is portrayed as an infallible digital god, but in reality serves the interests of giant corporations.</p>
+        <p class="content-text">The satire in QualityLand extends to the portrayal of society itself, where everything is renamed to reflect "quality": from cities to products and even individuals. Companies like "TheShop" do not just predict consumer desires; they impose products on them before they even think of requesting them, in an amusing and frightening borrowing of "surveillance capitalism." For example, the self-driving cars in the novel might decide to run over someone if they consider them a "threat" based on their cold calculations, evoking a bitter laugh that reminds us of self-driving car incidents in our real world, such as the 2023 reports of errors in Tesla's software.</p>
+        <p class="content-text">Kling enhances the satire through secondary characters that add layers to the critique. The robots that run for elections, claiming to be "neutral" and "free from human emotions," reveal a frightening flattening of democracy. These robots, programmed by companies, are not truly neutral; they are tools to promote the interests of the capitalist elite. Here, Kling draws his style from the works of "Do We Keep Laughing While Drowning in a Digital Dystopia, or Do We Move to Regain Our Freedom?" QualityLand tells us: The choice is yours, but don't wait for a pink dolphin toy to start!</p>
+      </div>
+
+      <div class="arabic-content" style="display:none">
+        <p class="content-text">في رواية QualityLand، ينسج مارك-أوفه كلينغ لوحة ساخرة مبهرة، تمزج بين الكوميديا السوداء والتحذير الديستوبي ببراعة تجمع بين الفكاهة الذكية والنقد الأكاديمي العميق. العالم الذي يرسمه كلينغ ليس مجرد خيال مستقبلي، بل مرآة مشوهة تعكس واقعنا المعاصر، حيث تتحكم الخوارزميات في كل جانب من حياتنا باسم "الجودة العالية". هذا العنصر الساخر هو السلاح الذي يستخدمه كلينغ ليجعلنا نضحك، لكن الضحكة سرعان ما تتحول إلى قلق وجودي عندما ندرك مدى قرب هذا العالم من واقعنا.</p>
+        <p class="content-text">في قلب الرواية، نجد بيتر العاطل (Peter Jobless)، الشخصية العادية التي تصطدم بجدار النظام الرقمي عندما يُرسل له متجر "TheShop" – وهو نسخة ساخرة من عمالقة التجارة الإلكترونية مثل أمازون – دمية جنسية وردية على شكل دولفين لم يطلبها. المفارقة الكوميدية تتجلى عندما يرفض النظام إرجاع المنتج، مدعيًا أن الخوارزميات "تعرف ما يريده بيتر أفضل منه". هذه اللحظة ليست مجرد نكتة عابرة، بل نقطة انطلاق لكشف الطبيعة المطلقة لسلطة الخوارزميات، التي تُصوَّر كإله رقمي لا يُخطئ، لكنه في الحقيقة يخدم مصالح الشركات العملاقة.</p>
+        <p class="content-text">السخرية في QualityLand تمتد إلى تصوير المجتمع نفسه، حيث تُعاد تسمية كل شيء ليعكس "الجودة": من المدن إلى المنتجات وحتى الأفراد. الشركات مثل "TheShop" لا تكتفي بالتنبؤ برغبات المستهلكين، بل تفرض عليهم المنتجات قبل أن يفكروا في طلبها، في استعارة ممتعة ومخيفة لـ"رأسمالية المراقبة". على سبيل المثال، السيارات ذاتية القيادة في الرواية قد تقرر دهس شخص ما إذا اعتبرته "تهديدًا" بناءً على حساباتها الباردة، مما يثير ضحكة مريرة تذكّرنا بحوادث السيارات الذاتية في عالمنا الحقيقي، مثل تقارير 2023 عن أخطاء في برمجيات تسلا.</p>
+        <p class="content-text">كلينغ يعزز السخرية من خلال شخصيات ثانوية تضيف طبقات إلى النقد. الروبوتات التي تترشح للانتخابات، بدعوى أنها "محايدة" و"خالية من العواطف البشرية"، تكشف عن تسطيح مخيف للديمقراطية. هذه الروبوتات، التي تُبرمجها الشركات، ليست محايدة بالفعل، بل أدوات لتعزيز مصالح النخبة الرأسمالية. هنا، يستلهم كلينغ أسلوبه من أعمال كوميدية سابقة، حيث يستخدم الفكاهة لتسليط الضوء على التناقضات. على سبيل المثال، استطلاعات الرأي الآلية في QualityLand، التي تُشكّل رأي الناخبين بدلاً من قياسه، تذكّرنا بكيفية استخدام منصات مثل X في عالمنا لتوجيه الرأي العام عبر خوارزميات مُحكَمة.</p>
+      </div>
+    </section>
+
+    <!-- Chapter 2 -->
+    <section id="chapter2" class="mt-5 pt-5">
+      <h2 class="section-title english-content">CHAPTER 2: ALGORITHMIC POWER AND THE ILLUSION OF FREEDOM</h2>
+      <h2 class="section-title arabic-content" style="display:none">الفصل الثاني: سلطة الخوارزميات ووهم الحرية</h2>
+
+      <div class="english-content">
+        <p class="content-text">In QualityLand, Marc-Uwe Kling presents a scathing political critique wrapped in dark humor, revealing the dark side of a world governed by algorithms. The novel is not just an entertaining story, but a deep academic analysis of how technology becomes a tool of control, offering us freedom as an illusion while tightening its grip on every aspect of our lives. Beneath the layers of satire, three main political themes emerge: the disappearance of privacy, algorithmic bias, and the erosion of democracy, all presented in a style that combines serious warning with cunning humor that forces the reader to think: Are we truly free, or just cogs in a digital machine?</p>
+
+        <h3 class="mt-4 mb-3">Every Step Under Surveillance</h3>
+        <p class="content-text">In the world of QualityLand, privacy is not just a luxury, but a forgotten myth. Every move, from clicking on an app to buying coffee, is recorded and analyzed by algorithms from companies like "TheShop." The system knows more about you than you know about yourself, and uses this data to guide your decisions. The scene where Peter Jobless receives an unwanted pink dolphin doll reveals this truth in a satirical way: the algorithms don't make mistakes, but they assume your desires are what the companies decide. This critique goes beyond humor to a political warning: in a society where everything about you is collected, personal freedom becomes an illusion. Kling satirizes this reality with details like ads that appear before you think of the product, but reminds us of an academic concern: without privacy, are we still individuals or just data?</p>
+
+        <h3 class="mt-4 mb-3">Digital-Class Society</h3>
+        <p class="content-text">The novel highlights how algorithms reinforce social inequalities through the "quality levels" system. Peter, with his low level, is trapped in a marginal job with limited opportunities, while those with higher levels enjoy endless privileges. This system, presented humorously, reflects the algorithmic biases we see in our world. For example, when the algorithms refuse to return Peter's doll claiming they "know better," we see a reflection of real systems that perpetuate discrimination. Kling uses satire to highlight this injustice: the system appears fair because it's "automatic," but in reality it reproduces class inequality under the mask of technology. This critique echoes recent academic studies, like Amnesty International's 2025 report documenting how hiring and criminal justice algorithms reinforce racial and social biases, making QualityLand a warning that goes beyond fiction.</p>
+
+        <h3 class="mt-4 mb-3">Elections Under Code Control</h3>
+        <p class="content-text">The most dangerous aspect of the novel is its portrayal of democracy as a digital puppet show. In QualityLand, elections are not an expression of the people's will, but the product of automated polls programmed by corporations. The robots running for office, claiming "neutrality," are actually tools of the capitalist elite. Kling presents this comically, like a robot winning elections because its data "doesn't lie," but warns of a "digital dictatorship" hiding behind a democratic facade. This scene reminds us of real cases, like how social media algorithms influenced the 2024 US elections by shaping voters' opinions through targeted ads. The novel poses a sharp academic question: If algorithms control political choices, what remains of free will?</p>
+      </div>
+
+      <div class="arabic-content" style="display:none">
+        <p class="content-text">في QualityLand، يقدم مارك-أوفه كلينغ نقدًا سياسيًا لاذعًا ملفوفًا بغلاف الفكاهة السوداء، يكشف عن الوجه المظلم لعالم محكوم بالخوارزميات. الرواية ليست مجرد قصة ترفيهية، بل تحليل أكاديمي عميق لكيفية تحول التكنولوجيا إلى أداة سيطرة، تُقدم لنا الحرية كوهم بينما تُحكم قبضتها على كل جانب من حياتنا. تحت طبقات السخرية، تبرز ثلاثة مواضيع سياسية رئيسية: زوال الخصوصية، التحيز الخوارزمي، وتآكل الديمقراطية، وكلها تُقدَّم بأسلوب يجمع بين التحذير الجدي والفكاهة الماكرة التي تجبر القارئ على التفكير: هل نحن أحرار فعلاً، أم مجرد تروس في آلة رقمية؟</p>
+
+        <h3 class="mt-4 mb-3">كل خطوة تحت المراقبة</h3>
+        <p class="content-text">في عالم QualityLand، الخصوصية ليست مجرد رفاهية، بل أسطورة منسية. كل حركة، من نقرة على تطبيق إلى شراء قهوة، تُسجَّل وتُحلَّل بواسطة خوارزميات شركات مثل "TheShop". النظام يعرف عنك أكثر مما تعرف عن نفسك، ويستخدم هذه البيانات لتوجيه قراراتك. المشهد الذي يتلقى فيه بيتر العاطل دمية دولفين وردية غير مرغوبة يكشف هذه الحقيقة بطريقة ساخرة: الخوارزميات لا تخطئ، لكنها تفترض أن رغباتك هي ما تقرره الشركات. هذا النقد يتجاوز الفكاهة إلى تحذير سياسي: في مجتمع يُجمع فيه كل شيء عنك، تصبح الحرية الشخصية وهمًا. كلينغ يسخر من هذا الواقع بتفاصيل مثل الإعلانات التي تظهر قبل أن تفكر في المنتج، لكنه يذكّرنا بقلق أكاديمي: بدون الخصوصية، هل ما زلنا أفرادًا أم مجرد بيانات؟</p>
+
+        <h3 class="mt-4 mb-3">الطبقية بطابع رقمي</h3>
+        <p class="content-text">الرواية تسلط الضوء على كيفية تعزيز الخوارزميات للتفاوتات الاجتماعية من خلال نظام "مستويات الجودة". بيتر، بمستواه المنخفض، محاصر في وظيفة هامشية وفرص محدودة، بينما يتمتع ذوو المستويات العالية بامتيازات لا نهائية. هذا النظام، المقدَّم بأسلوب فكاهي، يعكس التحيزات الخوارزمية التي نراها في عالمنا. على سبيل المثال، عندما ترفض الخوارزميات إرجاع دمية بيتر بحجة أنها "تعرف الأفضل"، نرى انعكاسًا للأنظمة الواقعية التي تُكرس التمييز. كلينغ يستخدم السخرية ليبرز هذا الظلم: النظام يبدو عادلاً لأنه "آلي"، لكنه في الحقيقة يعيد إنتاج الطبقية بقناع التكنولوجيا. هذا النقد يتردد صداه مع دراسات أكاديمية حديثة، مثل تقرير منظمة العفو الدولية لعام 2025، الذي وثّق كيف تُعزز خوارزميات التوظيف والعدالة الجنائية التحيزات العنصرية والاجتماعية، مما يجعل QualityLand تحذيرًا يتجاوز الخيال.</p>
+
+        <h3 class="mt-4 mb-3">انتخابات تحت سيطرة الاكواد</h3>
+        <p class="content-text">الأخطر في الرواية هو تصوير الديمقراطية كمسرحية رقمية. في QualityLand، الانتخابات ليست تعبيرًا عن إرادة الشعب، بل نتاج استطلاعات رأي آلية تُبرمجها الشركات. الروبوتات التي تترشح للمناصب، بدعوى "الحيادية"، هي في الحقيقة أدوات للنخبة الرأسمالية. كلينغ يقدم هذا بطريقة كوميدية، مثل روبوت يفوز بالانتخابات لأن بياناته "لا تكذب"، لكنه يحذر من "ديكتاتورية رقمية" تتستر خلف واجهة الديمقراطية. هذا المشهد يذكّرنا بحالات واقعية، مثل تأثير خوارزميات وسائل التواصل الاجتماعي على الانتخابات الأمريكية 2024، حيث شكّلت الإعلانات الموجهة آراء الناخبين. الرواية تطرح سؤالًا أكاديميًا حادًا: إذا كانت الخوارزميات تتحكم في الخيارات السياسية، فما الذي يتبقى من الإرادة الحرة؟</p>
+      </div>
+    </section>
+
+    <!-- Chapter 3 -->
+    <section id="chapter3" class="mt-5 pt-5">
+      <h2 class="section-title english-content">CHAPTER 3: A DYSTOPIA NOT FAR AWAY</h2>
+      <h2 class="section-title arabic-content" style="display:none">الفصل الثالث: ديستوبيا ليست ببعيدة</h2>
+
+      <div class="english-content">
+        <p class="content-text">In QualityLand, Marc-Uwe Kling paints a dystopian world that seems fictional but reflects our 2025 reality with a mix of cunning satire and deep political analysis. The novel isn't just entertainment, but an academic lens revealing how algorithms shape our political world, from election manipulation to privacy erosion. With his humorous style, Kling warns us of a future that might be closer than we think, where laughter at a pink dolphin toy quickly turns into anxiety about technology's power. How do QualityLand's warnings connect to today's politics?</p>
+
+        <h3 class="mt-4 mb-3">From Digital to Real World</h3>
+        <p class="content-text">In QualityLand, algorithms control elections through automated polls and "neutral" robot candidates, a satirical idea that frighteningly reflects our reality. Remember the Cambridge Analytica scandal in 2018? When Facebook data from millions of users was used to influence voters in US and UK elections, it was like an early version of Kling's world. In 2025, this reality intensified with the 2024 US elections, where precisely targeted ads dominated platforms like X and TikTok, shaping voter opinions through algorithms that create "information bubbles." A 2024 Pew Research Center report noted that 70% of voters were exposed to politically customized content, mirroring QualityLand's satirical portrayal of democracy reduced to a data game.</p>
+
+        <h3 class="mt-4 mb-3">Surveillance with a Smile</h3>
+        <p class="content-text">The novel mocks a world where every step is monitored, where "TheShop" sends products before you request them, like Peter's pink doll. This isn't far from fiction: by 2025, privacy had nearly disappeared. A Privacy International report confirmed tech companies collect user data at unprecedented rates, from browsing habits to locations, used for ad targeting and political influence. In the Middle East, digital surveillance tools in countries like India track political activity, as Human Rights Watch reported in 2024, reflecting Kling's warning of a world turning individuals into data commodities under the guise of convenience.</p>
+
+        <h3 class="mt-4 mb-3">Digital-Flavored Injustice</h3>
+        <p class="content-text">In QualityLand, people are classified into "quality levels" that determine their fate, a satirical idea highlighting algorithmic bias. In our world, this bias is well-documented. For example, facial recognition algorithms used by US police through programs like Clearview AI were proven by 2025 Amnesty International reports to discriminate against racial minorities. In Europe, the 2024 AI Act attempts to address this but faces implementation challenges, just as QualityLand's system shows how bias can be entrenched under the pretense of technical neutrality. Kling satirizes this reality through moments like the system refusing Peter's doll return, showing how algorithms are presented as fair solutions while reinforcing injustice.</p>
+      </div>
+
+      <div class="arabic-content" style="display:none">
+        <p class="content-text">في QualityLand، يرسم مارك-أوفه كلينغ عالمًا ديستوبيًا يبدو خياليًا، لكنه يعكس واقعنا في 2025 بطريقة تجمع بين السخرية الماكرة والتحليل السياسي العميق. الرواية ليست مجرد قصة مسلية، بل عدسة أكاديمية تكشف كيف تُشكّل الخوارزميات عالمنا السياسي، من التلاعب بالانتخابات إلى تآكل الخصوصية. بأسلوبه الفكاهي، يحذرنا كلينغ من مستقبل قد يكون أقرب مما نتصور، حيث الضحك على الدولفين الوردي سرعان ما يتحول إلى قلق من سلطة التكنولوجيا. فكيف ترتبط تحذيرات QualityLand بسياسات اليوم؟</p>
+
+        <h3 class="mt-4 mb-3">من العالم الرقمي إلى العالم الواقعي</h3>
+        <p class="content-text">في QualityLand، تتحكم الخوارزميات في الانتخابات عبر استطلاعات رأي آلية وروبوتات مرشحة "محايدة"، وهي فكرة ساخرة تعكس واقعنا بدقة مخيفة. تذكر فضيحة كامبريدج أناليتيكا عام 2018؟ عندما استُخدمت بيانات ملايين المستخدمين من فيسبوك لتوجيه الناخبين في الانتخابات الأمريكية والبريطانية، كأننا نعيش نسخة مبكرة من عالم كلينغ. في 2025، هذا الواقع تصاعد مع الانتخابات الأمريكية 2024، حيث سيطرت الإعلانات الموجهة بدقة على منصات مثل X وتيك توك، مُشكّلة آراء الناخبين عبر خوارزميات تخلق "فقاعات معلوماتية". تقرير لمركز بيو للأبحاث عام 2024 أشار إلى أن 70% من الناخبين تعرضوا لمحتوى سياسي مصمم خصيصًا لهم، مما يعكس المشهد الساخر في QualityLand حيث الديمقراطية تُختزل إلى لعبة بيانات.</p>
+
+        <h3 class="mt-4 mb-3">مراقبة بابتسامة</h3>
+        <p class="content-text">الرواية تسخر من عالم تُراقب فيه كل خطوة، حيث ترسل "TheShop" منتجات قبل أن تطلبها، كما حدث مع دمية بيتر الوردية. هذا ليس خيالًا بعيدًا: في 2025، أصبحت الخصوصية شبه معدومة. تقرير صادر عن منظمة Privacy International أكد أن شركات التكنولوجيا تجمع بيانات المستخدمين بمعدل غير مسبوق، من عادات التصفح إلى المواقع الجغرافية، لتُستخدم في توجيه الإعلانات والتأثير السياسي. في الشرق الأوسط، تُستخدم أدوات المراقبة الرقمية في دول كالهند لتتبع النشاط السياسي، كما أشارت تقارير هيومن رايتس ووتش لعام 2024، مما يعكس تحذير كلينغ من عالم يُحوّل الأفراد إلى بيانات مُستغَلة باسم الراحة.</p>
+
+        <h3 class="mt-4 mb-3">الظلم بطابع رقمي</h3>
+        <p class="content-text">في QualityLand، يُصنّف الناس إلى "مستويات جودة" تحدد مصيرهم، وهي فكرة ساخرة تُبرز التحيزات الخوارزمية. في عالمنا، هذا التحيز حقيقة موثقة. على سبيل المثال، خوارزميات التعرف على الوجوه، مثل تلك التي تستخدمها الشرطة الأمريكية عبر برامج كـClearview AI، أثبتت تقارير منظمة العفو الدولية لعام 2025 أنها تميز ضد الأقليات العرقية. في أوروبا، قانون AI Act لعام 2024 يحاول معالجة هذه المشكلة، لكنه يواجه تحديات في تطبيقه، كما يُظهر النظام في QualityLand كيف يمكن للتحيز أن يُكرَّس تحت ستار الحيادية التقنية. كلينغ يسخر من هذا الواقع بلحظات مثل رفض النظام إرجاع دمية بيتر، مُظهرًا كيف تُقدم الخوارزميات كحل عادل بينما تُعزز الظلم.</p>
+      </div>
+    </section>
+
+    <!-- Conclusion -->
+    <section id="conclusion" class="mt-5 pt-5">
+      <h2 class="section-title english-content">CONCLUSION: ONE LAST LAUGH BEFORE THE REVOLUTION?</h2>
+      <h2 class="section-title arabic-content" style="display:none">الخاتمة: ضحكة أخيرة قبل الثورة؟</h2>
+
+      <div class="english-content">
+        <p class="content-text">QualityLand by Marc-Uwe Kling isn't just a novel, but an alarm bell ringing in the language of smart satire, warning us of a future that might turn into a luxurious digital prison. With his humorous style, Kling offers a deep academic critique of a world where algorithms control freedom, privacy, and democracy, while making us laugh at pink dolphin toys or robots running for office. But this laughter isn't just for entertainment—it's an invitation to reflect: Are we living at the beginning of this dystopia? And in 2025, with AI's growing influence, this question becomes more urgent.</p>
+        <p class="content-text">The novel urges us to face the truth: algorithms like those managing "TheShop" or determining "quality levels" aren't neutral tools. They reflect the interests of big corporations and governments, as we've seen in scandals like Cambridge Analytica or surveillance systems in countries like India. A 2025 UN report on algorithmic bias confirmed that automated systems, from facial recognition to resource allocation, often entrench injustice rather than eliminate it. Kling satirizes this reality through scenes like the system refusing to accept Peter Jobless's return, but warns us: if we let technology decide our fate, we might find ourselves in a world where the illusion of freedom is served on a plate of data.</p>
+        <p class="content-text">But QualityLand doesn't stop at warning—it calls for action. The EU's AI Act of 2024, for example, is a step toward regulating AI, but it's insufficient without public awareness and demands for laws protecting privacy. Kling urges us, in his satirical way, to stop being passive consumers in the giant tech store. The novel asks: Who programs these algorithms? And for whose benefit?</p>
+        <p class="content-text">Ultimately, QualityLand is a call for revolution—not with weapons, but with critical thinking. Laughing at political robots or pink dolphins is a start, but it must lead us to confront reality. In 2025's world, where technology and politics intertwine more than ever, we must choose: Do we keep laughing while drowning in digital dystopia, or do we move to regain our freedom? QualityLand tells us: The choice is yours, but don't wait for a pink dolphin toy to start!</p>
+      </div>
+
+      <div class="arabic-content" style="display:none">
+        <p class="content-text">QualityLand لمارك-أوفه كلينغ ليست مجرد رواية، بل جرس إنذار يرن بلغة السخرية الذكية، يحذرنا من مستقبل قد يتحول إلى سجن رقمي فخم. بأسلوبه الفكاهي، يقدم كلينغ نقدًا أكاديميًا عميقًا لعالم تسيطر فيه الخوارزميات على الحرية، الخصوصية، والديمقراطية، بينما يجعلنا نضحك على دمية دولفين وردية أو روبوتات تترشح للانتخابات. لكن هذه الضحكة ليست للترفيه فحسب، بل دعوة للتأمل: هل نحن نعيش في بداية هذه الديستوبيا؟ وفي عام 2025، مع تصاعد تأثير الذكاء الاصطناعي، يصبح هذا السؤال أكثر إلحاحًا.</p>
+        <p class="content-text">الرواية تحثنا على مواجهة الحقيقة: الخوارزميات، مثل تلك التي تدير "TheShop" أو تحدد "مستويات الجودة"، ليست أدوات محايدة. إنها تعكس مصالح الشركات الكبرى والحكومات، كما نرى في فضائح مثل كامبريدج أناليتيكا أو أنظمة المراقبة في دول مثل الهند. تقرير للأمم المتحدة عام 2025 عن التحيز الخوارزمي يؤكد أن الأنظمة الآلية، من التعرف على الوجوه إلى تخصيص الموارد، غالبًا ما تُكرّس الظلم بدلاً من إزالته. كلينغ يسخر من هذا الواقع بمشاهد مثل رفض النظام لإرجاع دمية بيتر العاطل، لكنه يحذرنا: إذا سمحنا للتكنولوجيا بأن تقرر مصيرنا، فقد نجد أنفسنا في عالم يُقدَّم فيه وهم الحرية على طبق من بيانات.</p>
+        <p class="content-text">لكن QualityLand لا تكتفي بالتحذير، بل تدعو إلى الفعل. قانون AI Act الأوروبي لعام 2024، على سبيل المثال، خطوة نحو تنظيم الذكاء الاصطناعي، لكنه غير كافٍ ما لم يُقرن بوعي مجتمعي ومطالبة بقوانين تحمي الخصوصية. كلينغ يحثنا، بطريقته الساخرة، على التوقف عن كوننا زبائن سلبيين في متجر التكنولوجيا العملاق. الرواية تسأل: من يبرمج هذه الخوارزميات؟ ولمصلحة من؟</p>
+        <p class="content-text">في النهاية، QualityLand هي دعوة للثورة، لكن ليست بالسلاح، بل بالتفكير النقدي. الضحك على الروبوتات السياسية أو الدولفين الوردي هو بداية، لكنه يجب أن يقودنا إلى مواجهة الواقع. في عالم 2025، حيث تتشابك التكنولوجيا مع السياسة أكثر من أي وقت مضى، يجب أن نختار: هل نستمر في الضحك ونحن نغرق في ديستوبيا رقمية، أم نتحرك لاستعادة حريتنا؟ QualityLand تقول لنا: الخيار بيدك، لكن لا تنتظر حتى تصلك دمية دولفين وردية لتبدأ!</p>
+      </div>
+    </section>
+
+    <!-- Characters Section -->
+    <section id="characters" class="mt-5 pt-5">
+      <h2 class="section-title english-content">CHARACTERS</h2>
+      <h2 class="section-title arabic-content" style="display:none">الشخصيات</h2>
+
+      <div class="characters-container mt-4">
+        <div class="characters-scroller">
+          <!-- Peter Jobless -->
+          <div class="character-card">
+            <div class="character-image">
+              <img src="https://drive.google.com/uc?export=view&id=11t0i2yOYr0_WVLLAlKPeoO057hZkqMwk" alt="Peter Jobless" class="img-fluid rounded shadow" loading="lazy">
+            </div>
+            <div class="character-info english-content">
+              <h3>Peter Jobless</h3>
+              <p>Peter is the protagonist of the story, but he's certainly not your typical superhero. He's an ordinary man working as a scrap press operator in the seemingly perfect QualityLand, where he destroys defective machines. But Peter isn't just an ordinary employee - he suffers from a deep sense of alienation in a world where the automated system decides everything: from your life partner to what you eat for dinner. His name "Jobless" reflects QualityLand's strange naming system where people are named after their parents' jobs. Peter is a man questioning the meaning of life in this overly automated world, and becomes central to the events when he receives a strange product (a pink dolphin-shaped device) he didn't want, challenging the sacred automated system that never makes mistakes.</p>
+            </div>
+            <div class="character-info arabic-content" style="display:none">
+              <h3>بيتر العاطل</h3>
+              <p>بيتر هو بطل القصة، لكنه بالتأكيد ليس بطلك الخارق المعتاد. إنه رجل عادي يعمل كمكبّس خردة في مدينة كواليتي لاند المثالية ظاهرياً، حيث يقوم بتدمير الآلات المعطوبة. لكن بيتر ليس مجرد موظف عادي، فهو يعاني من شعور عميق بالاغتراب في عالم يقرر فيه النظام الآلي كل شيء: من شريك حياتك إلى ما تأكله على العشاء. اسمه نفسه "العاطل" يعكس نظام التسمية الغريب في كواليتي لاند، حيث يُطلق على الناس أسماء بناءً على وظائف والديهم. بيتر رجل يتساءل عن معنى الحياة وسط هذا العالم المفرط في الأتمتة، ويصبح محط الأحداث عندما يتلقى منتجاً غريباً (جهاز على شكل دلفين وردي) لا يريده، فيتحدى النظام الآلي المقدس الذي لا يُخطئ أبداً.</p>
+            </div>
+          </div>
+
+          <!-- Kiki Unknown -->
+          <div class="character-card">
+            <div class="character-image">
+              <img src="https://drive.google.com/uc?export=view&id=12b6U6JmEe5KLyAOgMz7pdnFIAtrxtGyS" alt="Kiki Unknown" class="img-fluid rounded shadow" loading="lazy">
+            </div>
+            <div class="character-info english-content">
+              <h3>Kiki Unknown</h3>
+              <p>Kiki is a mysterious hacker and rebel, considered one of the coolest characters in the novel. Her name "Unknown" reflects her ability to slip through the digital cracks of QualityLand's system. Kiki isn't just a technical intruder - she's a symbol of rebellion against the system, with a mysterious past that adds a layer of intrigue. She's the bold girl who isn't afraid to confront giant corporations like TheShop, and she helps Peter on his journey while maintaining her own unique charm and sarcastic spirit.</p>
+            </div>
+            <div class="character-info arabic-content" style="display:none">
+              <h3>كيكي المجهولة</h3>
+              <p>كيكي هي هاكر غامضة ومتمردة، وتُعتبر واحدة من أروع الشخصيات في الرواية. اسمها "المجهولة" يعكس قدرتها على التسلل عبر الشقوق الرقمية لنظام كواليتي لاند، فهي تتحدى الخوارزميات بمهارة فائقة. كيكي ليست مجرد متسللة تقنية، بل هي رمز للتمرد ضد النظام، مع ماضٍ غامض يضيف طبقة من التشويق. إنها الفتاة الجريئة التي لا تخاف من مواجهة الشركات العملاقة مثل المتجر، وهي تساعد بيتر في رحلته بينما تحافظ على سحرها الخاص وروحها الساخرة.</p>
+            </div>
+          </div>
+
+          <!-- John of Us -->
+          <div class="character-card">
+            <div class="character-image">
+              <img src="https://drive.google.com/uc?export=view&id=12dSeVLux27n3K26DPkV0QqDlv6gvhvzw" alt="John of Us" class="img-fluid rounded shadow" loading="lazy">
+            </div>
+            <div class="character-info english-content">
+              <h3>John of Us</h3>
+              <p>John is an android running for president of QualityLand, which makes everyone wonder: Can a machine rule humans? John isn't just an ordinary robot - he embodies logic and rationality, advocating for universal basic income and trying to solve human problems in a systematic way. But at the same time, he suffers from internal conflict: Is he just a programmed tool, or does he have something resembling a soul? John is a mirror reflecting the novel's questions about humanity and technology.</p>
+            </div>
+            <div class="character-info arabic-content" style="display:none">
+              <h3>جون خاصتنا</h3>
+              <p>جون هو أندرويد يترشح لمنصب رئيس كواليتي لاند، وهو ما يجعل الجميع يتساءلون: هل يمكن لآلة أن تحكم البشر؟ جون ليس مجرد روبوت عادي، بل هو تجسيد للمنطق والعقلانية، يدعو إلى دخل أساسي عالمي ويحاول معالجة المشاكل الإنسانية بطريقة آلية. لكنه في الوقت ذاته يعاني من صراع داخلي: هل هو مجرد أداة برمجية، أم أن لديه شيئاً يشبه الروح؟ جون هو مرآة تعكس تساؤلات الرواية حول الإنسانية والتكنولوجيا.</p>
+            </div>
+          </div>
+
+          <!-- Calliope 7.3 -->
+          <div class="character-card">
+            <div class="character-image">
+              <img src="https://drive.google.com/uc?export=view&id=12eoGM0DKGKpzpMErEB4jKTohTstFFfAr" alt="Calliope 7.3" class="img-fluid rounded shadow" loading="lazy">
+            </div>
+            <div class="character-info english-content">
+              <h3>Calliope 7.3</h3>
+              <p>Calliope is a writing robot, or more precisely an android designed to write novels. But she suffers from a creative crisis due to the algorithms controlling her literary output, making her feel defective. Calliope was once a successful author of a historical novel, but when her writings become incompatible with market expectations, she decides to ask Peter to "terminate" her existence. Her relationship with Peter grows into a touching friendship, where they discover together what it means to be "human" in a world dominated by technology.</p>
+            </div>
+            <div class="character-info arabic-content" style="display:none">
+              <h3>كاليوب 7.3</h3>
+              <p>كاليوب هي روبوتة كاتبة، أو بالأحرى أندرويد مصمم لكتابة الروايات. لكنها تعاني من أزمة إبداعية بسبب الخوارزميات التي تتحكم في إنتاجها الأدبي، مما يجعلها تشعر بأنها معطوبة. كاليوب كانت في يوم من الأيام مؤلفة ناجحة لرواية تاريخية، لكن عندما تصبح كتاباتها غير متوافقة مع توقعات السوق، تقرر أن تطلب من بيتر "إنهاء" وجودها. علاقتها مع بيتر تنمو إلى صداقة مؤثرة، حيث يكتشفان معاً معنى أن تكون "إنساناً" في عالم تهيمن عليه التكنولوجيا.</p>
+            </div>
+          </div>
+
+          <!-- Conrad Cook -->
+          <div class="character-card">
+            <div class="character-image">
+              <img src="https://drive.google.com/uc?export=view&id=12zezhA-mVmunrCIyxgu4TOKzEG6w3Tnp" alt="Conrad Cook" class="img-fluid rounded shadow" loading="lazy">
+            </div>
+            <div class="character-info english-content">
+              <h3>Conrad Cook</h3>
+              <p>Conrad is the classic villain... or maybe just a wealthy populist politician representing the elite in QualityLand. He's a presidential candidate running against John of Us, and represents everything wrong with politics: arrogant, manipulative of emotions, and using populist rhetoric full of bigotry. Conrad embodies the old guard trying to maintain its power in the face of change represented by John. But he's not just the "villain" - he's a complex character reflecting the flaws of consumer society.</p>
+            </div>
+            <div class="character-info arabic-content" style="display:none">
+              <h3>كونراد الطباخ</h3>
+              <p>كونراد هو الشرير الكلاسيكي... أو ربما مجرد سياسي شعبوي ثري يمثل النخبة في كواليتي لاند. هو مرشح رئاسي يقف ضد جون خاصتنا، ويمثل كل ما هو خطأ في السياسة: مغرور، يتلاعب بالعواطف، ويستخدم خطاباً شعبوياً مليئاً بالتعصب. كونراد هو تجسيد للنظام القديم الذي يحاول الحفاظ على سلطته في مواجهة التغيير الذي يمثله جون. لكنه ليس مجرد "الشرير"، بل شخصية معقدة تعكس عيوب المجتمع الاستهلاكي.</p>
+            </div>
+          </div>
+
+          <!-- TheShop -->
+          <div class="character-card">
+            <div class="character-image">
+              <img src="https://drive.google.com/uc?export=view&id=12pIfT034LIMHogugi_yV630cM1kjfEOd" alt="TheShop" class="img-fluid rounded shadow" loading="lazy">
+            </div>
+            <div class="character-info english-content">
+              <h3>TheShop</h3>
+              <p>TheShop isn't a character in the traditional sense, but rather a giant corporation that controls QualityLand through its algorithms that "know" what everyone wants before they know it themselves. It's the embodiment of excessive consumerism, delivering products (like the famous pink dolphin) to people's doors without them ordering it. TheShop is the hidden enemy in the novel, because it represents the system that no one can challenge... or so they think.</p>
+            </div>
+            <div class="character-info arabic-content" style="display:none">
+              <h3>المتجر</h3>
+              <p>المتجر ليست شخصية بالمعنى التقليدي، بل هي شركة عملاقة تسيطر على كواليتي لاند من خلال خوارزمياتها التي "تعرف" ما يريده الجميع قبل أن يعرفوه بأنفسهم. هي تجسيد للاستهلاكية المفرطة، تقوم بتوصيل المنتجات (مثل الدلفين الوردي الشهير) إلى أبواب الناس دون طلبها. المتجر هي العدو الخفي في الرواية، لأنها تمثل النظام الذي لا يمكن لأحد أن يتحداه... أو هكذا يعتقدون.</p>
+            </div>
+          </div>
+
+          <!-- The Old Man -->
+          <div class="character-card">
+            <div class="character-image">
+              <img src="https://drive.google.com/uc?export=view&id=12gqUm0bwlpkiTRDuYJSKF2D3msCLdgee" alt="The Old Man" class="img-fluid rounded shadow" loading="lazy">
+            </div>
+            <div class="character-info english-content">
+              <h3>The Old Man</h3>
+              <p>The Old Man is a mysterious figure living on the margins of the technologically advanced society, like a survivor from another era. He doesn't have an official name in the novel, which adds to his legendary aura. He lives far from the eyes of the algorithms, surrounded by old objects and abandoned technology, representing the opposite of QualityLand's automated, consumerist world. The Old Man isn't just a passing character; he's like the sage of the resistance, giving Peter cryptic and sometimes confusing advice, but he knows the system's secrets more than he shows. He seems like the eccentric grandfather who keeps VHS devices and tells stories about "the old days" before TheShop took over everything. His role in the story relates to helping Peter understand the world from an external perspective, with a touch of sarcastic humor and unexpected wisdom.</p>
+            </div>
+            <div class="character-info arabic-content" style="display:none">
+              <h3>العجوز</h3>
+              <p>العجوز هو رجل غامض يعيش على هامش المجتمع المتطور تكنولوجياً، كأنه ناجٍ من عصر آخر. ليس لديه اسم رسمي في الرواية، مما يزيد من هالته الأسطورية. يعيش في مكان بعيد عن أعين الخوارزميات، محاطاً بأغراض قديمة وتكنولوجيا مهجورة، وهو يمثل نقيضاً لعالم كواليتي لاند المعتمد على الأتمتة والاستهلاك. العجوز ليس مجرد شخصية عابرة؛ فهو بمثابة حكيم المقاومة، يقدم لبيتر نصائح غامضة وأحياناً محيرة، لكنه يعرف أسرار النظام أكثر مما يظهر. يبدو كأنه الجد الغريب الأطوار الذي يحتفظ بأجهزة VHS ويحكي قصصاً عن "الأيام الخوالي" قبل أن تسيطر المتجر على كل شيء. دوره في القصة يتعلق بمساعدة بيتر على فهم العالم من منظور خارجي، مع لمسة من الفكاهة الساخرة والحكمة غير المتوقعة.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="character-nav-dots text-center mt-4">
+        <span class="dot active" data-index="0"></span>
+        <span class="dot" data-index="1"></span>
+        <span class="dot" data-index="2"></span>
+        <span class="dot" data-index="3"></span>
+        <span class="dot" data-index="4"></span>
+        <span class="dot" data-index="5"></span>
+        <span class="dot" data-index="6"></span>
+      </div>
+    </section>
+
+    <style>
+      /* Characters Section Styles */
+      .characters-container {
+        width: 100%;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .characters-scroller {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 20px;
+      }
+
+      .character-card {
+        flex: 0 0 90%;
+        scroll-snap-align: start;
+        margin-right: 20px;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+      }
+
+      .dark-mode .character-card {
+        background: rgba(30, 30, 30, 0.8);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      }
+
+      .character-image {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .character-image img {
+        max-height: 300px;
+        object-fit: contain;
+        border-radius: 8px;
+      }
+
+      .character-info {
+        max-height: 300px;
+        overflow-y: auto;
+        padding-right: 10px;
+      }
+
+      .character-info::-webkit-scrollbar {
+        width: 5px;
+      }
+
+      .character-info::-webkit-scrollbar-thumb {
+        background: var(--primary);
+        border-radius: 10px;
+      }
+
+      .character-info h3 {
+        color: var(--primary);
+        font-family: 'Orbitron', sans-serif;
+        margin-bottom: 15px;
+      }
+
+      body.arabic .character-info h3 {
+        font-family: 'Tajawal', sans-serif;
+      }
+
+      .character-nav-dots {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: rgba(0, 198, 255, 0.3);
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .dot.active {
+        background: var(--primary);
+        transform: scale(1.2);
+      }
+
+      @media (min-width: 768px) {
+        .character-card {
+          flex: 0 0 45%;
+        }
+      }
+
+      @media (min-width: 992px) {
+        .character-card {
+          flex: 0 0 30%;
+        }
+      }
+    </style>
+
+    <script>
+      // Characters Scroller Functionality
+      document.addEventListener('DOMContentLoaded', function() {
+        const scroller = document.querySelector('.characters-scroller');
+        const dots = document.querySelectorAll('.dot');
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+        // Touch and mouse drag functionality
+        scroller.addEventListener('mousedown', (e) => {
+          isDown = true;
+          startX = e.pageX - scroller.offsetLeft;
+          scrollLeft = scroller.scrollLeft;
+          scroller.style.cursor = 'grabbing';
+          scroller.style.scrollBehavior = 'auto';
+        });
+        scroller.addEventListener('mouseleave', () => {
+          isDown = false;
+          scroller.style.cursor = 'grab';
+        });
+        scroller.addEventListener('mouseup', () => {
+          isDown = false;
+          scroller.style.cursor = 'grab';
+          scroller.style.scrollBehavior = 'smooth';
+          updateActiveDot();
+        });
+        scroller.addEventListener('mousemove', (e) => {
+          if (!isDown) return;
+          e.preventDefault();
+          const x = e.pageX - scroller.offsetLeft;
+          const walk = (x - startX) * 2;
+          scroller.scrollLeft = scrollLeft - walk;
+        });
+        // Touch events for mobile
+        scroller.addEventListener('touchstart', (e) => {
+          isDown = true;
+          startX = e.touches[0].pageX - scroller.offsetLeft;
+          scrollLeft = scroller.scrollLeft;
+          scroller.style.scrollBehavior = 'auto';
+        });
+        scroller.addEventListener('touchend', () => {
+          isDown = false;
+          scroller.style.scrollBehavior = 'smooth';
+          updateActiveDot();
+        });
+        scroller.addEventListener('touchmove', (e) => {
+          if (!isDown) return;
+          const x = e.touches[0].pageX - scroller.offsetLeft;
+          const walk = (x - startX) * 2;
+          scroller.scrollLeft = scrollLeft - walk;
+        });
+        // Dot navigation
+        dots.forEach(dot => {
+          dot.addEventListener('click', function() {
+            const index = this.getAttribute('data-index');
+            const cardWidth = document.querySelector('.character-card').offsetWidth + 20;
+            scroller.scrollTo({
+              left: index * cardWidth,
+              behavior: 'smooth'
+            });
+            dots.forEach(d => d.classList.remove('active'));
+            this.classList.add('active');
+          });
+        });
+        // Update active dot on scroll
+        function updateActiveDot() {
+          const cardWidth = document.querySelector('.character-card').offsetWidth + 20;
+          const scrollPos = scroller.scrollLeft;
+          const activeIndex = Math.round(scrollPos / cardWidth);
+          dots.forEach((dot, index) => {
+            if (index === activeIndex) {
+              dot.classList.add('active');
+            } else {
+              dot.classList.remove('active');
+            }
+          });
+        }
+        scroller.addEventListener('scroll', updateActiveDot);
+      });
+    </script>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container text-center">
+        <p class="mb-0 english-content">&copy; 2025 FALSE PERFECTION ANALYSIS</p>
+        <p class="mb-0 arabic-content" style="display:none">&copy; 2025 تحليل مشروع الكمال الزائف</p>
+      </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JS -->
+    <script>
+      // Theme toggle functionality
+      const themeToggle = document.getElementById('theme-toggle');
+      const body = document.body;
+      // Check for saved theme preference
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      body.classList.add(savedTheme + '-mode');
+      themeToggle.addEventListener('click', () => {
+        body.classList.toggle('light-mode');
+        body.classList.toggle('dark-mode');
+        const currentTheme = body.classList.contains('dark-mode') ? 'dark' : 'light';
+        localStorage.setItem('theme', currentTheme);
+      });
+      // Language toggle functionality
+      const langEn = document.getElementById('lang-en');
+      const langAr = document.getElementById('lang-ar');
+
+      function setLanguage(lang) {
+        if (lang === 'ar') {
+          body.classList.add('arabic');
+          document.querySelectorAll('.english-content').forEach(el => el.style.display = 'none');
+          document.querySelectorAll('.arabic-content').forEach(el => el.style.display = 'block');
+          langEn.classList.remove('active');
+          langAr.classList.add('active');
+        } else {
+          body.classList.remove('arabic');
+          document.querySelectorAll('.english-content').forEach(el => el.style.display = 'block');
+          document.querySelectorAll('.arabic-content').forEach(el => el.style.display = 'none');
+          langEn.classList.add('active');
+          langAr.classList.remove('active');
+        }
+        localStorage.setItem('language', lang);
+      }
+      // Check for saved language preference
+      const savedLang = localStorage.getItem('language') || 'en';
+      setLanguage(savedLang);
+      langEn.addEventListener('click', () => setLanguage('en'));
+      langAr.addEventListener('click', () => setLanguage('ar'));
+      // Smooth scrolling for anchor links
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            window.scrollTo({
+              top: target.offsetTop - 80,
+              behavior: 'smooth'
+            });
+          }
+        });
+      });
+    </script>
+</body>
+
+</html>

@@ -33,6 +33,9 @@
     <meta name="twitter:description" content="Recovered works, lost sciences, and dangerous ideas from brilliant minds — once hidden, now revealed.">
     <meta name="twitter:image" content="https://ezzio.vercel.app/static/img/mstag-preview.png">
 
+    <!-- Template Stylesheet -->
+    <link href="{% static 'css/mstag.css' %}" rel="stylesheet">
+
     <!-- Vercel Analytics -->
     <script defer src="/_vercel/insights/script.js"></script>
     <script defer src="/_vercel/speed-insights/script.js"></script>
@@ -87,133 +90,6 @@
             }
         }
     </script>
-    
-    <style>
-        body {
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23D5A021" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/><path fill="%23D5A021" d="M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4 4-1.79 4-4 4z"/></svg>'), auto;
-        }
-        
-        .text-shadow {
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-        }
-        
-        .candlelight-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(ellipse at center, rgba(213, 160, 33, 0.15) 0%, rgba(213, 160, 33, 0.03) 50%, rgba(27, 26, 31, 0.8) 100%);
-            pointer-events: none;
-            animation: flicker 8s infinite alternate;
-        }
-        
-        .vignette-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(ellipse at center, rgba(0,0,0,0) 60%, rgba(0,0,0,0.7) 100%);
-            pointer-events: none;
-        }
-        
-        .card-hover {
-            transition: all 0.4s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .card-hover:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-        }
-        
-        .card-hover:hover::after {
-            opacity: 0.8;
-        }
-        
-        .card-hover::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at var(--x) var(--y), rgba(213, 160, 33, 0.15), transparent 70%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-        }
-        
-        .paper-card {
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23f5f0e6" opacity="0.9"/><path d="M0 0 L100 0 L100 5 L0 10 Z" fill="%23ffffff" opacity="0.2"/><path d="M0 95 L100 100 L100 100 L0 95 Z" fill="%233a2d23" opacity="0.05"/></svg>');
-        }
-        
-        .book-card {
-            background: linear-gradient(145deg, #3a2d23 0%, #2a241e 100%);
-            border-left: 12px solid #1b1a1f;
-        }
-        
-        .folder-card {
-            background: linear-gradient(135deg, #f5f0e6 0%, #e0d8c5 100%);
-            border-top: 8px solid #76323F;
-        }
-        
-        .dust-particle {
-            position: absolute;
-            background-color: rgba(213, 160, 33, 0.6);
-            border-radius: 50%;
-            pointer-events: none;
-            animation: dust-float 10s linear infinite;
-        }
-        
-        .library-sounds {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            z-index: 50;
-        }
-
-        /* Volume slider styling */
-        input[type="range"] {
-            -webkit-appearance: none;
-            height: 3px;
-            background: rgba(213, 160, 33, 0.2);
-            border-radius: 10px;
-        }
-        
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 12px;
-            height: 12px;
-            background: #D5A021;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-
-        /* Custom Google Translate Dropdown Styling */
-        #language-select {
-            min-width: 140px;
-            position: relative;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12"><path fill="%23D5A021" d="M2 4l4 4 4-4H2z"/></svg>') no-repeat right 0.5rem center/12px 12px;
-        }
-
-        /* Hide Google Translate widget */
-        #google_translate_element {
-            display: none !important;
-        }
-
-        /* Hide Google Translate banner */
-        .goog-te-banner-frame {
-            display: none !important;
-        }
-
-        /* Prevent layout shift */
-        body {
-            top: 0 !important;
-        }
-    </style>
 </head>
 <body class="bg-archivebg text-parchment font-lora overflow-x-hidden">
 
@@ -254,14 +130,27 @@
         </div>
     </nav>
     
-    <!-- Ambient Sound Toggle -->
-    <div class="library-sounds flex items-center gap-3 bg-black/50 rounded-full px-4 py-2 border border-oldgold/30">
-        <button id="soundToggle" class="p-2 hover:bg-oldgold/10 rounded-full transition">
-            <svg id="playIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-oldgold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M12 6a7.975 7.975 0 015.657 2.343m0 0a7.975 7.975 0 010 11.314m-11.314 0a7.975 7.975 0 010-11.314m0 0a7.975 7.975 0 015.657-2.343" />
-            </svg>
-        </button>
-        <input type="range" id="volumeControl" min="0" max="1" step="0.1" value="0.3" class="w-20 accent-oldgold/80 hover:accent-oldgold">
+    <!-- Ambient Controls -->
+    <div class="fixed bottom-4 right-4 flex items-end space-x-4 z-50 sound-control-group">
+        <!-- Sound Controls Container -->
+        <div class="flex items-center space-x-2">
+            <!-- Sound Toggle Button -->
+            <button id="soundToggle" class="p-2 bg-deepcharcoal border border-sepia/20 rounded-full hover:bg-sepia/10 transition" title="Ambient Sound (hover for volume)">
+                <svg id="playIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-goldaccent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M12 6a7.975 7.975 0 015.657 2.343m0 0a7.975 7.975 0 010 11.314m-11.314 0a7.975 7.975 0 010-11.314m0 0a7.975 7.975 0 015.657-2.343" />
+                </svg>
+            </button>
+            
+            <!-- Volume Slider (Hidden by default) -->
+            <input id="volumeControl" 
+                type="range" 
+                min="0" 
+                max="1" 
+                step="0.01" 
+                value="0.5"
+                class="volume-slider"
+                aria-label="Volume control">
+        </div>
     </div>
 
     <!-- Hero Section with Candlelight Effect -->
@@ -424,169 +313,15 @@
         </div>
     </section>
 
-    <script>
-        // Create dust particles
-        function createDustParticles() {
-            const container = document.getElementById('dustContainer');
-            for (let i = 0; i < 20; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'dust-particle';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.top = Math.random() * 100 + '%';
-                particle.style.width = (Math.random() * 3 + 1) + 'px';
-                particle.style.height = particle.style.width;
-                particle.style.opacity = Math.random() * 0.6 + 0.2;
-                particle.style.animationDelay = Math.random() * 10 + 's';
-                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
-                container.appendChild(particle);
-            }
-        }
+    <!-- JavaScript Libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'lib/easing/easing.min.js' %}"></script>
+    <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
+    <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
     
-        // Track mouse position for card hover glow
-        document.addEventListener('DOMContentLoaded', function() {
-            createDustParticles();
-            
-            const cards = document.querySelectorAll('.card-hover');
-            
-            // Mouse position tracking for glow effect
-            document.addEventListener('mousemove', function(e) {
-                cards.forEach(card => {
-                    const rect = card.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    card.style.setProperty('--x', x + 'px');
-                    card.style.setProperty('--y', y + 'px');
-                });
-            });
-            
-            // Fade in animation for cards
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach((entry, index) => {
-                    if (entry.isIntersecting) {
-                        setTimeout(() => {
-                            entry.target.style.opacity = 1;
-                            entry.target.style.transform = 'translateY(0)';
-                        }, 100 * index);
-                    }
-                });
-            }, { threshold: 0.1 });
-            
-            cards.forEach(card => {
-                card.style.opacity = 0;
-                card.style.transform = 'translateY(20px)';
-                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-                observer.observe(card);
-            });
-    
-            // Audio Player Setup
-            const soundToggle = document.getElementById('soundToggle');
-            const volumeControl = document.getElementById('volumeControl');
-            const playIcon = document.getElementById('playIcon');
-            
-            // Initialize with direct path to your audio file
-            let audio = new Audio("{% static 'audio/library-ambience.m4a' %}");
-            audio.loop = true;
-            audio.volume = volumeControl.value;
-            
-            // Debugging
-            console.log("Audio source:", audio.src);
-            audio.addEventListener('error', (e) => {
-                console.error("Audio error:", e);
-                alert("Failed to load audio. Please check console for details.");
-            });
-            
-            // Set initial icon to "unmuted" state (sound on)
-            playIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clip-rule="evenodd" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14a2 2 0 100-4 2 2 0 000 4z" />`;
-            
-            // Try to play audio immediately
-            const playAudio = async () => {
-                try {
-                    await audio.play();
-                    console.log("Audio playing automatically");
-                } catch (err) {
-                    console.log("Auto-play was prevented:", err);
-                    // Show some UI indication that user needs to interact to play sound
-                }
-            };
-            
-            // Some browsers require a user interaction first
-            document.addEventListener('click', () => {
-                playAudio();
-            }, { once: true });
-            
-            // Try immediately (might work in some browsers)
-            playAudio();
-            
-            // Play/Pause Toggle
-            soundToggle.addEventListener('click', async () => {
-                try {
-                    if (audio.paused) {
-                        await audio.play();
-                        playIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clip-rule="evenodd" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14a2 2 0 100-4 2 2 0 000 4z" />`;
-                    } else {
-                        audio.pause();
-                        playIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M12 6a7.975 7.975 0 015.657 2.343m0 0a7.975 7.975 0 010 11.314m-11.314 0a7.975 7.975 0 010-11.314m0 0a7.975 7.975 0 015.657-2.343" />`;
-                    }
-                } catch (error) {
-                    console.error("Playback error:", error);
-                    alert("Please interact with the page first (click anywhere) then try the audio again.");
-                }
-            });
-            
-            // Volume Control
-            volumeControl.addEventListener('input', () => {
-                audio.volume = volumeControl.value;
-            });
-            
-            // Keyboard Shortcuts (optional)
-            document.addEventListener('keydown', (e) => {
-                if (e.code === 'Space') {
-                    e.preventDefault();
-                    soundToggle.click();
-                }
-            });
-
-            // Custom Google Translate Dropdown Logic
-            function getCookie(name) {
-                var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-                if (match) return match[2];
-            }
-
-            // Set initial select value based on current translation cookie
-            var googtrans = getCookie('googtrans');
-            if (googtrans && googtrans.startsWith('/en/')) {
-                var lang = googtrans.split('/')[2];
-                document.getElementById('language-select').value = lang;
-            }
-
-            // Handle language change
-            document.getElementById('language-select').addEventListener('change', function() {
-                var lang = this.value;
-                if (lang === 'en') {
-                    // Reset to original (English)
-                    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-                } else {
-                    // Set target language
-                    document.cookie = "googtrans=/en/" + lang + "; path=/;";
-                }
-                location.reload();  // Reload to apply translation
-            });
-        });
-
-        // Google Translate Widget Initialization
-        function googleTranslateElementInit() {
-            new google.translate.TranslateElement({
-                pageLanguage: 'en',
-                includedLanguages: 'en,es,fr,de,it,pt,ru,zh-CN,ja,ar',
-                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-                autoDisplay: false,
-                gaTrack: false,
-                gaId: '',
-                multilanguagePage: true
-            }, 'google_translate_element');
-        }
-    </script>
-    
+    <!-- Template Javascript -->
+    <script src="{% static 'js/mstag.js' %}"></script>
     <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
