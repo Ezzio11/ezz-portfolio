@@ -101,21 +101,21 @@
                 &larr; Return to Main Site
             </a>
             
+            <!-- Centered navigation links -->
+            <div class="absolute left-1/2 transform -translate-x-1/2 hidden md:flex space-x-6">
+                <a href="{% url 'about' %}" class="font-lora text-sm text-parchment/80 hover:text-oldgold transition-colors whitespace-nowrap {% if request.resolver_match.url_name == 'about' %}text-oldgold font-medium{% endif %}">
+                    About Ezz (The Curator)
+                </a>
+                <a href="{% url 'projects' %}" class="font-lora text-sm text-parchment/80 hover:text-oldgold transition-colors whitespace-nowrap {% if request.resolver_match.url_name == 'projects' %}text-oldgold font-medium{% endif %}">
+                    Projects
+                </a>
+                <a href="{% url 'mstag' %}" class="font-lora text-sm text-parchment/80 hover:text-oldgold transition-colors whitespace-nowrap {% if request.resolver_match.url_name == 'mstag' %}text-oldgold font-medium{% endif %}">
+                    MSTAG
+                </a>
+            </div>
+            
             <!-- Right-aligned items with proper spacing -->
             <div class="flex items-center space-x-6">
-                <!-- Navigation links -->
-                <div class="hidden md:flex space-x-6">
-                    <a href="{% url 'about' %}" class="font-lora text-sm text-parchment/80 hover:text-oldgold transition-colors whitespace-nowrap">
-                        About Ezz (The Curator)
-                    </a>
-                    <a href="{% url 'projects' %}" class="font-lora text-sm text-parchment/80 hover:text-oldgold transition-colors whitespace-nowrap">
-                        Projects
-                    </a>
-                    <a href="{% url 'mstag' %}" class="font-lora text-sm text-parchment/80 hover:text-oldgold transition-colors whitespace-nowrap {% if request.resolver_match.url_name == 'mstag' %}text-oldgold{% endif %}">
-                        MSTAG
-                    </a>
-                </div>
-                
                 <!-- Custom Google Translate Dropdown -->
                 <select id="language-select" class="bg-leather text-parchment font-lora text-sm border border-oldgold/50 rounded px-3 py-1 hover:bg-oxblood focus:outline-none focus:border-oldgold transition-colors appearance-none cursor-pointer">
                     <option value="en">English</option>
@@ -329,3 +329,4 @@
 </body>
 
 </html>
+
