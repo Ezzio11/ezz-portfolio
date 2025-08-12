@@ -30,6 +30,7 @@ urlpatterns = [
     path('logistic_regression/', views.logistic_regression, name='logistic_regression'),
     path('time_series_analysis/', views.time_series_analysis, name='time_series_analysis'),
     path('mstag/the-decline-of-the-polymath/', views.decline_of_polymath, name='decline_of_polymath'),
+    path('mstag/false-perfection-qualityland/', views.qualityland, name='qualityland'),
     path('mstag/<slug:slug>/', views.article_detail, name='article_detail'),
     path("api/polymaths/", views.polymaths_api, name="polymaths_api"),
     path('chatbot_xane/', views.chatbot_html, name='chatbot'),
