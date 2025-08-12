@@ -119,6 +119,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         try {
             audio = new Audio('/static/audio/library-ambience.m4a');
             audio.volume = volumeControl.value;
+            audio.loop = true;
             
             // Handle audio errors
             audio.addEventListener('error', () => {
@@ -401,4 +402,5 @@ document.addEventListener("DOMContentLoaded", async function() {
             }
         }, 100);
     }
+
 });
