@@ -111,6 +111,9 @@
                     <a href="{% url 'projects' %}" class="font-lora text-sm text-parchment/80 hover:text-oldgold transition-colors whitespace-nowrap">
                         Projects
                     </a>
+                    <a href="{% url 'mstag' %}" class="font-lora text-sm text-parchment/80 hover:text-oldgold transition-colors whitespace-nowrap {% if request.resolver_match.url_name == 'mstag' %}text-oldgold{% endif %}">
+                        MSTAG
+                    </a>
                 </div>
                 
                 <!-- Custom Google Translate Dropdown -->
@@ -324,4 +327,5 @@
     <script src="{% static 'js/mstag.js' %}"></script>
     <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
+
 </html>
