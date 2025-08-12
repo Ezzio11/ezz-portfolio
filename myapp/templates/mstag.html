@@ -109,7 +109,7 @@
                 <a href="{% url 'projects' %}" class="font-lora text-sm text-parchment/80 hover:text-oldgold transition-colors whitespace-nowrap {% if request.resolver_match.url_name == 'projects' %}text-oldgold font-medium{% endif %}">
                     Projects
                 </a>
-                <a href="{% url 'mstag' %}" class="font-lora text-sm text-parchment/80 hover:text-oldgold transition-colors whitespace-nowrap {% if request.resolver_match.url_name == 'mstag' %}text-oldgold font-medium{% endif %}">
+                <a href="{% url 'mstag' %}" class="font-lora text-sm text-parchment/80 hover:text-oldgold transition-colors whitespace-nowrap {% if request.resolver_match.url_name == 'mstag' %}text-oldgold font-medium border-b border-oldgold pb-1{% endif %}">
                     MSTAG
                 </a>
             </div>
@@ -329,4 +329,5 @@
 </body>
 
 </html>
+
 
