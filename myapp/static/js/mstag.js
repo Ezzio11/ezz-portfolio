@@ -1,7 +1,7 @@
 // Initialize Supabase client
 const initializeSupabase = () => {
-    const supabaseUrl = "https://gefqshdrgozkxdiuligl.supabase.co";
-    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlZnFzaGRyZ296a3hkaXVsaWdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM0NjgyNDMsImV4cCI6MjA1OTA0NDI0M30.QJbcNl479A5_tdq8lqNubMQS26fkwcPyk-zvTU0Ffy0";
+    const supabaseUrl = window.SUPABASE_URL;
+    const supabaseKey = window.SUPABASE_KEY;
     return supabase.createClient(supabaseUrl, supabaseKey);
 };
 
@@ -404,3 +404,4 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
 
 });
+
