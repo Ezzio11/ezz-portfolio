@@ -367,21 +367,26 @@ document.addEventListener("DOMContentLoaded", async function() {
     const setupLanguageSelect = () => {
         const languageSelect = document.getElementById('language-select');
         if (!languageSelect) return;
-
+    
         const getCookie = (name) => {
             const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
             return match ? match[2] : null;
         };
-
+    
         const googtrans = getCookie('googtrans');
-        if (googtrans && googtrans.startsWith('/en/')) {
-            languageSelect.value = googtrans.split('/')[2];
+        if (googtrans) {
+            const lang = googtrans.split('/')[2];
+            if (lang) {
+                languageSelect.value = lang;
+            }
         }
-
+    
         languageSelect.addEventListener('change', function() {
-            document.cookie = this.value === 'en'
-                ? "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"
-                : `googtrans=/en/${this.value}; path=/;`;
+            if (this.value === 'ar') {
+                document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            } else {
+                document.cookie = `googtrans=/ar/${this.value}; path=/;`;
+            }
             location.reload();
         });
     };
@@ -404,3 +409,4 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
 
 });
+
