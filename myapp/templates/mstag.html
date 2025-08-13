@@ -324,11 +324,16 @@
     <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
     
     <!-- Template Javascript -->
+    <script>
+        window.SUPABASE_URL = "{{ SUPABASE_URL }}";
+        window.SUPABASE_KEY = "{{ SUPABASE_KEY }}";
+    </script>
     <script src="{% static 'js/mstag.js' %}"></script>
     <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 
 </html>
+
 
 
 
