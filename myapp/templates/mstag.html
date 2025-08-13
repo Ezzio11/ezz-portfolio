@@ -208,7 +208,7 @@
             <!-- Cards Grid -->
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {% for article in articles %}
-                <a href="{% url 'article_detail' slug=article.slug %}" 
+                <a href="{% url 'article' slug=article.slug %}" 
                 class="card-hover {% if article.card_style == 'paper' %}paper-card bg-parchment{% elif article.card_style == 'book' %}book-card{% else %}folder-card{% endif %} p-6 relative overflow-hidden shadow-lg group transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
                     
                     <!-- Dust particles -->
@@ -329,5 +329,6 @@
 </body>
 
 </html>
+
 
 
