@@ -27,7 +27,7 @@ function createDustParticles() {
 // Google Translate Widget Initialization
 function googleTranslateElementInit() {
     new google.translate.TranslateElement({
-        pageLanguage: 'en',
+        pageLanguage: 'ar',
         includedLanguages: 'en,es,fr,de,it,pt,ru,zh-CN,ja,ar',
         layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
         autoDisplay: false,
@@ -404,4 +404,3 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
 
 });
-
