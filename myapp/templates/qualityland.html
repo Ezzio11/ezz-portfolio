@@ -28,516 +28,136 @@
     <!-- Vercel Speed Insights -->
     <script defer src="/_vercel/speed-insights/script.js"></script>
 
-  <style>
-    :root {
-      --primary: #00c6ff;
-      --secondary: #0072ff;
-      --dark: #121212;
-      --light: #f8f9fa;
-      --accent: #ff2d75;
-    }
-
-    body {
-      font-family: 'Roboto Mono', monospace;
-      background-color: var(--light);
-      color: var(--dark);
-      transition: all 0.5s ease;
-      padding-top: 70px;
-      line-height: 1.6;
-    }
-
-    body.dark-mode {
-      background-color: var(--dark);
-      color: var(--light);
-    }
-
-    body.arabic {
-      font-family: 'Tajawal', sans-serif;
-      direction: rtl;
-    }
-
-    body.arabic .section-title:after,
-    body.arabic .nav-tabs .nav-link:after {
-      right: 0;
-      left: auto;
-    }
-
-    body.arabic .quote-block {
-      border-right: 3px solid var(--primary);
-      border-left: none;
-      border-radius: 8px 0 0 8px;
-    }
-
-    /* Dynamic Background */
-    .dynamic-bg {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      opacity: 0.15;
-      background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-      background-size: 400% 400%;
-      animation: gradientBG 15s ease infinite;
-    }
-
-    @keyframes gradientBG {
-      0% {
-        background-position: 0% 50%;
+    <style>
+      :root {
+        --primary: #00c6ff;
+        --secondary: #0072ff;
+        --dark: #121212;
+        --light: #f8f9fa;
+        --accent: #ff2d75;
+        --parchment: #f5f5f0;
+        --deepbrown: #3a3226;
+        --oxblood: #76323f;
+        --oldgold: #d4af37;
       }
-
-      50% {
-        background-position: 100% 50%;
+    
+      /* ... (keep all your existing CSS rules above) ... */
+    
+      /* Mobile Dropdown Styles */
+      #menu-toggle-2 {
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: none;
       }
-
-      100% {
-        background-position: 0% 50%;
+    
+      @media (max-width: 767px) {
+        #menu-toggle-2 {
+          display: block;
+        }
+    
+        .nav-tabs {
+          display: none !important;
+        }
+    
+        #mobile-menu-2 {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          width: 100%;
+          background: rgba(0, 0, 0, 0.95);
+          backdrop-filter: blur(10px);
+          border-top: 1px solid rgba(255, 255, 255, 0.1);
+          box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+          z-index: 999;
+          overflow: hidden;
+          transition: all 0.3s ease;
+          max-height: 0;
+          opacity: 0;
+        }
+    
+        #mobile-menu-2:not(.hidden) {
+          max-height: 500px;
+          opacity: 1;
+          padding: 15px 0;
+        }
+    
+        #mobile-menu-2 a {
+          display: block;
+          padding: 12px 20px;
+          color: rgba(255, 255, 255, 0.8);
+          text-decoration: none;
+          font-family: 'Orbitron', sans-serif;
+          letter-spacing: 0.5px;
+          transition: all 0.3s ease;
+          text-align: center;
+          position: relative;
+        }
+    
+        body.arabic #mobile-menu-2 a {
+          font-family: 'Tajawal', sans-serif;
+          text-align: right;
+          padding-right: 30px;
+        }
+    
+        #mobile-menu-2 a:hover {
+          color: white;
+          background: rgba(255, 255, 255, 0.1);
+        }
+    
+        #mobile-menu-2 a:after {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 30%;
+          height: 1px;
+          background: linear-gradient(to right, var(--primary), var(--secondary));
+          opacity: 0;
+          transition: all 0.3s ease;
+        }
+    
+        #mobile-menu-2 a:hover:after {
+          opacity: 1;
+          width: 50%;
+        }
+    
+        body.arabic #mobile-menu-2 a:after {
+          left: auto;
+          right: 30px;
+          transform: none;
+        }
       }
-    }
-
-    /* Header */
-    .top-bar {
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(10px);
-      color: white;
-      padding: 15px 0;
-      position: fixed;
-      top: 0;
-      width: 100%;
-      z-index: 1000;
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .dark-mode .top-bar {
-      background: rgba(0, 0, 0, 0.9);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .site-title {
-      font-family: 'Orbitron', sans-serif;
-      font-weight: 700;
-      letter-spacing: 1px;
-      background: linear-gradient(to right, var(--primary), var(--secondary));
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      text-shadow: 0 0 10px rgba(0, 198, 255, 0.3);
-    }
-
-    body.arabic .site-title {
-      font-family: 'Tajawal', sans-serif;
-    }
-
-    .dark-mode .site-title {
-      text-shadow: 0 0 15px rgba(0, 198, 255, 0.5);
-    }
-
-    /* Navigation */
-    .nav-tabs {
-      border-bottom: none;
-      margin-left: 20px;
-    }
-
-    body.arabic .nav-tabs {
-      margin-left: 0;
-      margin-right: 20px;
-    }
-
-    .nav-tabs .nav-link {
-      color: rgba(255, 255, 255, 0.8);
-      border: none;
-      padding: 8px 15px;
-      font-size: 0.9rem;
-      font-family: 'Orbitron', sans-serif;
-      letter-spacing: 0.5px;
-      position: relative;
-      transition: all 0.3s ease;
-    }
-
-    body.arabic .nav-tabs .nav-link {
-      font-family: 'Tajawal', sans-serif;
-      padding: 8px 12px;
-    }
-
-    .nav-tabs .nav-link:after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      width: 0;
-      height: 2px;
-      background: linear-gradient(to right, var(--primary), var(--secondary));
-      transition: all 0.3s ease;
-    }
-
-    .nav-tabs .nav-link:hover,
-    .nav-tabs .nav-link.active {
-      color: white;
-      background: transparent;
-    }
-
-    .nav-tabs .nav-link:hover:after,
-    .nav-tabs .nav-link.active:after {
-      width: 70%;
-      left: 15%;
-    }
-
-    /* Language Toggle */
-    .lang-toggle {
-      display: flex;
-      margin-left: 20px;
-    }
-
-    body.arabic .lang-toggle {
-      margin-left: 0;
-      margin-right: 20px;
-    }
-
-    .lang-btn {
-      background: rgba(255, 255, 255, 0.1);
-      border: none;
-      color: white;
-      padding: 5px 12px;
-      font-size: 0.8rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .lang-btn:first-child {
-      border-radius: 20px 0 0 20px;
-    }
-
-    .lang-btn:last-child {
-      border-radius: 0 20px 20px 0;
-    }
-
-    .lang-btn.active {
-      background: linear-gradient(45deg, var(--primary), var(--secondary));
-      font-weight: bold;
-    }
-
-    /* Theme Toggle */
-    .theme-toggle {
-      background: rgba(255, 255, 255, 0.1);
-      border: none;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-      margin-left: 10px;
-    }
-
-    body.arabic .theme-toggle {
-      margin-left: 0;
-      margin-right: 10px;
-    }
-
-    .theme-toggle:hover {
-      background: rgba(255, 255, 255, 0.2);
-    }
-
-    .theme-toggle i {
-      font-size: 1.2rem;
-      transition: all 0.3s ease;
-    }
-
-    .theme-toggle .moon {
-      position: absolute;
-      color: white;
-      transform: translateY(40px);
-    }
-
-    .dark-mode .theme-toggle .sun {
-      transform: translateY(-40px);
-    }
-
-    .dark-mode .theme-toggle .moon {
-      transform: translateY(0);
-    }
-
-    /* Hero Section */
-    .hero-section {
-      padding: 120px 0 80px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    body.arabic .hero-section {
-      text-align: right;
-    }
-
-    .hero-section:before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle at center, rgba(0, 198, 255, 0.1) 0%, transparent 70%);
-      z-index: -1;
-    }
-
-    .hero-title {
-      font-family: 'Orbitron', sans-serif;
-      font-weight: 700;
-      font-size: 3rem;
-      margin-bottom: 30px;
-      background: linear-gradient(to right, var(--primary), var(--secondary));
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      text-shadow: 0 0 20px rgba(0, 198, 255, 0.3);
-    }
-
-    body.arabic .hero-title {
-      font-family: 'Tajawal', sans-serif;
-    }
-
-    .dark-mode .hero-title {
-      text-shadow: 0 0 25px rgba(0, 198, 255, 0.5);
-    }
-
-    .quote-block {
-      max-width: 700px;
-      margin: 40px auto;
-      padding: 25px;
-      border-left: 3px solid var(--primary);
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(5px);
-      border-radius: 0 8px 8px 0;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    body.arabic .quote-block {
-      margin: 40px auto 40px 0;
-    }
-
-    .dark-mode .quote-block {
-      background: rgba(0, 0, 0, 0.3);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    }
-
-    .quote-author {
-      font-family: 'Orbitron', sans-serif;
-      letter-spacing: 1px;
-      color: var(--primary);
-    }
-
-    body.arabic .quote-author {
-      font-family: 'Tajawal', sans-serif;
-    }
-
-    /* Main Button */
-    .main-btn {
-      background: linear-gradient(45deg, var(--primary), var(--secondary));
-      border: none;
-      padding: 12px 35px;
-      font-weight: 600;
-      font-family: 'Orbitron', sans-serif;
-      letter-spacing: 1px;
-      color: white;
-      border-radius: 30px;
-      box-shadow: 0 4px 15px rgba(0, 198, 255, 0.4);
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-    }
-
-    body.arabic .main-btn {
-      font-family: 'Tajawal', sans-serif;
-    }
-
-    .main-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 7px 20px rgba(0, 198, 255, 0.6);
-      color: white;
-    }
-
-    .main-btn:after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(45deg, var(--secondary), var(--primary));
-      opacity: 0;
-      transition: all 0.3s ease;
-      z-index: -1;
-    }
-
-    .main-btn:hover:after {
-      opacity: 1;
-    }
-
-    /* Content Sections */
-    .content-section {
-      padding: 80px 0;
-    }
-
-    body.arabic .content-section {
-      text-align: right;
-    }
-
-    .section-title {
-      font-family: 'Orbitron', sans-serif;
-      font-weight: 700;
-      font-size: 2rem;
-      margin-bottom: 40px;
-      position: relative;
-      display: inline-block;
-    }
-
-    body.arabic .section-title {
-      font-family: 'Tajawal', sans-serif;
-    }
-
-    .section-title:after {
-      content: '';
-      position: absolute;
-      bottom: -10px;
-      left: 0;
-      width: 60px;
-      height: 3px;
-      background: linear-gradient(to right, var(--primary), var(--secondary));
-    }
-
-    .lead {
-      font-size: 1.2rem;
-      margin-bottom: 30px;
-    }
-
-    .content-text {
-      margin-bottom: 20px;
-    }
-
-    /* Cards */
-    .card {
-      border: none;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease;
-      background: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(5px);
-    }
-
-    .dark-mode .card {
-      background: rgba(30, 30, 30, 0.8);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    }
-
-    .card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 15px 30px rgba(0, 198, 255, 0.2);
-    }
-
-    .card-title {
-      font-family: 'Orbitron', sans-serif;
-      color: var(--primary);
-    }
-
-    body.arabic .card-title {
-      font-family: 'Tajawal', sans-serif;
-    }
-
-    /* Table */
-    .table {
-      background: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(5px);
-    }
-
-    .dark-mode .table {
-      background: rgba(30, 30, 30, 0.8);
-      color: var(--light);
-    }
-
-    .table th {
-      font-family: 'Orbitron', sans-serif;
-      background: linear-gradient(to right, var(--primary), var(--secondary));
-      color: white;
-    }
-
-    body.arabic .table th {
-      font-family: 'Tajawal', sans-serif;
-    }
-
-    /* List */
-    .list-group-item {
-      background: rgba(255, 255, 255, 0.5);
-      border-left: 3px solid var(--primary);
-    }
-
-    body.arabic .list-group-item {
-      border-left: none;
-      border-right: 3px solid var(--primary);
-    }
-
-    .dark-mode .list-group-item {
-      background: rgba(30, 30, 30, 0.5);
-    }
-
-    /* Footer */
-    footer {
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(10px);
-      padding: 30px 0;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .hero-title {
-        font-size: 2.2rem;
+    
+      /* Adjust top padding for mobile to account for fixed header */
+      @media (max-width: 767px) {
+        body {
+          padding-top: 60px;
+        }
       }
-
-      .nav-tabs .nav-link {
-        padding: 8px 10px;
-        font-size: 0.8rem;
-      }
-
-      body.arabic .hero-section {
-        text-align: center;
-      }
-
-      body.arabic .quote-block {
-        margin: 40px auto;
-      }
-
-      .lang-toggle {
-        margin-left: 10px;
-      }
-
-      body.arabic .lang-toggle {
-        margin-right: 10px;
-      }
-    }
-  </style>
+    </style>
 </head>
 
 <body class="light-mode">
   <!-- Dynamic Background -->
   <div class="dynamic-bg"></div>
 
-  <!-- Top Bar (Header) -->
-  <div class="top-bar">
-    <div class="container">
-      <div class="d-flex justify-content-between align-items-center">
-        <div class="d-flex align-items-center">
+    <!-- Top Bar (Header) -->
+    <div class="top-bar">
+      <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="d-flex align-items-center">
             <h1 class="h4 mb-0 me-4 site-title">
               <span class="english-content">FALSE PERFECTION</span>
               <span class="arabic-content" style="display:none">الكمال الزائف</span>
             </h1>
-            <ul class="nav nav-tabs">
+            
+            <!-- Desktop menu -->
+            <ul class="nav nav-tabs d-none d-md-flex">
               <li class="nav-item">
                 <a class="nav-link active" href="#introduction">
                   <span class="english-content">INTRO</span>
@@ -593,20 +213,65 @@
                 </a>
               </li>
             </ul>
-        </div>
-        <div class="d-flex align-items-center">
-          <div class="lang-toggle">
-            <button class="lang-btn active" id="lang-en">EN</button>
-            <button class="lang-btn" id="lang-ar">AR</button>
           </div>
-          <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
-            <i class="fas fa-sun sun"></i>
-            <i class="fas fa-moon moon"></i>
-          </button>
+          
+          <div class="d-flex align-items-center">
+            <div class="lang-toggle">
+              <button class="lang-btn active" id="lang-en">EN</button>
+              <button class="lang-btn" id="lang-ar">AR</button>
+            </div>
+            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+              <i class="fas fa-sun sun"></i>
+              <i class="fas fa-moon moon"></i>
+            </button>
+            <!-- Hamburger only on mobile -->
+            <button id="menu-toggle-2" class="text-2xl text-oxblood focus:outline-none d-md-none ms-3">☰</button>
+          </div>
+        </div>
+        
+        <!-- Mobile dropdown -->
+        <div id="mobile-menu-2" class="hidden absolute top-full left-0 w-full bg-parchment border-t border-deepbrown/20 shadow-md d-md-none">
+          <div class="flex flex-col items-center py-4 space-y-4">
+            <a href="#introduction" class="font-garamond text-deepbrown/80 hover:text-oldgold">
+              <span class="english-content">INTRO</span>
+              <span class="arabic-content" style="display:none">مقدمة</span>
+            </a>
+            <a href="#chapter1" class="font-garamond text-deepbrown/80 hover:text-oldgold">
+              <span class="english-content">CH1</span>
+              <span class="arabic-content" style="display:none">الفصل 1</span>
+            </a>
+            <a href="#chapter2" class="font-garamond text-deepbrown/80 hover:text-oldgold">
+              <span class="english-content">CH2</span>
+              <span class="arabic-content" style="display:none">الفصل 2</span>
+            </a>
+            <a href="#chapter3" class="font-garamond text-deepbrown/80 hover:text-oldgold">
+              <span class="english-content">CH3</span>
+              <span class="arabic-content" style="display:none">الفصل 3</span>
+            </a>
+            <a href="#chapter4" class="font-garamond text-deepbrown/80 hover:text-oldgold">
+              <span class="english-content">CH4</span>
+              <span class="arabic-content" style="display:none">الفصل 4</span>
+            </a>
+            <a href="#chapter5" class="font-garamond text-deepbrown/80 hover:text-oldgold">
+              <span class="english-content">CH5</span>
+              <span class="arabic-content" style="display:none">الفصل 5</span>
+            </a>
+            <a href="#conclusion" class="font-garamond text-deepbrown/80 hover:text-oldgold">
+              <span class="english-content">CON</span>
+              <span class="arabic-content" style="display:none">الخاتمة</span>
+            </a>
+            <a href="#characters" class="font-garamond text-deepbrown/80 hover:text-oldgold">
+              <span class="english-content">CHARS</span>
+              <span class="arabic-content" style="display:none">الشخصيات</span>
+            </a>
+            <a href="{% url 'mstag' %}" class="font-garamond text-deepbrown/80 hover:text-oldgold">
+              <span class="english-content">← Back to MSTAG</span>
+              <span class="arabic-content" style="display:none">← العودة إلى MSTAG</span>
+            </a>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
   <!-- Hero Section -->
   <section class="hero-section">
@@ -1103,10 +768,11 @@
         const currentTheme = body.classList.contains('dark-mode') ? 'dark' : 'light';
         localStorage.setItem('theme', currentTheme);
       });
+    
       // Language toggle functionality
       const langEn = document.getElementById('lang-en');
       const langAr = document.getElementById('lang-ar');
-
+    
       function setLanguage(lang) {
         if (lang === 'ar') {
           body.classList.add('arabic');
@@ -1123,11 +789,13 @@
         }
         localStorage.setItem('language', lang);
       }
+    
       // Check for saved language preference
       const savedLang = localStorage.getItem('language') || 'en';
       setLanguage(savedLang);
       langEn.addEventListener('click', () => setLanguage('en'));
       langAr.addEventListener('click', () => setLanguage('ar'));
+    
       // Smooth scrolling for anchor links
       document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
@@ -1141,11 +809,56 @@
           }
         });
       });
+    
+      // Mobile menu toggle for the second navigation
+      document.addEventListener('DOMContentLoaded', function() {
+        const menuToggle2 = document.getElementById('menu-toggle-2');
+        const mobileMenu2 = document.getElementById('mobile-menu-2');
+    
+        if (menuToggle2 && mobileMenu2) {
+          menuToggle2.addEventListener('click', function(e) {
+            e.stopPropagation(); // Prevent the click from immediately triggering the document click handler
+            // Toggle mobile menu visibility
+            mobileMenu2.classList.toggle('hidden');
+            
+            // Toggle aria-expanded attribute for accessibility
+            const isExpanded = this.getAttribute('aria-expanded') === 'true';
+            this.setAttribute('aria-expanded', !isExpanded);
+            
+            // Change hamburger icon to X when menu is open
+            if (mobileMenu2.classList.contains('hidden')) {
+              this.innerHTML = '☰';
+            } else {
+              this.innerHTML = '✕';
+            }
+          });
+          
+          // Close menu when clicking outside
+          document.addEventListener('click', function(event) {
+            if (!mobileMenu2.contains(event.target) && event.target !== menuToggle2) {
+              mobileMenu2.classList.add('hidden');
+              menuToggle2.setAttribute('aria-expanded', 'false');
+              menuToggle2.innerHTML = '☰';
+            }
+          });
+          
+          // Close menu when a link is clicked
+          const mobileLinks2 = mobileMenu2.querySelectorAll('a');
+          mobileLinks2.forEach(link => {
+            link.addEventListener('click', function() {
+              mobileMenu2.classList.add('hidden');
+              menuToggle2.setAttribute('aria-expanded', 'false');
+              menuToggle2.innerHTML = '☰';
+            });
+          });
+        }
+      });
     </script>
 </body>
 
 
 </html>
+
 
 
 
