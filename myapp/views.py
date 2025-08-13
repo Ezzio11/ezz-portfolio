@@ -29,8 +29,8 @@ OR_API_KEY = os.getenv("OR_API_KEY")
 OR_API_URL = os.getenv("OR_API_URL")
 MODEL = os.getenv("MODEL")
 
-SUPABASE_URL = "https://gefqshdrgozkxdiuligl.supabase.co"
-SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdlZnFzaGRyZ296a3hkaXVsaWdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM0NjgyNDMsImV4cCI6MjA1OTA0NDI0M30.QJbcNl479A5_tdq8lqNubMQS26fkwcPyk-zvTU0Ffy0"
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 def fallback_pollinations(message):
@@ -284,3 +284,4 @@ def contact_view(request):
                 return JsonResponse({"status": "error", "message": str(e)}, status=400)
             return render(request, "contact.html", {"error": str(e)})
     return render(request, "contact.html")
+
