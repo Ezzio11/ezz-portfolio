@@ -1,11 +1,13 @@
 # portfolio/views.py
 
+# Standard Library Imports
 import os
 import json
 import logging
 import requests
 from uuid import UUID
 
+# Django Imports
 from django.shortcuts import render, redirect
 from django.http import (
     FileResponse,
@@ -20,19 +22,36 @@ from django.views.decorators.http import require_http_methods
 from django.utils.safestring import mark_safe
 from django.conf import settings
 
+# Third-party Imports
 import markdown
 from supabase import create_client
+
+# Local Imports
 from .comments import get_comments, add_comment
 
+# ======================
+# Initial Configuration
+# ======================
 logger = logging.getLogger(__name__)
+
+# Environment Variables
 OR_API_KEY = os.getenv("OR_API_KEY")
 OR_API_URL = os.getenv("OR_API_URL")
 MODEL = os.getenv("MODEL")
-
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+
+# Supabase Client
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
+# Pre-load knowledge at server start for efficiency
+with open("knowledge.txt", "r", encoding="utf-8") as f:
+    KNOWLEDGE = f.read()
+
+
+# ======================
+# Helper Functions
+# ======================
 def fallback_pollinations(message):
     """
     Pollinations fallback with retry, timeout, and model failover.
@@ -87,10 +106,18 @@ def fallback_pollinations(message):
     except Exception as e:
         return f"Pollinations fallback fatal error: {e}"
 
-# Pre-load knowledge at server start for efficiency
-with open("knowledge.txt", "r", encoding="utf-8") as f:
-    KNOWLEDGE = f.read()
 
+def fetch_polymaths(lang="en"):
+    rows = supabase.table("polymaths").select("*").order("sort_order").execute().data
+    return [
+        {k: v for k, v in row.items() if not k.startswith('created')}
+        for row in rows
+    ]
+
+
+# ======================
+# API Views
+# ======================
 @csrf_exempt
 @require_http_methods(["POST"])
 def chatbot_api(request):
@@ -177,18 +204,28 @@ def chatbot_api(request):
         }, status=500)
 
 
-# Static Pages
+def polymaths_api(request):
+    return JsonResponse(fetch_polymaths(request.GET.get("lang", "en")), safe=False)
+
+
+# ======================
+# Static Page Views
+# ======================
 def home(request):
     return render(request, "home.html")
+
 
 def about(request):
     return render(request, "about.html")
 
+
 def projects(request):
     return render(request, "projects.html")
 
+
 def chatbot_html(request):
     return render(request, 'chatbot.html')
+
 
 def resume_dl(request):
     return FileResponse(
@@ -197,7 +234,10 @@ def resume_dl(request):
         filename="Ezz_Eldin_Ahmed's_Resume.pdf",
     )
 
+
+# ======================
 # MSTAG Views
+# ======================
 def mstag(request):
     try:
         custom_articles = supabase.table("articles").select("*").eq("is_custom", True).execute().data
@@ -211,7 +251,8 @@ def mstag(request):
     except Exception as e:
         return HttpResponse(f"Query failed: {str(e)}", status=500)
 
-def article_detail(request, slug):
+
+def article(request, slug):
     try:
         article = supabase.table("articles").select("*").eq("slug", slug).eq("source", "mstag").single().execute().data
         if not article:
@@ -230,40 +271,41 @@ def article_detail(request, slug):
             "article": article,
             "rendered_content": rendered_content,
             "comments": get_comments(str(article["id"])),
+            # Add your public Supabase credentials from env
+            "SUPABASE_URL": os.getenv("SUPABASE_URL"),
+            "SUPABASE_ANON_KEY": os.getenv("SUPABASE_ANON_KEY"),
         }
-        return render(request, "article_detail.html", context)
+        return render(request, "article.html", context)
     except Exception as e:
         logger.error(f"Error fetching article: {e}")
         raise Http404("Article not found")
 
-# Polymaths Views
-def fetch_polymaths(lang="en"):
-    rows = supabase.table("polymaths").select("*").order("sort_order").execute().data
-    return [
-        {k: v for k, v in row.items() if not k.startswith('created')}
-        for row in rows
-    ]
-
+# ======================
+# Custom Articles Views
+# ======================
 def decline_of_polymath(request):
     return render(request, "polymath.html", {"polymaths": fetch_polymaths("en")})
 
 def qualityland(request):
     return render(request, "qualityland.html")
-
-def polymaths_api(request):
-    return JsonResponse(fetch_polymaths(request.GET.get("lang", "en")), safe=False)
-
-# ML Tools
+    
+# ======================
+# ML Tools Views
+# ======================
 def linear_regression(request):
     return render(request, "linear_regression.html")
+
 
 def logistic_regression(request):
     return render(request, "logistic_regression.html")
 
+
 def time_series_analysis(request):
     return render(request, "time_series_analysis.html")
 
+# ======================
 # Contact View
+# ======================
 @require_http_methods(["GET", "POST"])
 def contact_view(request):
     if request.method == "POST":
@@ -284,4 +326,3 @@ def contact_view(request):
                 return JsonResponse({"status": "error", "message": str(e)}, status=400)
             return render(request, "contact.html", {"error": str(e)})
     return render(request, "contact.html")
-
