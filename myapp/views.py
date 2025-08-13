@@ -240,6 +240,7 @@ def resume_dl(request):
 # ======================
 def mstag(request):
     try:
+        # Fetch articles
         custom_articles = supabase.table("articles").select("*").eq("is_custom", True).execute().data
         regular_articles = supabase.table("articles").select("*").eq("source", "mstag").eq("is_custom", False).execute().data
         articles = sorted(
@@ -247,7 +248,13 @@ def mstag(request):
             key=lambda x: x["date_published"],
             reverse=True,
         )
-        return render(request, "mstag.html", {"articles": articles})
+        
+        # Pass both articles and Supabase credentials to template
+        return render(request, "mstag.html", {
+            "articles": articles,
+            "SUPABASE_URL": SUPABASE_URL,
+            "SUPABASE_KEY": SUPABASE_KEY
+        })
     except Exception as e:
         return HttpResponse(f"Query failed: {str(e)}", status=500)
 
@@ -325,4 +332,5 @@ def contact_view(request):
                 return JsonResponse({"status": "error", "message": str(e)}, status=400)
             return render(request, "contact.html", {"error": str(e)})
     return render(request, "contact.html")
+
 
