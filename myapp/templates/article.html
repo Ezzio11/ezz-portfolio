@@ -126,6 +126,24 @@
             <a href="{% url 'mstag' %}" class="block font-dm text-goldaccent text-xl mb-8 pb-3 border-b border-sepia/20 hover:text-parchment transition">
                 M.S.T.A.G
             </a>
+
+            <!-- Language Selector -->
+            <div class="pt-6 border-t border-sepia/20">
+                <h4 class="text-xl font-dm text-goldaccent mb-4" dir="rtl">اللغة / Language</h4>
+                <select id="language-select" 
+                        class="w-full bg-deepcharcoal text-parchment font-lora text-sm border border-goldaccent/30 rounded px-3 py-2 hover:bg-goldaccent/10 focus:outline-none focus:border-goldaccent transition-colors appearance-none cursor-pointer">
+                    <option value="en">English</option>
+                    <option value="ar">العربية (Arabic)</option>
+                    <option value="es">Español (Spanish)</option>
+                    <option value="fr">Français (French)</option>
+                    <option value="de">Deutsch (German)</option>
+                    <option value="it">Italiano (Italian)</option>
+                    <option value="pt">Português (Portuguese)</option>
+                    <option value="ru">Русский (Russian)</option>
+                    <option value="zh-CN">简体中文 (Chinese)</option>
+                    <option value="ja">日本語 (Japanese)</option>
+                </select>
+            </div>
             
             <!-- Table of Contents -->
             <div class="mb-8">
@@ -407,6 +425,10 @@
         window.SUPABASE_KEY = "{{ SUPABASE_KEY }}";
     </script>
     <script src="{% static 'js/mstag.js' %}"></script>
+    
+    <!-- Google Translate Script -->
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
+
 
