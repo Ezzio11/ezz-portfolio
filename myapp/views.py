@@ -271,9 +271,8 @@ def article(request, slug):
             "article": article,
             "rendered_content": rendered_content,
             "comments": get_comments(str(article["id"])),
-            # Add your public Supabase credentials from env
-            "SUPABASE_URL": os.getenv("SUPABASE_URL"),
-            "SUPABASE_ANON_KEY": os.getenv("SUPABASE_ANON_KEY"),
+            "SUPABASE_URL": SUPABASE_URL,
+            "SUPABASE_KEY": SUPABASE_KEY,
         }
         return render(request, "article.html", context)
     except Exception as e:
@@ -326,3 +325,4 @@ def contact_view(request):
                 return JsonResponse({"status": "error", "message": str(e)}, status=400)
             return render(request, "contact.html", {"error": str(e)})
     return render(request, "contact.html")
+
